@@ -5,6 +5,7 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <vendor/testlib.hpp>
 
@@ -18,6 +19,29 @@ Results test_version() {
     r.equals(vers.minor == 1);
     r.equals(vers.patch == 0);
     r.equals(vers.build >= 100);
+
+    return r;
+}
+
+// put this in unit tests
+const auto createSampleReading() {
+    std::string text =
+          "readings:2025-01-12T13:24:23\n"
+          "version:2024.02.08\n"
+          "ts:1736717063\n"
+          "temp:1736717063:tempC:13.44, tempF:56.19\n"
+          "light:1736717063:0\n"
+          "status:started:1736712734, uptime:0 days 1:12:09, access:0, errors:1";
+
+    return text;
+}
+
+Results test_temperature() {
+    Results r = {.name = "Version Tests"};
+    const auto reading = createSampleReading();
+    app::TemperatureData data = app::parse_reading(reading);
+
+    r.equals(data.date == "2025-01-12T13:24:23");
 
     return r;
 }

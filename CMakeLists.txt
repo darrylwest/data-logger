@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(app)
+project(readings)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,14 +58,14 @@ CPMAddPackage(
 )
 
 
-add_executable(app 
+add_executable(readings
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/main.cpp)
 
 add_executable(unit 
     ${SRC_DIR}/unit.cpp)
 
-target_link_libraries(app 
+target_link_libraries(readings
     spdlog 
     toml11::toml11 
     nlohmann_json::nlohmann_json
