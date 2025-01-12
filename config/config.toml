@@ -1,0 +1,8 @@
+#
+# example
+#
+[main]
+name = "example"
+authors = ["dpw"]
+port = 3033
+host = "localhost"

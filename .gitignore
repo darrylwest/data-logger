@@ -1,0 +1,7 @@
+/build*
+/.vscode
+/cpm_modules
+/dep-cache
+.DS_Store
+.ssh
+logs/*.log
