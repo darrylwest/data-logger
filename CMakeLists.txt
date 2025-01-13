@@ -60,9 +60,12 @@ CPMAddPackage(
 
 add_executable(readings
     ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/main.cpp)
 
 add_executable(unit 
+    ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/unit.cpp)
 
 target_link_libraries(readings

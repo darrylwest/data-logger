@@ -15,8 +15,9 @@
 #include <app/temperature.hpp>
 
 namespace app {
-    TemperatureData parse_reading_data(const std::string& text) {
+    TemperatureData parse_reading(const std::string& location, const std::string& text) {
         app::TemperatureData data;
+        data.location = location;
 
         std::istringstream iss(text);
         std::string line;
@@ -24,7 +25,8 @@ namespace app {
         while (std::getline(iss, line)) {
             // Extract readings
             if (line.starts_with("readings:")) {
-                data.date = line.substr(9);  // Extract substring after "readings:"
+                data.reading_date = line.substr(9);  // Extract substring after "readings:"
+                data.isValid = true;
             }
 
             // Extract timestamp (ts)
@@ -44,6 +46,8 @@ namespace app {
                 if (std::regex_search(line, matches, temp_regex)) {
                     data.tempC = std::stod(matches[1]);
                     data.tempF = std::stod(matches[2]);
+                } else {
+                    data.isValid = false;
                 }
             }
         }

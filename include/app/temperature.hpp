@@ -16,17 +16,23 @@
 
 namespace app {
     struct TemperatureData {
-        std::string date;
+        std::string location = "Unknown";
+        std::string reading_date;
         std::chrono::system_clock::time_point timestamp;
-        std::optional<double> tempC;
-        std::optional<double> tempF;
+        double tempC = 0.0;
+        double tempF = 0.0;
+        bool isValid = false;
 
-        friend std::ostream& operator<<(std::ostream& os, const Config v) {
+        friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
-            os << "date: " << v.host << ", "
-               << "ts: " << v.timestamp << ", "
-               << "tempC: " << v.tempC << ",";
-            << "tempF: " << v.tempF << ".";
+            std::string valid = v.isValid ? "true" : "false";
+            os << "location: " << v.location << ", "
+               << "date: " << v.reading_date << ", "
+               << "ts: " << std::chrono::system_clock::to_time_t(v.timestamp) << ", "
+               << "tempC: " << v.tempC << ","
+               << "tempF: " << v.tempF << "."
+               << "valid: " << valid << "."
+               ;
             return os;
         }
 
@@ -38,6 +44,6 @@ namespace app {
         }
     };
     // parse the raw reading
-    TemperatureData parse_reading(const std::string& text);
+    TemperatureData parse_reading(const std::string& location, const std::string& text);
 }  // namespace app
 

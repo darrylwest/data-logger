@@ -5,6 +5,7 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/cli.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <vendor/testlib.hpp>
@@ -38,10 +39,15 @@ const auto createSampleReading() {
 
 Results test_temperature() {
     Results r = {.name = "Version Tests"};
+    const auto location = "test-location";
     const auto reading = createSampleReading();
-    app::TemperatureData data = app::parse_reading(reading);
+    app::TemperatureData data = app::parse_reading(location, reading);
 
-    r.equals(data.date == "2025-01-12T13:24:23");
+    r.equals(data.location == location, "location should be set");
+    r.equals(data.reading_date == "2025-01-12T13:24:23", "date should be set");
+    r.equals(data.tempC == 13.44, "temp c should be 13.44");
+    r.equals(data.tempF == 56.19, "temp f should be 56.19");
+    r.equals(data.isValid == true, "reading should be valid");
 
     return r;
 }
@@ -64,6 +70,7 @@ int main(int argc, const char *argv[]) {
     };
 
     run_test(test_version);
+    run_test(test_temperature);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
