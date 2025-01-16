@@ -22,9 +22,11 @@ Starter uses...
 * testlib.hpp for unit testing
 * nlohmann/json (needs to be brew'd or compiled on linux)
 
-_Easy to remove json if not needed._
+
+## Temperature Wiring Diagram
+
+![esp32 Temp wiring diagram](./docs/esp32-temp-wiring.png)
 
 
-
-###### 2025.01.10 | dpw
+###### 2025.01.16 | dpw
 
