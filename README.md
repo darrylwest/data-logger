@@ -1,13 +1,17 @@
-# Readings Data Logger
+# Temperature Data Logger
 
 
 ```
+ _______                                         __                      _____         __         
+|_     _|.-----.--------.-----.-----.----.---.-.|  |_.--.--.----.-----. |     \.---.-.|  |_.---.-.
+  |   |  |  -__|        |  _  |  -__|   _|  _  ||   _|  |  |   _|  -__| |  --  |  _  ||   _|  _  |
+  |___|  |_____|__|__|__|   __|_____|__| |___._||____|_____|__| |_____| |_____/|___._||____|___._|
+                        |__|                                                                      
 ```
 
 ## Overview
 
-
-Replace all `app` names to the name of the project.
+The *Temperature Data Logger* is 1) an arduino/esp32 micro-controller application, 2) a data collection service (c++) and 3) a web-app (vue3).
 
 ## From the develop branch
 
@@ -27,6 +31,17 @@ Starter uses...
 
 ![esp32 Temp wiring diagram](./docs/esp32-temp-wiring.png)
 
+## Temperature Circuit Schematic 
 
-###### 2025.01.16 | dpw
+![Data Logger Schematic](./docs/circuit.svg)
+
+## Arduino/Esp32-S3 Code
+
+_copy here with tests_
+
+## Web App
+
+_from starter with chart.js_
+
+###### 2025.01.28 | dpw
 
