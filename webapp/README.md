@@ -1,13 +1,21 @@
-# WebApp Starter
+# Data Logger
 
-_This is where all the client front end resides.
+```ascii
+ _____         __           _____                                
+|     \.---.-.|  |_.---.-. |     |_.-----.-----.-----.-----.----.
+|  --  |  _  ||   _|  _  | |       |  _  |  _  |  _  |  -__|   _|
+|_____/|___._||____|___._| |_______|_____|___  |___  |_____|__|  
+                                         |_____|_____|           
+```
+
+_This is where all the client front end resides._
 
 
-*NOTE: this project's package manager is *yarn*.  don't use npm.
+*NOTE:* this project's package manager is *yarn*.  don't use npm.
 
 *NOTE*: for linux development, use the latest node image that contains yarn: `docker run -it --name nodejs node:latest /bin/bash -l`
 
-*TODO*: create a node develpment image for this project
+*TODO*: create a docker node develpment image for this project
 
 
 ## The Web App
@@ -66,4 +74,4 @@ yarn lint
 
 * [Vue Test Utils API](https://test-utils.vuejs.org/api/)
 
-###### 2025.01.28 | dpw
+###### 2025.01.29 | dpw

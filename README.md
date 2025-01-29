@@ -1,17 +1,23 @@
-# Temperature Data Logger
+# Data Logger
 
-
-```
- _______                                     __                      _____               
-|_     _|.-----.----.-----.-----.----.---.-.|  |_.--.--.----.-----. |     |_.-----.-----.
-  |   |  |  -__|   _|  _  |  -__|   _|  _  ||   _|  |  |   _|  -__| |       |  _  |  _  |
-  |___|  |_____|__| |   __|_____|__| |___._||____|_____|__| |_____| |_______|_____|___  |
-                    |__|                                                          |_____|
+```ascii
+ _____         __           _____                                
+|     \.---.-.|  |_.---.-. |     |_.-----.-----.-----.-----.----.
+|  --  |  _  ||   _|  _  | |       |  _  |  _  |  _  |  -__|   _|
+|_____/|___._||____|___._| |_______|_____|___  |___  |_____|__|  
+                                         |_____|_____|           
 ```
 
 ## Overview
 
-The *Temperature Data Logger* is 1) an arduino/esp32 micro-controller application, 2) a data collection service (c++) and 3) a web-app (vue3).
+The *Data Logger* project is...
+
+1. an arduino/esp32 micro-controller application, 
+2. a data collection service (c++) and,
+3. a web-app (vue3).
+
+It initially gathers temperatures from various locations to be displayed graphically in the associated Data Logger Web Application.
+Eventually it will gather and store other readings including light intensity, moisture, humidity, proximity events, etc.
 
 ## From the develop branch
 
@@ -43,5 +49,5 @@ _copy here with tests_
 
 _from starter with chart.js_
 
-###### 2025.01.28 | dpw
+###### 2025.01.29 | dpw
 
