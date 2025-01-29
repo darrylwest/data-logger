@@ -2,14 +2,15 @@
 
 _This is where all the client front end resides.
 
+
+*NOTE: this project's package manager is *yarn*.  don't use npm.
+
 *NOTE*: for linux development, use the latest node image that contains yarn: `docker run -it --name nodejs node:latest /bin/bash -l`
 
 *TODO*: create a node develpment image for this project
 
 
-## The Starter Web App
-
-Simple starter with minimal header, footer, Landing.vue, Home.vue, Login.vue, Home.vue, About.vue, and other pages
+## The Web App
 
 ## Customize configurations
 
@@ -65,4 +66,4 @@ yarn lint
 
 * [Vue Test Utils API](https://test-utils.vuejs.org/api/)
 
-###### 2025.01.10 | dpw
+###### 2025.01.28 | dpw
