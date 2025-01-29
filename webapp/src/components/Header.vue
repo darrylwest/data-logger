@@ -4,7 +4,7 @@ import { useRouter } from 'vue-router'
 import { useLoginStore } from '@/stores/login'
 import applogo from '@/assets/logo.svg'
 
-const appName = 'Web Application Startup'
+const appName = 'Temperature Datalogger'
 
 const loginStore = useLoginStore()
 
