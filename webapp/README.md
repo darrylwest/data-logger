@@ -20,6 +20,8 @@ _This is where all the client front end resides._
 
 ## The Web App
 
+![Home Page](./docs/datalogger-home.png)
+
 ## Customize configurations
 
 See [Vite Configuration Reference](https://vite.dev/config/).
