@@ -6,8 +6,8 @@
 const TemperatureService = {
   dataParams: () => {
     return {
-      start_date: "2025-01-28 04:00:00",
-      end_date: "2025-01-28 16:00:00",
+      start_date: "2025-01-29 04:00:00",
+      end_date: "2025-01-29 16:00:00",
       interval: "30",
     };
   },

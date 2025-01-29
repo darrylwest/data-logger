@@ -1,7 +1,9 @@
 <template>
   <div class="container mx-auto pt-10">
     <h2 class="text-3xl font-bold text-center">Temperature Readings</h2>
-    <h3 class="font-bold text-center ">2025-01-28 04:00:00 to 2025-01-28 16:00:00</h3>
+    <h3 class="font-bold text-center">
+      {{ dataParams.start_date }} to {{ dataParams.end_date }}
+    </h3>
     <div class="mt-4 mb-20">
       <canvas id="lineChart"></canvas>
     </div>
@@ -9,7 +11,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import TemperatureService from "@/services/TemperatureService"
 
@@ -18,6 +20,8 @@ Chart.register(...registerables);
 export default defineComponent({
   name: 'HomePage',
   setup() {
+    const dataParams = ref(TemperatureService.dataParams());
+
     onMounted(() => {
       const ctx = document.getElementById('lineChart').getContext('2d');
       new Chart(ctx, {
@@ -52,7 +56,7 @@ export default defineComponent({
       });
     });
 
-    return {};
+    return { dataParams };
   },
 });
 </script>
