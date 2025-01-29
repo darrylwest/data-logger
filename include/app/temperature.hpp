@@ -31,8 +31,7 @@ namespace app {
                << "ts: " << std::chrono::system_clock::to_time_t(v.timestamp) << ", "
                << "tempC: " << v.tempC << ","
                << "tempF: " << v.tempF << "."
-               << "valid: " << valid << "."
-               ;
+               << "valid: " << valid << ".";
             return os;
         }
 
@@ -46,4 +45,3 @@ namespace app {
     // parse the raw reading
     TemperatureData parse_reading(const std::string& location, const std::string& text);
 }  // namespace app
-

@@ -26,8 +26,8 @@ Results test_version() {
 
 // put this in unit tests
 const auto createSampleReading() {
-    std::string text =
-          "readings:2025-01-12T13:24:23\n"
+    std::string text
+        = "readings:2025-01-12T13:24:23\n"
           "version:2024.02.08\n"
           "ts:1736717063\n"
           "temp:1736717063:tempC:13.44, tempF:56.19\n"

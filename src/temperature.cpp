@@ -5,14 +5,13 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/temperature.hpp>
 #include <chrono>
 #include <iostream>
 #include <optional>
 #include <regex>
 #include <sstream>
 #include <string>
-
-#include <app/temperature.hpp>
 
 namespace app {
     TemperatureData parse_reading(const std::string& location, const std::string& text) {
