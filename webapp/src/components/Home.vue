@@ -1,9 +1,7 @@
 <template>
   <div class="container mx-auto pt-10">
     <h2 class="text-3xl font-bold text-center">Temperature Readings</h2>
-    <h3 class="font-bold text-center">
-      {{ dataParams.start_date }} to {{ dataParams.end_date }}
-    </h3>
+    <h3 class="font-bold text-center">{{ dataParams.start_date }} to {{ dataParams.end_date }}</h3>
     <div class="mt-4 mb-20">
       <canvas id="lineChart"></canvas>
     </div>
@@ -11,19 +9,19 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue';
-import { Chart, registerables } from 'chart.js';
-import TemperatureService from "@/services/TemperatureService"
+import { defineComponent, onMounted, ref } from 'vue'
+import { Chart, registerables } from 'chart.js'
+import TemperatureService from '@/services/TemperatureService'
 
-Chart.register(...registerables);
+Chart.register(...registerables)
 
 export default defineComponent({
   name: 'HomePage',
   setup() {
-    const dataParams = ref(TemperatureService.dataParams());
+    const dataParams = ref(TemperatureService.dataParams())
 
     onMounted(() => {
-      const ctx = document.getElementById('lineChart').getContext('2d');
+      const ctx = document.getElementById('lineChart').getContext('2d')
       new Chart(ctx, {
         type: 'line',
         data: {
@@ -39,12 +37,12 @@ export default defineComponent({
               intersect: false, // Allows tooltip to appear even if not directly over a point
               callbacks: {
                 label: function (context) {
-                  let label = context.dataset.label || '';
+                  let label = context.dataset.label || ''
                   if (label) {
-                    label += ': ';
+                    label += ': '
                   }
-                  label += context.raw; // Shows the raw data value
-                  return label;
+                  label += context.raw // Shows the raw data value
+                  return label
                 },
               },
             },
@@ -53,15 +51,14 @@ export default defineComponent({
             },
           },
         },
-      });
-    });
+      })
+    })
 
-    return { dataParams };
+    return { dataParams }
   },
-});
+})
 </script>
 
 <style>
 /* Add custom styles here if needed */
 </style>
-
