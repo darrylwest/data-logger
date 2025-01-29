@@ -17,7 +17,7 @@ namespace app {
         int major = 0;
         int minor = 1;
         int patch = 0;
-        int build = 100;
+        int build = 101;
 
         friend std::ostream& operator<<(std::ostream& os, const Version v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
