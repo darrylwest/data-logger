@@ -1,8 +1,41 @@
 //
-// eventually this will be a real service; for now (and for static sites) it is a static file
-//
 // import axios from "axios";
 //
+import axios from "axios";
+
+// alamo 10.0.1.237
+const API_URL = "http://10.0.1.237:2090/api/temperature"; // Replace with actual API URL
+
+const TemperatureService = {
+  async fetchReadings(start_date, end_date, interval) {
+    try {
+      const response = await axios.get(`${API_URL}/readings`, {
+        params: { start_date, end_date, interval },
+      });
+      return response.data; // Expecting an array of datasets
+    } catch (error) {
+      console.error("Error fetching temperature readings:", error);
+      return [];
+    }
+  },
+
+  async fetchLabels(start_date, end_date, interval) {
+    try {
+      const response = await axios.get(`${API_URL}/labels`, {
+        params: { start_date, end_date, interval },
+      });
+      return response.data; // Expecting an array of labels
+    } catch (error) {
+      console.error("Error fetching labels:", error);
+      return [];
+    }
+  },
+};
+
+export default TemperatureService;
+
+
+/*
 const TemperatureService = {
   dataParams: () => {
     return {
@@ -72,4 +105,4 @@ const TemperatureService = {
   },
 }
 
-export default TemperatureService
+*/
