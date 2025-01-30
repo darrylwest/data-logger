@@ -1,7 +1,24 @@
 <template>
   <div class="container mx-auto pt-10">
     <h2 class="text-3xl font-bold text-center">Temperature Readings</h2>
-    <h3 class="font-bold text-center">{{ dataParams.start_date }} to {{ dataParams.end_date }}</h3>
+
+    <!-- Editable Start and End Date Inputs -->
+    <div class="flex justify-center gap-4 my-4">
+      <label class="flex flex-col">
+        Start Date:
+        <input v-model="dataParams.start_date" type="datetime-local" class="border p-2 rounded" />
+      </label>
+      <label class="flex flex-col">
+        End Date:
+        <input v-model="dataParams.end_date" type="datetime-local" class="border p-2 rounded" />
+      </label>
+    </div>
+
+    <!-- Display Selected Date Range -->
+    <h3 class="font-bold text-center">
+      {{ dataParams.start_date }} to {{ dataParams.end_date }}
+    </h3>
+
     <div class="mt-4 mb-20">
       <canvas id="lineChart"></canvas>
     </div>
@@ -9,7 +26,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import TemperatureService from '@/services/TemperatureService'
 
@@ -19,11 +36,18 @@ export default defineComponent({
   name: 'HomePage',
   setup() {
     const dataParams = ref(TemperatureService.dataParams())
+    let chartInstance = null;
 
-    onMounted(() => {
-      const ctx = document.getElementById('lineChart').getContext('2d')
-      new Chart(ctx, {
-        type: 'line',
+    const renderChart = () => {
+      const ctx = document.getElementById("lineChart").getContext("2d");
+
+      // Destroy existing chart to prevent duplicates
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: "line",
         data: {
           labels: TemperatureService.fetchLabels(),
           datasets: TemperatureService.fetchReadings(),
@@ -51,8 +75,17 @@ export default defineComponent({
             },
           },
         },
-      })
+      });
+    };
+
+    onMounted(() => {
+      renderChart();
     })
+
+    // Watch for changes in start_date or end_date and refresh the chart
+    watch(dataParams, () => {
+      renderChart();
+    }, { deep: true });
 
     return { dataParams }
   },
