@@ -2,6 +2,15 @@
   <div class="container mx-auto pt-10">
     <h2 class="text-3xl font-bold text-center">Temperature Readings</h2>
 
+    <!-- Display Selected Date Range -->
+    <h3 class="font-bold text-center">
+      {{ dataParams.start_date }} to {{ dataParams.end_date }}
+    </h3>
+
+    <div class="mt-4 mb-20">
+      <canvas id="lineChart"></canvas>
+    </div>
+
     <!-- Editable Start and End Date Inputs -->
     <div class="flex justify-center gap-4 my-4">
       <label class="flex flex-col">
@@ -14,14 +23,6 @@
       </label>
     </div>
 
-    <!-- Display Selected Date Range -->
-    <h3 class="font-bold text-center">
-      {{ dataParams.start_date }} to {{ dataParams.end_date }}
-    </h3>
-
-    <div class="mt-4 mb-20">
-      <canvas id="lineChart"></canvas>
-    </div>
   </div>
 </template>
 
