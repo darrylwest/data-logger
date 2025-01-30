@@ -105,17 +105,22 @@ export default defineComponent({
       errorMessage.value = null;
 
       try {
-        labels.value = await TemperatureService.fetchLabels(
+        const response = await TemperatureService.fetchTemperatureData(
           dataParams.value.start_date,
           dataParams.value.end_date,
           dataParams.value.interval
         );
-        datasets.value = await TemperatureService.fetchReadings(
-          dataParams.value.start_date,
-          dataParams.value.end_date,
-          dataParams.value.interval
-        );
-        renderChart();
+
+        console.log(response);
+        labels.value = response.labels;
+        datasets.value = response.datasets.map(sensor => ({
+          label: sensor.label,
+          data: sensor.data,
+          borderColor: 'rgba(75, 192, 192, 1)', // getRandomColor(sensor.sensor_id), // Optional function to colorize
+          fill: false
+        }));
+
+        // renderChart();
         lastUpdated.value = new Date().toLocaleString();
       } catch (error) {
         console.error("Error fetching temperature data:", error);
