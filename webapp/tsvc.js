@@ -3,7 +3,7 @@ import TemperatureService from "./src/services/TemperatureService.js"; // Adjust
 const testTemperatureAPI = async () => {
   try {
     const end_date = "2025-01-30T16:00";
-    const interval = 60;
+    const interval = 30;
 
     console.log("Fetching temperature data...");
 
