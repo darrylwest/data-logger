@@ -1,9 +1,11 @@
 //
-const VERSION = "0.1.0-114";
+const VERSION = "0.1.0-116";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
 const path = require("path");
+const { setMaxIdleHTTPParsers } = require("http");
+const { threadId } = require("worker_threads");
 
 const app = express();
 app.use(cors()); // Enable CORS
@@ -68,9 +70,10 @@ app.get("/temperature", (req, res) => {
         }
     ];
 
-    // end_date = '2025-01-30';
-
-    res.json({ labels, datasets });
+    // simulate a slow connection
+    setTimeout(() => {
+      res.json({ labels, datasets });
+    }, 1000);
 });
 
 // Start the server
