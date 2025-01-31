@@ -2,54 +2,43 @@
 // 2025-01-12 23:11:44 dpw
 //
 
-#include <spdlog/fmt/fmt.h>
+// #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include <iostream>
+#include <nlohmann/json.hpp>
 
 #include <app/temperature.hpp>
-#include <chrono>
-#include <iostream>
-#include <optional>
-#include <regex>
-#include <sstream>
-#include <string>
 
-// TODO refactor to read new json output with datasets (see data-logger/data-reader/parse_ndjson.cpp)
+// read json response with (see data-logger/data-reader/parse_ndjson.cpp)
 namespace app {
-    TemperatureData parse_reading(const std::string& location, const std::string& text) {
-        app::TemperatureData data;
-        data.location = location;
+    using json = nlohmann::json;
 
-        std::istringstream iss(text);
-        std::string line;
+    TemperatureData parse_reading(const std::string& json_text) {
+        spdlog::info("parsed text: {}", json_text);
 
-        while (std::getline(iss, line)) {
-            // Extract readings
-            if (line.starts_with("readings:")) {
-                data.reading_date = line.substr(9);  // Extract substring after "readings:"
-                data.isValid = true;
+        TemperatureData data;
+        try {
+            json j = json::parse(json_text);
+
+            auto read_at = j["reading_at"];
+            data.reading_at = read_at["time"];
+            data.timestamp = read_at["ts"];
+            auto probes = j["probes"];
+            for (const auto& probe : probes) {
+                TemperatureProbe p;
+                p.sensor = probe["sensor"];
+                p.location = probe["location"];
+                p.tempC = probe["tempC"];
+                p.tempF = probe["tempF"];
+
+                data.probes.push_back(p);
             }
 
-            // Extract timestamp (ts)
-            if (line.starts_with("ts:")) {
-                try {
-                    data.timestamp
-                        = std::chrono::system_clock::from_time_t(std::stoi(line.substr(3)));
-                } catch (const std::invalid_argument& e) {
-                    std::cerr << "Error parsing timestamp: " << e.what() << std::endl;
-                }
-            }
+            spdlog::info("parsed to: {}", data.to_string());
 
-            // Extract temperature
-            if (line.starts_with("temp:")) {
-                std::smatch matches;
-                std::regex temp_regex(R"(tempC:([\d.]+), tempF:([\d.]+))");
-                if (std::regex_search(line, matches, temp_regex)) {
-                    data.tempC = std::stod(matches[1]);
-                    data.tempF = std::stod(matches[2]);
-                } else {
-                    data.isValid = false;
-                }
-            }
+        } catch(json::parse_error& e) {
+            // should track errors centrally
+            spdlog::error("Error parsing JSON: {}", e.what());
         }
 
         return data;

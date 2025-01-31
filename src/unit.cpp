@@ -13,13 +13,15 @@
 
 using namespace rcstestlib;
 
+constexpr float EPSILON = 1e-5f;
+
 Results test_version() {
     Results r = {.name = "Version Tests"};
 
     auto vers = app::Version();
     r.equals(vers.major == 0);
-    r.equals(vers.minor == 1);
-    r.equals(vers.patch == 0);
+    r.equals(vers.minor == 2);
+    r.equals(vers.patch == 1);
     r.equals(vers.build >= 100);
 
     return r;
@@ -56,27 +58,41 @@ Results test_taskrunner() {
 // put this in unit tests
 const auto createSampleReading() {
     std::string text
-        = "readings:2025-01-12T13:24:23\n"
-          "version:2024.02.08\n"
-          "ts:1736717063\n"
-          "temp:1736717063:tempC:13.44, tempF:56.19\n"
-          "light:1736717063:0\n"
-          "status:started:1736712734, uptime:0 days 1:12:09, access:0, errors:1";
+        = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
+            "probes":[
+                {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
+                {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
+            ]}
+        )";
 
     return text;
 }
 
 Results test_temperature() {
-    Results r = {.name = "Version Tests"};
-    const auto location = "test-location";
-    const auto reading = createSampleReading();
-    app::TemperatureData data = app::parse_reading(location, reading);
+    Results r = {.name = "Temperature Reading Tests"};
 
-    r.equals(data.location == location, "location should be set");
-    r.equals(data.reading_date == "2025-01-12T13:24:23", "date should be set");
-    r.equals(data.tempC == 13.44, "temp c should be 13.44");
-    r.equals(data.tempF == 56.19, "temp f should be 56.19");
-    r.equals(data.isValid == true, "reading should be valid");
+    // spdlog::set_level(spdlog::level::info);
+
+    const auto reading = createSampleReading();
+    app::TemperatureData data = app::parse_reading(reading);
+
+    r.equals(data.reading_at == "2025-01-31T14:27:46", "reading date should be set");
+    r.equals(data.timestamp == 1738362466, "timestamp should match");
+    r.equals(data.probes.size() == 2, "should be two probes");
+    // now test the probe data; sensor, location, tempC, tempF
+    auto probe0 = data.probes.at(0);
+    r.equals(probe0.sensor == 0, "sensor id 0");
+    r.equals(probe0.location == "cottage-south", "probe0 location");
+    r.equals(std::abs(probe0.tempC - 10.88542) < EPSILON, "probe0 tempC");
+    r.equals(std::abs(probe0.tempF - 51.59375) < EPSILON, "probe0 tempC");
+
+    auto probe1 = data.probes.at(1);
+    r.equals(probe1.sensor == 1, "sensor id 1");
+    r.equals(probe1.location == "cottage-east", "probe1 location");
+    r.equals(std::abs(probe1.tempC - 10.92542) < EPSILON, "probe0 tempC");
+    r.equals(std::abs(probe1.tempF - 51.66576) < EPSILON, "probe0 tempC");
+
+    // spdlog::set_level(spdlog::level::off);
 
     return r;
 }

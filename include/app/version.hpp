@@ -15,9 +15,9 @@ namespace app {
     // version numbers are year.month.day.build where the year/month/day is the release date
     struct Version {
         int major = 0;
-        int minor = 1;
-        int patch = 0;
-        int build = 103;
+        int minor = 2;
+        int patch = 1;
+        int build = 104;
 
         friend std::ostream& operator<<(std::ostream& os, const Version v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
