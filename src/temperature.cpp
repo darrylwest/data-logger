@@ -13,6 +13,7 @@
 #include <sstream>
 #include <string>
 
+// TODO refactor to read new json output with datasets (see data-logger/data-reader/parse_ndjson.cpp)
 namespace app {
     TemperatureData parse_reading(const std::string& location, const std::string& text) {
         app::TemperatureData data;

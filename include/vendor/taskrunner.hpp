@@ -1,0 +1,75 @@
+//
+//
+// 2024-12-31 10:28:16 dpw
+// run tasks as controlled by a real-time ticker
+// intended for tasks that run each few seconds or minutes/hours, etc.
+//
+//
+
+#pragma once
+
+#include <iostream>
+#include <sstream>
+
+namespace taskrunner {
+    // get the timestamp in millis
+    unsigned long timestamp_millis() {
+        auto now = std::chrono::system_clock::now();
+        auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+
+        return timestamp;
+    }
+
+    // get the timestamp in seconds
+    unsigned int timestamp_seconds() {
+        auto now = std::chrono::system_clock::now();
+        auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+
+        return timestamp;
+    }
+
+    struct Task {
+        const std::string name;
+        const unsigned int started_at; // unix timestamp in seconds
+        int last_run; // unix timestamp in seconds
+        int period; // in seconds
+        unsigned long run_count;
+        void (*runner)();
+
+        friend std::ostream& operator<<(std::ostream& os, const Task v) {
+            // better to use <format> but it breaks on linux and fmt broken on darwin
+            os << v.name 
+                << ", started_at: " << v.started_at 
+                << ", last_run: " << v.last_run 
+                << ", period: " << v.period 
+                << ", run_count: " << v.run_count;
+
+            return os;
+        }
+
+        std::string to_string() const {
+            std::ostringstream oss;
+            oss << *this;
+
+            return oss.str();
+        }
+
+        // start ticker?
+    };
+
+    // create the task
+    Task createTask(const char* task_name, int period, void (*runner)()) {
+            auto ts = timestamp_seconds();
+            auto task = Task { 
+                .name = std::string(task_name), 
+                .started_at = ts,
+                .last_run = 0,
+                .run_count = 0,
+                .period = period,
+                .runner = runner,
+            };
+
+            return task;
+        }
+
+}  // namespace app

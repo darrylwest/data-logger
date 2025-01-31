@@ -1,5 +1,5 @@
 //
-const VERSION = "0.1.0-118";
+const VERSION = "0.1.0-119";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -70,10 +70,10 @@ app.get("/temperature", (req, res) => {
         }
     ];
 
-    // simulate a slow connection
+    // simulate a slow-ish connection
     setTimeout(() => {
-      res.json({ labels, datasets });
-    }, 1000);
+      res.json({ labels, datasets, end_date });
+    }, 600);
 });
 
 // Start the server

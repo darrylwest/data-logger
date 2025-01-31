@@ -9,6 +9,7 @@
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <vendor/testlib.hpp>
+#include <vendor/taskrunner.hpp>
 
 using namespace rcstestlib;
 
@@ -21,6 +22,34 @@ Results test_version() {
     r.equals(vers.patch == 0);
     r.equals(vers.build >= 100);
 
+    return r;
+}
+
+Results test_taskrunner() {
+    Results r = {.name = "TaskRunner Tests"};
+
+    // spdlog::set_level(spdlog::level::info);
+
+    int period = 15; // in seconds
+    auto task = taskrunner::createTask("test-task", period, []() {
+        spdlog::info("in my task");
+    });
+
+    int ts_in_the_past = 1738353093;
+    r.equals(task.name == "test-task", "name should match");
+    r.equals(task.started_at > ts_in_the_past, "name should match");
+    r.equals(task.run_count == 0, "never run");
+    r.equals(task.period == period, "period should match");
+
+    auto tstr = task.to_string();
+    r.equals(tstr != "", "should match");
+
+    unsigned long tms = taskrunner::timestamp_millis();
+    unsigned long tss =  taskrunner::timestamp_seconds();
+    spdlog::info("tms: {}, tss: {}", tms, tss);
+    r.equals(tms / 10000 == tss / 10, "times should match");
+
+    // spdlog::set_level(spdlog::level::off);
     return r;
 }
 
@@ -70,6 +99,7 @@ int main(int argc, const char *argv[]) {
     };
 
     run_test(test_version);
+    run_test(test_taskrunner);
     run_test(test_temperature);
 
     fmt::println("\n{}", summary.to_string());
