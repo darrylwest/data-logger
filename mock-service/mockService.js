@@ -1,5 +1,5 @@
 //
-const VERSION = "0.1.0-116";
+const VERSION = "0.1.0-118";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -64,7 +64,7 @@ app.get("/temperature", (req, res) => {
         {
             sensor_id: "sensor_2",
             label: "shed-west",
-            data: filteredData.map(record => (record.tempF + 3.0)),
+            data: filteredData.map(record => (record.tempF + (Math.random() * 2 - 1))),
             borderColor: "blue",
             fill: false
         }
