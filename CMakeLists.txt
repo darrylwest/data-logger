@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 
-project(readings)
+project(data-logger)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -58,7 +58,7 @@ CPMAddPackage(
 )
 
 
-add_executable(readings
+add_executable(data-logger
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/main.cpp)
@@ -68,7 +68,7 @@ add_executable(unit
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/unit.cpp)
 
-target_link_libraries(readings
+target_link_libraries(data-logger
     spdlog 
     toml11::toml11 
     nlohmann_json::nlohmann_json
