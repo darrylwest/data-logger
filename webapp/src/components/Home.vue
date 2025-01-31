@@ -30,15 +30,19 @@
     </div>
 
     <!-- Chart -->
-    <div v-show="!isLoading && !errorMessage" class="mt-4 mb-10">
-      <canvas id="lineChart"></canvas>
+    <div class="mt-4 mb-10">
+      <canvas v-show="!isLoading && !errorMessage" id="lineChart"></canvas>
       <p class="text-sm text-gray-500 text-center mt-2">
         Last updated: {{ lastUpdated || "Fetching data..." }}
       </p>
     </div>
 
-    <!-- Editable Start and End Date Inputs -->
+    <!-- Editable End Date Inputs -->
     <div class="flex justify-center gap-4 my-4">
+      <label class="flex flex-col">
+        End Date
+        <input v-model="dataParams.end_date" type="datetime-local" class="border p-2 rounded" />
+      </label>
       <label class="flex flex-col">
         Interval (minutes):
         <select v-model="dataParams.interval" class="border p-2 rounded">
@@ -54,7 +58,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, watch, onUnmounted } from "vue";
+import { defineComponent, onMounted, ref, watch, onUnmounted, nextTick } from "vue";
 import { Chart, registerables } from "chart.js";
 import TemperatureService from "@/services/TemperatureService";
 
@@ -64,8 +68,7 @@ export default defineComponent({
   name: "HomePage",
   setup() {
     const dataParams = ref({
-      start_date: '2025-01-30 06:00',
-      end_date: '2025-01-30 12:00',
+      end_date: '2025-01-30 16:00',
       interval: 30,
     });
 
@@ -88,7 +91,6 @@ export default defineComponent({
 
       try {
         const response = await TemperatureService.fetchTemperatureData(
-          dataParams.value.start_date,
           dataParams.value.end_date,
           dataParams.value.interval
         );
@@ -118,7 +120,9 @@ export default defineComponent({
 
 
     // Function to render chart
-    const renderChart = () => {
+    const renderChart = async () => {
+      await nextTick();
+
       const ctx = document.getElementById("lineChart").getContext("2d");
 
       if (chartInstance.value) {
@@ -163,6 +167,8 @@ export default defineComponent({
     watch(isAutoRefreshEnabled, () => {
       startAutoRefresh();
     });
+
+    watch(dataParams, fetchData, { deep: true });
 
     // Fetch data initially
     onMounted(() => {

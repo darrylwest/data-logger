@@ -8,10 +8,10 @@ import axios from "axios";
 const API_URL = "http://tiburon.local:3000/temperature"; // Replace with actual API URL
 
 export default {
-  async fetchTemperatureData(start_date, end_date, interval) {
+  async fetchTemperatureData(end_date, interval) {
     try {
       const response = await axios.get(API_URL, {
-        params: { start_date, end_date, interval },
+        params: { end_date, interval },
       });
 
       console.log('response data: ', response.data);
