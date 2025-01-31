@@ -4,7 +4,7 @@
 
     <!-- Display Selected Date Range and Interval -->
     <h3 class="font-bold text-center">
-      {{ dataParams.start_date }} to {{ dataParams.end_date }} (Interval: {{ dataParams.interval }} minutes)
+      {{ dataParams.end_date }} (Interval: {{ dataParams.interval }} minutes)
     </h3>
 
     <!-- Auto-Refresh Toggle -->
@@ -67,8 +67,24 @@ Chart.register(...registerables);
 export default defineComponent({
   name: "HomePage",
   setup() {
+    const roundToPreviousHourLocal = () => {
+      const now = new Date();
+      now.setMinutes(0, 0, 0); // ✅ Set minutes, seconds, and milliseconds to 0 (round down)
+      return now;
+    };
+
+    const formatLocalDateTime = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure two digits
+      const day = String(date.getDate()).padStart(2, "0");
+      const hours = String(date.getHours()).padStart(2, "0"); // Keep local hours
+      return `${year}-${month}-${day}T${hours}:00`; // Format for datetime-local
+    };
+
+    const end_date = ref(formatLocalDateTime(roundToPreviousHourLocal())); // ✅ Local time, rounded down
+
     const dataParams = ref({
-      end_date: '2025-01-30 16:00',
+      end_date: end_date,
       interval: 30,
     });
 
@@ -80,12 +96,13 @@ export default defineComponent({
     const lastUpdated = ref(null);
 
     // Auto-refresh states
-    const isAutoRefreshEnabled = ref(false);
-    const autoRefreshInterval = ref(5); // Default: 5 minutes
+    const isAutoRefreshEnabled = ref(true);
+    const autoRefreshInterval = ref(10); // Default: n minutes
     let autoRefreshTimer = null;
 
     // Function to fetch data
     const fetchData = async () => {
+      console.log("fetch data...");
       isLoading.value = true;
       errorMessage.value = null;
 
@@ -96,9 +113,8 @@ export default defineComponent({
         );
 
         // Assign the labels (timestamps) from the API response
-        // console.log(response);
         labels.value = response.labels;
-        console.log('labels: ', labels.value);
+        console.log('label count: ', labels.value.length);
 
         // Convert datasets to match Chart.js expected format
         datasets.value = response.datasets.map(sensor => ({
@@ -118,7 +134,6 @@ export default defineComponent({
       }
     };
 
-
     // Function to render chart
     const renderChart = async () => {
       await nextTick();
@@ -126,15 +141,23 @@ export default defineComponent({
       const ctx = document.getElementById("lineChart").getContext("2d");
 
       if (chartInstance.value) {
-        console.log("destroy chart")
         chartInstance.value.destroy();
       }
+
+      let miny = Math.floor(Math.min(...datasets.value[0].data) - 5);
+      let maxy = Math.ceil(Math.max(...datasets.value[0].data) + 5);
 
       chartInstance.value = new Chart(ctx, {
         type: "line",
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
+          scales: {
+            y: {
+              min: miny,
+              max: maxy,
+            }
+          },
           plugins: {
             legend: {
               position: "top",
