@@ -30,7 +30,7 @@
     </div>
 
     <!-- Chart -->
-    <div v-show="!isLoading && !errorMessage" class="mt-4 mb-20">
+    <div v-show="!isLoading && !errorMessage" class="mt-4 mb-10">
       <canvas id="lineChart"></canvas>
       <p class="text-sm text-gray-500 text-center mt-2">
         Last updated: {{ lastUpdated || "Fetching data..." }}
@@ -122,6 +122,7 @@ export default defineComponent({
       const ctx = document.getElementById("lineChart").getContext("2d");
 
       if (chartInstance.value) {
+        console.log("destroy chart")
         chartInstance.value.destroy();
       }
 
@@ -130,23 +131,7 @@ export default defineComponent({
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
           plugins: {
-            tooltip: {
-              enabled: true,
-              mode: "nearest",
-              intersect: false,
-              callbacks: {
-                label: function (context) {
-                  let label = context.dataset.label || "";
-                  if (label) {
-                    label += ": ";
-                  }
-                  label += context.raw;
-                  return label;
-                },
-              },
-            },
             legend: {
               position: "top",
             },
@@ -176,13 +161,13 @@ export default defineComponent({
 
     // Watch for auto-refresh toggle
     watch(isAutoRefreshEnabled, () => {
-      // startAutoRefresh();
+      startAutoRefresh();
     });
 
     // Fetch data initially
     onMounted(() => {
       fetchData();
-      // startAutoRefresh();
+      startAutoRefresh();
     });
 
     return {
