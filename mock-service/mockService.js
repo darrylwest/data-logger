@@ -1,5 +1,5 @@
 //
-const VERSION = "0.1.0-110";
+const VERSION = "0.1.0-112";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -10,8 +10,8 @@ app.use(cors()); // Enable CORS
 const PORT = 3000;
 
 // Load sample temperature data from file
-const loadTemperatureData = () => {
-    const filePath = path.join(__dirname, "30-minute.txt");
+const loadTemperatureData = (interval) => {
+    const filePath = path.join(__dirname, `${interval}-minute.txt`);
     const data = fs.readFileSync(filePath, "utf-8")
         .trim()
         .split("\n")
@@ -23,29 +23,28 @@ const loadTemperatureData = () => {
     return data;
 };
 
-const temperatureData = loadTemperatureData();
-
 // Function to filter data by date range
-const filterByDateRange = (data, startDate, endDate) => {
+const filterByDateRange = (data, endDate) => {
     return data.filter(record => {
         const recordDate = new Date(record.date);
-        return (!startDate || recordDate >= new Date(startDate)) &&
-               (!endDate || recordDate <= new Date(endDate));
+        return (!endDate || recordDate <= new Date(endDate));
     });
 };
 
 // API route to fetch temperature data
 app.get("/temperature", (req, res) => {
-    let { start_date, end_date, interval } = req.query;
+    let { end_date, interval } = req.query;
+
+    console.log("end: ", end_date, ", interval: ", interval);
 
     // Default: Last 25 records if no dates are provided
-    let filteredData = temperatureData;
+    const temperatureData = loadTemperatureData(30);
     filteredData = temperatureData.slice(-25);
 
     // Handle interval filtering
     if (interval) {
         interval = parseInt(interval);
-        filteredData = filteredData.filter((_, index) => index % (interval / 30) === 0);
+        // filteredData = filteredData.filter((_, index) => index % (interval / 30) === 0);
     }
 
     // Format response
