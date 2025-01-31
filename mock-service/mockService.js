@@ -1,58 +1,82 @@
+//
+const VERSION = "0.1.0-108";
 const express = require("express");
 const cors = require("cors");
+const fs = require("fs");
+const path = require("path");
 
 const app = express();
 app.use(cors()); // Enable CORS
 const PORT = 3000;
 
-// Mock sensors
-const SENSOR_IDS = ["sensor_1", "sensor_2", "sensor_3"];
-
-// Function to generate mock temperature data
-const generateTemperatureData = (start, end, interval) => {
-    let timestamps = [];
-    let datasets = SENSOR_IDS.map(id => ({
-        sensor_id: id,
-        label: `Temperature (${id})`,
-        data: []
-    }));
-
-    let currentTime = new Date(start).getTime();
-    let endTime = new Date(end).getTime();
-    let intervalMs = interval * 60 * 1000;
-
-    while (currentTime <= endTime) {
-        const localTime = new Date(currentTime).toLocaleString("en-US", { 
-            timeZone: "America/Los_Angeles", // Adjust to your local timezone
-            hour12: false // Ensures 24-hour format
+// Load sample temperature data from file
+const loadTemperatureData = () => {
+    const filePath = path.join(__dirname, "30-minute.txt");
+    const data = fs.readFileSync(filePath, "utf-8")
+        .trim()
+        .split("\n")
+        .map(line => {
+            const [date, time, tempC, tempF] = line.split(" ");
+            return { date, time, tempC: parseFloat(tempC), tempF: parseFloat(tempF) };
         });
 
-        timestamps.push(localTime);
+    return data;
+};
 
-        datasets.forEach(sensor => {
-            sensor.data.push((Math.random() * 10 + 20).toFixed(2)); // Random 20-30°C
-        });
+const temperatureData = loadTemperatureData();
 
-        currentTime += intervalMs;
-    }
-
-    return { labels: timestamps, datasets };
+// Function to filter data by date range
+const filterByDateRange = (data, startDate, endDate) => {
+    return data.filter(record => {
+        const recordDate = new Date(record.date);
+        return (!startDate || recordDate >= new Date(startDate)) &&
+               (!endDate || recordDate <= new Date(endDate));
+    });
 };
 
 // API route to fetch temperature data
 app.get("/temperature", (req, res) => {
-    const { start_date, end_date, interval } = req.query;
+    let { start_date, end_date, interval } = req.query;
 
-    if (!start_date || !end_date || !interval) {
-        return res.status(400).json({ error: "Missing required query parameters" });
+    // Default: Last 25 records if no dates are provided
+    let filteredData = temperatureData;
+    if (start_date || end_date) {
+        filteredData = filterByDateRange(temperatureData, start_date, end_date);
+    } else {
+        filteredData = temperatureData.slice(-25);
     }
 
-    const { labels, datasets } = generateTemperatureData(start_date, end_date, parseInt(interval));
+    // Handle interval filtering
+    if (interval) {
+        interval = parseInt(interval);
+        filteredData = filteredData.filter((_, index) => index % (interval / 30) === 0);
+    }
+
+    // Format response
+    const labels = filteredData.map(record => record.time);
+    const datasets = [
+        {
+            sensor_id: "sensor_1",
+            label: "cottage-south",
+            data: filteredData.map(record => record.tempF),
+            borderColor: "red",
+            fill: false
+        },
+        {
+            sensor_id: "sensor_2",
+            label: "shed-west",
+            data: filteredData.map(record => (record.tempF + 3.0)),
+            borderColor: "blue",
+            fill: false
+        }
+    ];
+
+    // end_date = '2025-01-30';
 
     res.json({ labels, datasets });
 });
 
 // Start the server
 app.listen(PORT, () => {
-    console.log(`Mock Temperature Service running on http://0.0.0.0:${PORT}`);
+    console.log(`Mock Temperature Service Version ${VERSION} running on http://localhost:${PORT}`);
 });

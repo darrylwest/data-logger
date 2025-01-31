@@ -30,7 +30,7 @@
     </div>
 
     <!-- Chart -->
-    <div v-else-if="!isLoading" class="mt-4 mb-20">
+    <div v-show="!isLoading && !errorMessage" class="mt-4 mb-20">
       <canvas id="lineChart"></canvas>
       <p class="text-sm text-gray-500 text-center mt-2">
         Last updated: {{ lastUpdated || "Fetching data..." }}
@@ -39,14 +39,6 @@
 
     <!-- Editable Start and End Date Inputs -->
     <div class="flex justify-center gap-4 my-4">
-      <label class="flex flex-col">
-        Start Date:
-        <input v-model="dataParams.start_date" type="datetime-local" class="border p-2 rounded" />
-      </label>
-      <label class="flex flex-col">
-        End Date:
-        <input v-model="dataParams.end_date" type="datetime-local" class="border p-2 rounded" />
-      </label>
       <label class="flex flex-col">
         Interval (minutes):
         <select v-model="dataParams.interval" class="border p-2 rounded">
@@ -71,19 +63,9 @@ Chart.register(...registerables);
 export default defineComponent({
   name: "HomePage",
   setup() {
-    const roundToNearestHour = (date) => {
-      date.setMinutes(0, 0, 0);
-      return date;
-    };
-
-    const now = roundToNearestHour(new Date());
-    const twelveHoursAgo = roundToNearestHour(new Date(now.getTime() - 12 * 60 * 60 * 1000));
-
-    const formatDateTime = (date) => date.toISOString().slice(0, 16);
-
     const dataParams = ref({
-      start_date: formatDateTime(twelveHoursAgo),
-      end_date: formatDateTime(now),
+      start_date: '2025-01-30 06:00',
+      end_date: '2025-01-30 12:00',
       interval: 30,
     });
 
@@ -106,8 +88,6 @@ export default defineComponent({
 
       try {
         const response = await TemperatureService.fetchTemperatureData(
-          dataParams.value.start_date,
-          dataParams.value.end_date,
           dataParams.value.interval
         );
 
@@ -120,7 +100,7 @@ export default defineComponent({
           fill: false
         }));
 
-        // renderChart();
+        renderChart();
         lastUpdated.value = new Date().toLocaleString();
       } catch (error) {
         console.error("Error fetching temperature data:", error);
@@ -143,7 +123,7 @@ export default defineComponent({
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
           plugins: {
             tooltip: {
               enabled: true,
@@ -189,13 +169,13 @@ export default defineComponent({
 
     // Watch for auto-refresh toggle
     watch(isAutoRefreshEnabled, () => {
-      startAutoRefresh();
+      // startAutoRefresh();
     });
 
     // Fetch data initially
     onMounted(() => {
       fetchData();
-      startAutoRefresh();
+      // startAutoRefresh();
     });
 
     return {
