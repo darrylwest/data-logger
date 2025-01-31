@@ -40,7 +40,7 @@
     <!-- Editable End Date Inputs -->
     <div class="flex justify-center gap-4 my-4">
       <label class="flex flex-col">
-        End Date
+        Temperature Date
         <input v-model="dataParams.end_date" type="datetime-local" class="border p-2 rounded" />
       </label>
       <label class="flex flex-col">
