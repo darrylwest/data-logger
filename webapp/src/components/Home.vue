@@ -85,7 +85,7 @@ export default defineComponent({
 
     const dataParams = ref({
       end_date: end_date,
-      interval: 30,
+      interval: 60,
     });
 
     let chartInstance = ref(null);
