@@ -13,7 +13,18 @@ export default {
       const response = await axios.get(API_URL, {
         params: { start_date, end_date, interval },
       });
-      return response.data;
+
+      console.log('response data: ', response.data);
+
+      if (!response.data || !response.data.labels) {
+        console.error("missing labels in response.");
+        return { labels:[], datasets:[] };
+      }
+
+      return {
+        labels: response.data.labels,
+        datasets: response.data.datasets || [],
+      };
     } catch (error) {
       console.error("API request failed:", error);
       throw error;

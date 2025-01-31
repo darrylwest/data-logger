@@ -1,5 +1,5 @@
 //
-const VERSION = "0.1.0-108";
+const VERSION = "0.1.0-110";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -40,11 +40,7 @@ app.get("/temperature", (req, res) => {
 
     // Default: Last 25 records if no dates are provided
     let filteredData = temperatureData;
-    if (start_date || end_date) {
-        filteredData = filterByDateRange(temperatureData, start_date, end_date);
-    } else {
-        filteredData = temperatureData.slice(-25);
-    }
+    filteredData = temperatureData.slice(-25);
 
     // Handle interval filtering
     if (interval) {

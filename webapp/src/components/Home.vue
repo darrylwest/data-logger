@@ -69,9 +69,9 @@ export default defineComponent({
       interval: 30,
     });
 
-    const chartInstance = ref(null);
-    const labels = ref([]);
-    const datasets = ref([]);
+    let chartInstance = ref(null);
+    let labels = ref([]);
+    let datasets = ref([]);
     const isLoading = ref(false);
     const errorMessage = ref(null);
     const lastUpdated = ref(null);
@@ -88,16 +88,22 @@ export default defineComponent({
 
       try {
         const response = await TemperatureService.fetchTemperatureData(
+          dataParams.value.start_date,
+          dataParams.value.end_date,
           dataParams.value.interval
         );
 
-        console.log(response);
+        // Assign the labels (timestamps) from the API response
+        // console.log(response);
         labels.value = response.labels;
+        console.log('labels: ', labels.value);
+
+        // Convert datasets to match Chart.js expected format
         datasets.value = response.datasets.map(sensor => ({
-          label: sensor.label,
-          data: sensor.data,
-          borderColor: 'rgba(75, 192, 192, 1)', // getRandomColor(sensor.sensor_id), // Optional function to colorize
-          fill: false
+          label: sensor.label, // Sensor name (e.g., "cottage-south")
+          data: sensor.data, // Temperature readings
+          borderColor: sensor.borderColor, // Use API color or generate one
+          fill: sensor.fill || false
         }));
 
         renderChart();
@@ -109,6 +115,7 @@ export default defineComponent({
         isLoading.value = false;
       }
     };
+
 
     // Function to render chart
     const renderChart = () => {
@@ -123,7 +130,7 @@ export default defineComponent({
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
-          maintainAspectRatio: true,
+          maintainAspectRatio: false,
           plugins: {
             tooltip: {
               enabled: true,
