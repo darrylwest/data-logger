@@ -73,70 +73,35 @@ can you write a short c++20 snippet to parse and verify the toml using toml11?
 -------------------------------------------------- response
 
 #include <iostream>
-#include <toml.hpp>
+#include <toml11/toml.hpp>
 
 int main() {
-    // TOML string to parse
-    const std::string toml_data = R"(
-        name = "temperature"
-
-        [[locations]]
-        location = "cottage"
-        ip = "10.0.1.197"
-        port = 2030
-
-          [[locations.probes]]
-          sensor = 0
-          location = "cottage-south"
-
-          [[locations.probes]]
-          sensor = 1
-          location = "cottage-east"
-
-        [[locations]]
-        location = "shed"
-        ip = "10.0.1.115"
-        port = 2030
-
-          [[locations.probes]]
-          sensor = 0
-          location = "shed-inside"
-
-          [[locations.probes]]
-          sensor = 1
-          location = "shed-west"
-    )";
-
     try {
-        // Parse the TOML data
-        auto data = toml::parse(toml_data);
+        auto config = toml::parse("config.toml");
 
-        // Verify the parsed data
-        std::string name = toml::find<std::string>(data, "name");
-        std::cout << "Name: " << name << std::endl;
+        std::string name = toml::find<std::string>(config, "name");
+        std::cout << "Name: " << name << '\n';
 
-        for (const auto& location : toml::find<std::vector<toml::table>>(data, "locations")) {
-            std::string loc_name = toml::find<std::string>(location, "location");
-            std::string ip = toml::find<std::string>(location, "ip");
-            int port = toml::find<int>(location, "port");
+        auto locations = toml::find<std::vector<toml::value>>(config, "locations");
+        for (const auto& loc : locations) {
+            std::string location = toml::find<std::string>(loc, "location");
+            std::string ip = toml::find<std::string>(loc, "ip");
+            int port = toml::find<int>(loc, "port");
 
-            std::cout << "Location: " << loc_name << ", IP: " << ip << ", Port: " << port << std::endl;
+            std::cout << "Location: " << location << ", IP: " << ip << ", Port: " << port << '\n';
 
-            for (const auto& probe : toml::find<std::vector<toml::table>>(location, "probes")) {
+            auto probes = toml::find<std::vector<toml::value>>(loc, "probes");
+            for (const auto& probe : probes) {
                 int sensor = toml::find<int>(probe, "sensor");
                 std::string probe_location = toml::find<std::string>(probe, "location");
-                std::cout << "  Probe - Sensor: " << sensor << ", Location: " << probe_location << std::endl;
+                std::cout << "  Sensor: " << sensor << ", Location: " << probe_location << '\n';
             }
         }
-    } catch (const toml::parse_error& err) {
-        std::cerr << "Error parsing TOML: " << err.description() << std::endl;
-        std::cerr << "Error location: " << err.source().begin << std::endl;
-        return 1; // Return a non-zero value to indicate failure
     } catch (const std::exception& e) {
-        std::cerr << "An error occurred: " << e.what() << std::endl;
-        return 1; // Return a non-zero value to indicate failure
+        std::cerr << "Error parsing TOML: " << e.what() << '\n';
+        return 1;
     }
 
-    return 0; // Return 0 to indicate success
+    return 0;
 }
 

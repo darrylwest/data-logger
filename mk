@@ -8,7 +8,7 @@ set -eu
 
 export root=`pwd`
 
-project=app
+project=data-logger
 
 # parse the cli
 while [[ $# -gt 0 ]]
@@ -42,7 +42,7 @@ do
             shift
         ;;
         run)
-            # TODO check that cryptor has been built and is newer that all the souces
+            (cd build && make -j4)
             $root/build/$project
 
             shift

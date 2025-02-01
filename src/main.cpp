@@ -4,19 +4,20 @@
 
 #include <app/cli.hpp>
 #include <app/version.hpp>
-#include <fstream>
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
+#include <app/logging.hpp>
+#include <app/service.hpp>
 
 int main(int argc, char *argv[]) {
-    std::ifstream f("config/config.json");
-    json data = json::parse(f);
-    std::cout << data << '\n';
-
     const auto vers = app::Version();
 
     auto config = app::parse_cli(argc, argv);
-    spdlog::info("Example Version: {}", vers.to_string());
+    spdlog::info("DataLogger Version: {}", vers.to_string());
+
+    // start the ticker + jobs
+
+    // now start the listener
+    auto ok = app::run_service(config);
+    spdlog::info("Server shutdown, code: {}.", ok);
 
     return 0;
 }

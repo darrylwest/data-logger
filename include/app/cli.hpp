@@ -14,12 +14,18 @@ namespace app {
     struct Config {
         std::string host = "localhost";
         int port = 9999;
+        std::string www = "./html";
+        std::string cert_file = ".ssh/cert.pem";
+        std::string key_file = ".ssh/key.pem";
         bool verbose = false;
 
         friend std::ostream& operator<<(std::ostream& os, const Config v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
             os << "host: " << v.host << ", "
                << "port: " << v.port << ", "
+               << "www : " << v.www << ", "
+               << "cert: " << v.cert_file << ", "
+               << "key : " << v.key_file << ", "
                << "verbose: " << v.verbose << ".";
             return os;
         }

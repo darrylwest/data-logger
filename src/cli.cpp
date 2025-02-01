@@ -20,12 +20,15 @@ namespace app {
         auto config = Config();
 
         try {
-            cxxopts::Options options("Example Appp", "Good Work.");
+            cxxopts::Options options("DataLogger", "Log some readings.");
             // clang-format off
             options
                 .add_options()
                     ("p,port", "listening port", cxxopts::value<int>())
                     ("H,host", "listening host", cxxopts::value<std::string>())
+                    ("w,www", "web base folder",  cxxopts::value<std::string>())
+                    ("C,cert", "the cert pem file", cxxopts::value<std::string>())
+                    ("K,key", "the key pem file", cxxopts::value<std::string>())
                     ("v,verbose", "verbose")
                     ("V,version", "Show the current version and exit")
                     ("h,help", "Show this help")
@@ -53,10 +56,22 @@ namespace app {
                 config.host = result["host"].as<std::string>();
             }
 
+            if (result.count("www")) {
+                config.www = result["www"].as<std::string>();
+            }
+
+            if (result.count("cert")) {
+                config.cert_file = result["cert"].as<std::string>();
+            }
+
+            if (result.count("key")) {
+                config.key_file = result["key"].as<std::string>();
+            }
+
             // @see https://github.com/ToruNiina/toml11 for docs
             auto data = toml::parse("config/config.toml");
-            std::string name = data.at("main").at("name").as_string();
-            fmt::println("My name from config: {}", name);
+            // std::string name = data.at("main").at("name").as_string();
+            // fmt::println("My name from config: {}", name);
 
         } catch (const std::exception& exp) {
             spdlog::error("error parsing cli options: {}", exp.what());
