@@ -64,8 +64,8 @@ namespace taskrunner {
                 .name = std::string(task_name),
                 .started_at = ts,
                 .last_run = 0,
-                .run_count = 0,
                 .period = period,
+                .run_count = 0,
                 .runner = task_runner,
             };
 
