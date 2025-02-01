@@ -1,0 +1,52 @@
+
+How do I refactor the code below to define worker as a lambda inside main that captures local variable counter?
+
+#include <iostream>
+
+struct Task {
+    const std::string name;
+    void (*runner)();
+};
+
+int counter = 0;
+void worker() {
+    counter++;
+    std::cout << "in my task: " << counter << std::endl;
+}
+    
+int main() {
+    
+    Task task = Task { .name = "test", .runner = worker };
+    task.runner();
+    
+    std::cout << "count: " << counter << std::endl;
+    
+    return 0;
+}
+
+-------------------------------------------------- Response
+
+* change (*runner)() type to std::function<void()> runner;
+
+#include <iostream>
+
+struct Task {
+    const std::string name;
+    std::function<void()> runner;
+};
+  
+int main() {
+    int counter = 0;
+    auto worker = [&counter]() {
+        counter++;
+        std::cout << "in my task: " << counter << std::endl;
+    };
+        
+    
+    Task task = Task { .name = "test", .runner = worker };
+    task.runner();
+    
+    std::cout << "count: " << counter << std::endl;
+    
+    return 0;
+}

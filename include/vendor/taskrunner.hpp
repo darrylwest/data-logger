@@ -34,7 +34,7 @@ namespace taskrunner {
         int last_run; // unix timestamp in seconds
         int period; // in seconds
         unsigned long run_count;
-        void (*runner)();
+        std::function<void()> runner;
 
         friend std::ostream& operator<<(std::ostream& os, const Task v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
@@ -58,15 +58,15 @@ namespace taskrunner {
     };
 
     // create the task
-    Task createTask(const char* task_name, int period, void (*runner)()) {
+    Task createTask(const char* task_name, int period, std::function<void()> task_runner) {
             auto ts = timestamp_seconds();
             auto task = Task { 
-                .name = std::string(task_name), 
+                .name = std::string(task_name),
                 .started_at = ts,
                 .last_run = 0,
                 .run_count = 0,
                 .period = period,
-                .runner = runner,
+                .runner = task_runner,
             };
 
             return task;

@@ -4,6 +4,7 @@
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include <toml.hpp>
 
 #include <app/cli.hpp>
 #include <app/temperature.hpp>
@@ -32,16 +33,24 @@ Results test_taskrunner() {
 
     // spdlog::set_level(spdlog::level::info);
 
+    int counter = 0;
+    auto worker = [&counter]() {
+        counter++;
+        spdlog::info("my task count: {}", counter);
+    };
+
     int period = 15; // in seconds
-    auto task = taskrunner::createTask("test-task", period, []() {
-        spdlog::info("in my task");
-    });
+    auto task = taskrunner::createTask("test-task", period, worker);
 
     int ts_in_the_past = 1738353093;
     r.equals(task.name == "test-task", "name should match");
     r.equals(task.started_at > ts_in_the_past, "name should match");
     r.equals(task.run_count == 0, "never run");
     r.equals(task.period == period, "period should match");
+    r.equals(counter == 0, "initial value");
+    // invoke the task runner
+    task.runner();
+    r.equals(counter == 1, "new value changed by worker");
 
     auto tstr = task.to_string();
     r.equals(tstr != "", "should match");
@@ -51,7 +60,8 @@ Results test_taskrunner() {
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
-    // spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::off);
+
     return r;
 }
 
@@ -92,10 +102,33 @@ Results test_temperature() {
     r.equals(std::abs(probe1.tempC - 10.92542) < EPSILON, "probe0 tempC");
     r.equals(std::abs(probe1.tempF - 51.66576) < EPSILON, "probe0 tempC");
 
-    // spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::off);
 
     return r;
 }
+
+Results test_config() {
+    Results r = {.name = "Config Tests"};
+
+    try {
+        // parse the config file
+        auto config = toml::parse("./config/config.toml");
+
+        // Verify the parsed data
+        std::string name = toml::find<std::string>(config, "name");
+        r.equals(name == "temperature", "name should match");
+
+        // TODO pull out the temperature locations
+        auto locations = toml::find<std::vector<toml::value>>(config, "locations");
+
+    } catch (const std::exception& e) {
+        std::cerr << "TOML ERROR: an error occurred: " << e.what() << std::endl;
+        r.equals(1 == 0, "fail exception");
+    }
+
+    return r;
+}
+
 
 int main(int argc, const char *argv[]) {
     using namespace colors;
@@ -117,6 +150,7 @@ int main(int argc, const char *argv[]) {
     run_test(test_version);
     run_test(test_taskrunner);
     run_test(test_temperature);
+    run_test(test_config);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
