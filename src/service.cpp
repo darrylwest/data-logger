@@ -18,7 +18,7 @@ namespace app {
     auto db = Database();
 
     // Function to set up the server and apply configurations
-    bool setup_service(SSLServer &svr, const Config &config) {
+    bool setup_service(Server &svr, const Config &config) {
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
             return false;
@@ -72,6 +72,38 @@ namespace app {
     }
 
     // Function to run the server
+    bool run_service(const Config& config) {
+        Server svr;
+
+        // Add CORS headers to every response
+        svr.set_pre_routing_handler([](const httplib::Request &req, httplib::Response &res) {
+            res.set_header("Access-Control-Allow-Origin", "*");
+            res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            return httplib::Server::HandlerResponse::Unhandled; // Continue processing the request
+        });
+
+        // Handle preflight (OPTIONS) requests
+        svr.Options(".*", [](const httplib::Request &, httplib::Response &res) {
+            res.set_header("Access-Control-Allow-Origin", "*");
+            res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            res.status = 204;  // No Content
+        });
+
+        // Set up the server
+        if (!app::setup_service(svr, config)) {
+            return false;
+        }
+
+        spdlog::info("Server starting at http://{}:{}", config.host, config.port);
+
+        // Start the server
+        return svr.listen(config.host, config.port);
+    }
+
+    /*
+    // Function to run the server
     bool run_service(const Config &config) {
         SSLServer svr(config.cert_file.c_str(), config.key_file.c_str());
 
@@ -85,4 +117,5 @@ namespace app {
         // Start the server
         return svr.listen(config.host, config.port);
     }
+    */
 }  // namespace app

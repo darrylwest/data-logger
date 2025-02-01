@@ -16,8 +16,8 @@ namespace app {
     struct Version {
         int major = 0;
         int minor = 2;
-        int patch = 1;
-        int build = 108;
+        int patch = 2;
+        int build = 110;
 
         friend std::ostream& operator<<(std::ostream& os, const Version v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin

@@ -1,5 +1,5 @@
 //
-const VERSION = "0.1.0-119";
+const VERSION = "0.1.0-120";
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs");
@@ -35,7 +35,7 @@ const filterByDateRange = (data, endDate) => {
 };
 
 // API route to fetch temperature data
-app.get("/temperature", (req, res) => {
+app.get("/api/temps", (req, res) => {
     let { end_date, interval } = req.query;
 
     console.log("end: ", end_date, ", interval: ", interval);
@@ -55,16 +55,16 @@ app.get("/temperature", (req, res) => {
     const labels = filteredData.map(record => record.time);
     const datasets = [
         {
-            sensor_id: "sensor_1",
+            sensor_id: "0",
             label: "cottage-south",
             data: filteredData.map(record => record.tempF),
             borderColor: "red",
             fill: false
         },
         {
-            sensor_id: "sensor_2",
+            sensor_id: "1",
             label: "shed-west",
-            data: filteredData.map(record => (record.tempF + (Math.random() * 2 - 1))),
+            data: filteredData.map(record => (record.tempF + Math.round((Math.random() * 2 - 1), 5))),
             borderColor: "blue",
             fill: false
         }

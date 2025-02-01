@@ -2,12 +2,12 @@
 // import axios from "axios";
 //
 import axios from 'axios'
-// import https from 'https'
 
 // alamo 10.0.1.237
 // const API_URL = "http://10.0.1.237:2090/api/temperature"; // Replace with actual API URL
-// const API_URL = 'http://tiburon.local:3000/temperature' // Replace with actual API URL
-const API_URL = 'https://localhost:9999/api/temps' // Replace with actual API URL
+// const API_URL = 'http://10.0.1.192:3000/api/temps' // Replace with actual API URL
+// const API_URL = 'http://localhost:9999/api/temps' // Replace with actual API URL
+const API_URL = 'http://10.0.1.192:9999/api/temps' // Replace with actual API URL
 
 
 export default {

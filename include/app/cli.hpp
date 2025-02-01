@@ -12,7 +12,7 @@
 namespace app {
 
     struct Config {
-        std::string host = "localhost";
+        std::string host = "0.0.0.0";
         int port = 9999;
         std::string www = "./html";
         std::string cert_file = ".ssh/cert.pem";

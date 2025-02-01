@@ -9,8 +9,8 @@ const testTemperatureAPI = async () => {
 
     const response = await TemperatureService.fetchTemperatureData(end_date, interval);
 
-    console.log("✅ API Response:", response.data);
-    //console.log("📊 Datasets:", response.datasets);
+    console.log("API Response:", response);
+    // console.log("📊 Datasets:", response.datasets);
     //console.log("📊 Datasets:", response.datasets[0]);
     //console.log("📌 Labels:", response.data.labels);
 
