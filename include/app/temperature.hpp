@@ -28,8 +28,7 @@ namespace app {
         std::vector<TemperatureProbe> probes;
 
         friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
-            os << "reading_at: " << v.reading_at
-               << ", ts: " << v.timestamp;
+            os << "reading_at: " << v.reading_at << ", ts: " << v.timestamp;
 
             for (const auto probe : v.probes)
                 os << ", sensor: " << probe.sensor << ", location: " << probe.location
@@ -50,7 +49,5 @@ namespace app {
     // parse the json reading response
     TemperatureData parse_reading(const std::string& json_text);
 
-    TemperatureData read_temps()
+    // TemperatureData read_temps();
 }  // namespace app
-
-

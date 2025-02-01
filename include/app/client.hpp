@@ -6,9 +6,10 @@
 #pragma once
 
 #include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
 
+#include <app/temperature.hpp>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <sstream>
 
 namespace app {
@@ -21,11 +22,8 @@ namespace app {
         int errors;
 
         friend std::ostream& operator<<(std::ostream& os, const ClientStatus v) {
-            os << "version: " << v.version
-               << ", ts: " << v.timestamp
-               << ", started: " << v.started 
-               << ", uptime: " << v.uptime
-               << ", accessed: " << v.access_count
+            os << "version: " << v.version << ", ts: " << v.timestamp << ", started: " << v.started
+               << ", uptime: " << v.uptime << ", accessed: " << v.access_count
                << ", errors: " << v.errors;
 
             return os;
@@ -37,7 +35,7 @@ namespace app {
 
             return oss.str();
         }
-    }
+    };
 
     struct ClientNode {
         std::string location;
@@ -47,14 +45,10 @@ namespace app {
         int last_access;
         ClientStatus status;
 
-        friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
-            os << "location: " << v.location
-               << ", ip: " << v.ip
-               << ", port: " << v.port
-               << ", active: " << v.active ? "yes" : "no"
-               << ", last_access: " << v.last_access
-               << ", status: " << v.status
-           ;
+        friend std::ostream& operator<<(std::ostream& os, const ClientNode v) {
+            os << "location: " << v.location << ", ip: " << v.ip << ", port: " << v.port
+               << ", active: " << v.active  // ? "yes" : "no"
+               << ", last_access: " << v.last_access << ", status: " << v.status;
 
             return os;
         }
@@ -72,5 +66,3 @@ namespace app {
     TemperatureData fetch_temps(ClientNode& node);
 
 }  // namespace app
-
-
