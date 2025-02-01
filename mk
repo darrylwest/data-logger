@@ -41,6 +41,12 @@ do
 
             shift
         ;;
+        test)
+            (cd build && make -j4)
+            $root/build/integration
+
+            shift
+        ;;
         run)
             (cd build && make -j4)
             $root/build/$project

@@ -111,12 +111,12 @@ add_executable(unit
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/unit.cpp)
 
-# add_executable(integration ${SRC_DIR}/integration.cpp)
+add_executable(integration ${SRC_DIR}/integration.cpp)
 
 
 target_link_libraries(data-logger PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(unit PRIVATE ${DEPENDENT_LIBRARIES})
-# target_link_libraries(integration PRIVATE ${DEPENDENT_LIBRARIES})
+target_link_libraries(integration PRIVATE ${DEPENDENT_LIBRARIES})
 
 # Static linking for standalone executable
 if(NOT APPLE)
