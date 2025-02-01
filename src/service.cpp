@@ -47,10 +47,12 @@ namespace app {
         // add new/custom routes here
         //
 
-        svr.Get("/info", [](const Request &, Response &res) {
-            const auto data = db.getInfo();
-            spdlog::info("info content: {}", data);
-            res.set_content(data, "application/json");
+        svr.Get("/api/temps", [](const Request &, Response &res) {
+            const auto temps = db.getTemps();
+            // parse the interval and end_date
+            // spdlog::info("info content: {}", data);
+
+            res.set_content(temps, "application/json");
         });
 
         // Shutdown hook
