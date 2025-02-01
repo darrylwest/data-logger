@@ -110,6 +110,8 @@ Results test_temperature() {
 Results test_config() {
     Results r = {.name = "Config Tests"};
 
+    spdlog::set_level(spdlog::level::info); // or off
+
     try {
         // parse the config file
         auto config = toml::parse("./config/config.toml");
@@ -120,11 +122,26 @@ Results test_config() {
 
         // TODO pull out the temperature locations
         auto locations = toml::find<std::vector<toml::value>>(config, "locations");
+        r.equals(locations.size() >= 2, "should be at least two locations");
+
+        for (const auto& loc : locations) {
+            std::string location = toml::find<std::string>(loc, "location");
+            std::string ip = toml::find<std::string>(loc, "ip");
+            int port = toml::find<int>(loc, "port");
+
+            spdlog::info("loc: {} ip: {} port: {}", location, ip, port);
+
+            r.equals(location.size() > 2, "location text");
+            r.equals(ip.size() > 8, "location ip");
+            r.equals(port == 2030, "port ");
+        }
 
     } catch (const std::exception& e) {
         std::cerr << "TOML ERROR: an error occurred: " << e.what() << std::endl;
         r.equals(1 == 0, "fail exception");
     }
+
+    spdlog::set_level(spdlog::level::off); // or off
 
     return r;
 }
