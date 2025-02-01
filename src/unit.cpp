@@ -127,8 +127,9 @@ Results test_config() {
             std::string location = toml::find<std::string>(loc, "location");
             std::string ip = toml::find<std::string>(loc, "ip");
             int port = toml::find<int>(loc, "port");
+            bool active = toml::find<bool>(loc, "active");
 
-            spdlog::info("loc: {} ip: {} port: {}", location, ip, port);
+            spdlog::info("loc: {} ip: {} port: {}, active: {}", location, ip, port, active);
 
             r.equals(location.size() > 2, "location text");
 
