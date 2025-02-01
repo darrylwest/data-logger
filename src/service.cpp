@@ -72,7 +72,7 @@ namespace app {
     }
 
     // Function to run the server
-    bool run_service(const Config& config) {
+    bool run_service(const Config &config) {
         Server svr;
 
         // Add CORS headers to every response
@@ -80,7 +80,7 @@ namespace app {
             res.set_header("Access-Control-Allow-Origin", "*");
             res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-            return httplib::Server::HandlerResponse::Unhandled; // Continue processing the request
+            return httplib::Server::HandlerResponse::Unhandled;  // Continue processing the request
         });
 
         // Handle preflight (OPTIONS) requests

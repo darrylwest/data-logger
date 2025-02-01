@@ -59,17 +59,17 @@ namespace taskrunner {
 
     // create the task
     Task createTask(const char* task_name, int period, std::function<void()> task_runner) {
-            auto ts = timestamp_seconds();
-            auto task = Task { 
-                .name = std::string(task_name),
-                .started_at = ts,
-                .last_run = 0,
-                .period = period,
-                .run_count = 0,
-                .runner = task_runner,
-            };
+        auto ts = timestamp_seconds();
+        auto task = Task { 
+            .name = std::string(task_name),
+            .started_at = ts,
+            .last_run = 0,
+            .period = period,
+            .run_count = 0,
+            .runner = task_runner,
+        };
 
-            return task;
-        }
+        return task;
+    }
 
 }  // namespace app
