@@ -1,3 +1,23 @@
 {
-    "name":"test"
+    "name":"temperature",
+    "locations": [
+        {
+            "location": "cottage",
+            "ip": "10.0.1.197",
+            "port": 2030,
+            "probes": [
+                { "sensor": 0, "location": "cottage-south" },
+                { "sensor": 1, "location": "cottage-east" }
+            ]
+        },
+        {
+            "location": "shed",
+            "ip": "10.0.1.115",
+            "port": 2030,
+            "probes": [
+                { "sensor": 0, "location": "shed-inside" },
+                { "sensor": 1, "location": "shed-west" }
+            ]
+        }
+    ]
 }

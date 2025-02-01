@@ -2,17 +2,15 @@
 // 2025-01-12 23:11:44 dpw
 //
 
-// #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
-#include <iostream>
 #include <nlohmann/json.hpp>
 
 #include <app/temperature.hpp>
 
-// read json response with (see data-logger/data-reader/parse_ndjson.cpp)
 namespace app {
     using json = nlohmann::json;
 
+    // parse json reading/probe response
     TemperatureData parse_reading(const std::string& json_text) {
         spdlog::info("parsed text: {}", json_text);
 
@@ -44,5 +42,6 @@ namespace app {
         return data;
     }
 
-    // TODO : generate json output
+    // TODO : generate json output for webapp/UI
+
 }  // namespace app
