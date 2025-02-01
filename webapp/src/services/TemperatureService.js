@@ -10,7 +10,6 @@ import axios from 'axios'
 // const API_URL = 'http://10.0.1.192:9999/api/temps' // Replace with actual API URL
 const API_URL = 'http://10.0.1.237:9999/api/temps' // Replace with actual API URL
 
-
 export default {
   async fetchTemperatureData(end_date, interval) {
     try {
