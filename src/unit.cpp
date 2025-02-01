@@ -110,7 +110,7 @@ Results test_temperature() {
 Results test_config() {
     Results r = {.name = "Config Tests"};
 
-    spdlog::set_level(spdlog::level::info); // or off
+    // spdlog::set_level(spdlog::level::info); // or off
 
     try {
         // parse the config file
@@ -134,6 +134,20 @@ Results test_config() {
             r.equals(location.size() > 2, "location text");
             r.equals(ip.size() > 8, "location ip");
             r.equals(port == 2030, "port ");
+
+            auto probes = toml::find<std::vector<toml::value>>(loc, "probes");
+            r.equals(probes.size() >= 1, "probes for each location");
+
+            for (const auto& probe : probes) {
+                int sensor = toml::find<int>(probe, "sensor");
+                std::string probe_location = toml::find<std::string>(probe, "location");
+
+                spdlog::info("sensor: {} location: {}", sensor, probe_location);
+
+                r.equals(sensor >= 0, "sensor 0 or 1");
+                r.equals(probe_location.size() > 3, "probe location");
+            }
+
         }
 
     } catch (const std::exception& e) {
