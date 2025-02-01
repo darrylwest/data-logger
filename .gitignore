@@ -3,5 +3,5 @@
 /cpm_modules
 /dep-cache
 .DS_Store
-.ssh
+.ssh/*.pem
 logs/*.log
