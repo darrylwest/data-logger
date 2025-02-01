@@ -8,9 +8,9 @@
 #include <spdlog/spdlog.h>
 #include <vendor/httplib.h>
 
+#include <app/cli.hpp>
 #include <cstdio>
 #include <iostream>
-#include <app/cli.hpp>
 
 namespace app {
 

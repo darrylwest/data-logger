@@ -48,7 +48,7 @@ do
             shift
         ;;
         format)
-            clang-format -i include/$project/*.hpp src/*.cpp
+            clang-format -i include/app/*.hpp src/*.cpp
             git status -s
 
             shift

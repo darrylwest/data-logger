@@ -3,9 +3,9 @@
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
-#include <app/version.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
+#include <app/version.hpp>
 
 int main(int argc, char *argv[]) {
     const auto vers = app::Version();

@@ -5,12 +5,12 @@
 #include <httplib.h>
 #include <spdlog/spdlog.h>
 
-#include <cstdio>
-#include <iostream>
 #include <app/cli.hpp>
+#include <app/database.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
-#include <app/database.hpp>
+#include <cstdio>
+#include <iostream>
 
 using namespace httplib;
 
@@ -35,8 +35,7 @@ namespace app {
         });
 
         // Logger
-        svr.set_logger(
-            [](const Request &req, const Response &res) { app::log_request(req, res); });
+        svr.set_logger([](const Request &req, const Response &res) { app::log_request(req, res); });
 
         // Mount point
         if (!svr.set_mount_point("/", config.www)) {

@@ -32,10 +32,9 @@ namespace app {
                << "ts: " << v.timestamp << ", ";
 
             for (const auto probe : v.probes)
-               os << "sensor: " << probe.sensor
-                << ", location: " << probe.location
-                << ", tempC: " << probe.tempC << ","
-                << ", tempF: " << probe.tempF << ".";
+                os << "sensor: " << probe.sensor << ", location: " << probe.location
+                   << ", tempC: " << probe.tempC << ","
+                   << ", tempF: " << probe.tempF << ".";
 
             return os;
         }

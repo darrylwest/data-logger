@@ -5,8 +5,8 @@
 #include <httplib.h>
 #include <spdlog/spdlog.h>
 
-#include <iostream>
 #include <app/logging.hpp>
+#include <iostream>
 
 namespace app {
 

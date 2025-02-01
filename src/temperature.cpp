@@ -3,9 +3,9 @@
 //
 
 #include <spdlog/spdlog.h>
-#include <nlohmann/json.hpp>
 
 #include <app/temperature.hpp>
+#include <nlohmann/json.hpp>
 
 namespace app {
     using json = nlohmann::json;
@@ -34,7 +34,7 @@ namespace app {
 
             spdlog::info("parsed to: {}", data.to_string());
 
-        } catch(json::parse_error& e) {
+        } catch (json::parse_error& e) {
             // should track errors centrally
             spdlog::error("Error parsing JSON: {}", e.what());
         }

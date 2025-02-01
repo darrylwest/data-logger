@@ -4,13 +4,13 @@
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
-#include <toml.hpp>
 
 #include <app/cli.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
-#include <vendor/testlib.hpp>
+#include <toml.hpp>
 #include <vendor/taskrunner.hpp>
+#include <vendor/testlib.hpp>
 
 using namespace rcstestlib;
 
@@ -39,7 +39,7 @@ Results test_taskrunner() {
         spdlog::info("my task count: {}", counter);
     };
 
-    int period = 15; // in seconds
+    int period = 15;  // in seconds
     auto task = taskrunner::createTask("test-task", period, worker);
 
     int ts_in_the_past = 1738353093;
@@ -56,7 +56,7 @@ Results test_taskrunner() {
     r.equals(tstr != "", "should match");
 
     unsigned long tms = taskrunner::timestamp_millis();
-    unsigned long tss =  taskrunner::timestamp_seconds();
+    unsigned long tss = taskrunner::timestamp_seconds();
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
@@ -67,8 +67,7 @@ Results test_taskrunner() {
 
 // put this in unit tests
 const auto createSampleReading() {
-    std::string text
-        = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
+    std::string text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
                 {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
@@ -134,15 +133,14 @@ Results test_config() {
             r.equals(location.size() > 2, "location text");
 
             if (location == "cottage") {
-                r.equals(ip ==  "10.0.1.197", "cottage location ip");
+                r.equals(ip == "10.0.1.197", "cottage location ip");
                 r.equals(port == 2030, "port");
             } else if (location == "shed") {
-                r.equals(ip ==  "10.0.1.115", "shed location ip");
+                r.equals(ip == "10.0.1.115", "shed location ip");
                 r.equals(port == 2030, "port");
             } else {
                 r.equals(false, "not a valid location");
             }
-
 
             auto probes = toml::find<std::vector<toml::value>>(loc, "probes");
             r.equals(probes.size() >= 1, "probes for each location");
@@ -156,7 +154,6 @@ Results test_config() {
                 r.equals(sensor >= 0, "sensor 0 or 1");
                 r.equals(probe_location.size() > 3, "probe location");
             }
-
         }
 
     } catch (const std::exception& e) {
@@ -164,13 +161,12 @@ Results test_config() {
         r.equals(false, "fail exception");
     }
 
-    spdlog::set_level(spdlog::level::off); // or off
+    spdlog::set_level(spdlog::level::off);  // or off
 
     return r;
 }
 
-
-int main(int argc, const char *argv[]) {
+int main(int argc, const char* argv[]) {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
     spdlog::set_level(spdlog::level::off);
