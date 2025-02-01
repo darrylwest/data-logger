@@ -114,7 +114,7 @@ Results test_config() {
 
     try {
         // parse the config file
-        auto config = toml::parse("./config/config.toml");
+        auto config = toml::parse("./config/test-config.toml");
 
         // Verify the parsed data
         std::string name = toml::find<std::string>(config, "name");
@@ -132,8 +132,17 @@ Results test_config() {
             spdlog::info("loc: {} ip: {} port: {}", location, ip, port);
 
             r.equals(location.size() > 2, "location text");
-            r.equals(ip.size() > 8, "location ip");
-            r.equals(port == 2030, "port ");
+
+            if (location == "cottage") {
+                r.equals(ip ==  "10.0.1.197", "cottage location ip");
+                r.equals(port == 2030, "port");
+            } else if (location == "shed") {
+                r.equals(ip ==  "10.0.1.115", "shed location ip");
+                r.equals(port == 2030, "port");
+            } else {
+                r.equals(false, "not a valid location");
+            }
+
 
             auto probes = toml::find<std::vector<toml::value>>(loc, "probes");
             r.equals(probes.size() >= 1, "probes for each location");
@@ -152,7 +161,7 @@ Results test_config() {
 
     } catch (const std::exception& e) {
         std::cerr << "TOML ERROR: an error occurred: " << e.what() << std::endl;
-        r.equals(1 == 0, "fail exception");
+        r.equals(false, "fail exception");
     }
 
     spdlog::set_level(spdlog::level::off); // or off

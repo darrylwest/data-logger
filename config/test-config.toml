@@ -1,0 +1,31 @@
+#
+# example ported from json config
+#
+name = "temperature"
+
+[[locations]]
+location = "cottage"
+ip = "10.0.1.197"
+port = 2030
+
+  [[locations.probes]]
+  sensor = 0
+  location = "cottage-south"
+
+  [[locations.probes]]
+  sensor = 1
+  location = "cottage-east"
+
+[[locations]]
+location = "shed"
+ip = "10.0.1.115"
+port = 2030
+
+  [[locations.probes]]
+  sensor = 0
+  location = "shed-inside"
+
+  [[locations.probes]]
+  sensor = 1
+  location = "shed-west"
+
