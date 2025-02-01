@@ -10,7 +10,7 @@
     <!-- Auto-Refresh Toggle -->
     <div class="flex justify-center items-center my-4">
       <label class="flex items-center space-x-2">
-        <input type="checkbox" v-model="isAutoRefreshEnabled" class="w-5 h-5">
+        <input type="checkbox" v-model="isAutoRefreshEnabled" class="w-5 h-5" />
         <span class="text-sm font-semibold">Auto-refresh every {{ autoRefreshInterval }} min</span>
       </label>
     </div>
@@ -24,7 +24,10 @@
     <!-- Error Message & Retry Button -->
     <div v-if="errorMessage" class="text-center text-red-500 font-semibold mt-4">
       {{ errorMessage }}
-      <button @click="fetchData" class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+      <button
+        @click="fetchData"
+        class="mt-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+      >
         Retry
       </button>
     </div>
@@ -33,7 +36,7 @@
     <div class="mt-4 mb-10">
       <canvas v-show="!isLoading && !errorMessage" id="lineChart"></canvas>
       <p class="text-sm text-gray-500 text-center mt-2">
-        Last updated: {{ lastUpdated || "Fetching data..." }}
+        Last updated: {{ lastUpdated || 'Fetching data...' }}
       </p>
     </div>
 
@@ -58,97 +61,97 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, watch, onUnmounted, nextTick } from "vue";
-import { Chart, registerables } from "chart.js";
-import TemperatureService from "@/services/TemperatureService";
+import { defineComponent, onMounted, ref, watch, onUnmounted, nextTick } from 'vue'
+import { Chart, registerables } from 'chart.js'
+import TemperatureService from '@/services/TemperatureService'
 
-Chart.register(...registerables);
+Chart.register(...registerables)
 
 export default defineComponent({
-  name: "HomePage",
+  name: 'HomePage',
   setup() {
     const roundToPreviousHourLocal = () => {
-      const now = new Date();
-      now.setMinutes(0, 0, 0); // ✅ Set minutes, seconds, and milliseconds to 0 (round down)
-      return now;
-    };
+      const now = new Date()
+      now.setMinutes(0, 0, 0) // ✅ Set minutes, seconds, and milliseconds to 0 (round down)
+      return now
+    }
 
     const formatLocalDateTime = (date) => {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Ensure two digits
-      const day = String(date.getDate()).padStart(2, "0");
-      const hours = String(date.getHours()).padStart(2, "0"); // Keep local hours
-      return `${year}-${month}-${day}T${hours}:00`; // Format for datetime-local
-    };
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0') // Ensure two digits
+      const day = String(date.getDate()).padStart(2, '0')
+      const hours = String(date.getHours()).padStart(2, '0') // Keep local hours
+      return `${year}-${month}-${day}T${hours}:00` // Format for datetime-local
+    }
 
-    const end_date = ref(formatLocalDateTime(roundToPreviousHourLocal())); // ✅ Local time, rounded down
+    const end_date = ref(formatLocalDateTime(roundToPreviousHourLocal())) // ✅ Local time, rounded down
 
     const dataParams = ref({
       end_date: end_date,
       interval: 60,
-    });
+    })
 
-    let chartInstance = ref(null);
-    let labels = ref([]);
-    let datasets = ref([]);
-    const isLoading = ref(false);
-    const errorMessage = ref(null);
-    const lastUpdated = ref(null);
+    let chartInstance = ref(null)
+    let labels = ref([])
+    let datasets = ref([])
+    const isLoading = ref(false)
+    const errorMessage = ref(null)
+    const lastUpdated = ref(null)
 
     // Auto-refresh states
-    const isAutoRefreshEnabled = ref(true);
-    const autoRefreshInterval = ref(10); // Default: n minutes
-    let autoRefreshTimer = null;
+    const isAutoRefreshEnabled = ref(true)
+    const autoRefreshInterval = ref(10) // Default: n minutes
+    let autoRefreshTimer = null
 
     // Function to fetch data
     const fetchData = async () => {
-      console.log("fetch data...");
-      isLoading.value = true;
-      errorMessage.value = null;
+      console.log('fetch data...')
+      isLoading.value = true
+      errorMessage.value = null
 
       try {
         const response = await TemperatureService.fetchTemperatureData(
           dataParams.value.end_date,
-          dataParams.value.interval
-        );
+          dataParams.value.interval,
+        )
 
         // Assign the labels (timestamps) from the API response
-        labels.value = response.labels;
-        console.log('label count: ', labels.value.length);
+        labels.value = response.labels
+        console.log('label count: ', labels.value.length)
 
         // Convert datasets to match Chart.js expected format
-        datasets.value = response.datasets.map(sensor => ({
+        datasets.value = response.datasets.map((sensor) => ({
           label: sensor.label, // Sensor name (e.g., "cottage-south")
           data: sensor.data, // Temperature readings
           borderColor: sensor.borderColor, // Use API color or generate one
-          fill: sensor.fill || false
-        }));
+          fill: sensor.fill || false,
+        }))
 
-        renderChart();
-        lastUpdated.value = new Date().toLocaleString();
+        renderChart()
+        lastUpdated.value = new Date().toLocaleString()
       } catch (error) {
-        console.error("Error fetching temperature data:", error);
-        errorMessage.value = "Failed to load data. Please try again.";
+        console.error('Error fetching temperature data:', error)
+        errorMessage.value = 'Failed to load data. Please try again.'
       } finally {
-        isLoading.value = false;
+        isLoading.value = false
       }
-    };
+    }
 
     // Function to render chart
     const renderChart = async () => {
-      await nextTick();
+      await nextTick()
 
-      const ctx = document.getElementById("lineChart").getContext("2d");
+      const ctx = document.getElementById('lineChart').getContext('2d')
 
       if (chartInstance.value) {
-        chartInstance.value.destroy();
+        chartInstance.value.destroy()
       }
 
-      let miny = Math.floor(Math.min(...datasets.value[0].data) - 5);
-      let maxy = Math.ceil(Math.max(...datasets.value[0].data) + 5);
+      let miny = Math.floor(Math.min(...datasets.value[0].data) - 5)
+      let maxy = Math.ceil(Math.max(...datasets.value[0].data) + 5)
 
       chartInstance.value = new Chart(ctx, {
-        type: "line",
+        type: 'line',
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
@@ -156,48 +159,51 @@ export default defineComponent({
             y: {
               min: miny,
               max: maxy,
-            }
+            },
           },
           plugins: {
             legend: {
-              position: "top",
+              position: 'top',
             },
           },
         },
-      });
-    };
+      })
+    }
 
     // Auto-refresh function
     const startAutoRefresh = () => {
       if (autoRefreshTimer) {
-        clearInterval(autoRefreshTimer);
+        clearInterval(autoRefreshTimer)
       }
       if (isAutoRefreshEnabled.value) {
-        autoRefreshTimer = setInterval(() => {
-          fetchData();
-        }, autoRefreshInterval.value * 60 * 1000); // Convert minutes to milliseconds
+        autoRefreshTimer = setInterval(
+          () => {
+            fetchData()
+          },
+          autoRefreshInterval.value * 60 * 1000,
+        ) // Convert minutes to milliseconds
       }
-    };
+    }
 
     // Stop auto-refresh when component is unmounted
     onUnmounted(() => {
       if (autoRefreshTimer) {
-        clearInterval(autoRefreshTimer);
+        clearInterval(autoRefreshTimer)
       }
-    });
+    })
 
     // Watch for auto-refresh toggle
     watch(isAutoRefreshEnabled, () => {
-      startAutoRefresh();
-    });
+      startAutoRefresh()
+    })
 
-    watch(dataParams, fetchData, { deep: true });
+    watch(dataParams, fetchData, { deep: true })
 
     // Fetch data initially
     onMounted(() => {
-      fetchData();
-      startAutoRefresh();
-    });
+      fetchData()
+      startAutoRefresh()
+    })
 
     return {
       dataParams,
@@ -206,8 +212,8 @@ export default defineComponent({
       lastUpdated,
       fetchData,
       isAutoRefreshEnabled,
-      autoRefreshInterval
-    };
+      autoRefreshInterval,
+    }
   },
-});
+})
 </script>
