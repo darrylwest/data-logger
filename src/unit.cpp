@@ -6,6 +6,7 @@
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
+#include <app/client.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <toml.hpp>
@@ -106,6 +107,73 @@ Results test_temperature() {
     return r;
 }
 
+app::client::ClientNode create_test_client() {
+    auto node = app::client::ClientNode{
+        .location = "test",
+        .ip = "10.0.1.197",
+        .port = 2030,
+        .active = true,
+        .last_access = 0,
+    };
+
+    return node;
+}
+
+void test_parse_client_status(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
+
+    std::string json_text
+        = R"({"status":{"version":"0.5.26-135","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
+
+    app::client::ClientStatus status = app::client::parse_status(json_text);
+    spdlog::info("status: {}", status.to_string());
+
+    r.equals(status.version == "0.5.26-135", "the version");
+    r.equals(status.timestamp == 1738453678, "the timestamp");
+    r.equals(status.started == 1738012925, "started");
+    r.equals(status.uptime == "5 days, 02:25:53", "uptime");
+    r.equals(status.access_count == 8247, "access");
+    r.equals(status.errors == 0, "errors");
+
+    spdlog::set_level(spdlog::level::off);
+}
+
+// this really needs a mock
+void test_fetch_client_status(Results& r) {
+    auto node = create_test_client();
+
+    app::client::ClientStatus status = app::client::fetch_status(node);
+    spdlog::info("status: ", status.to_string());
+
+    r.equals(status.version == "0.5.26-135", "the version");
+}
+
+void test_fetch_temps(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
+
+    auto node = create_test_client();
+    auto data = app::client::fetch_temps(node);
+    spdlog::info("temps: {}", data.to_string());
+
+    r.equals(data.probes.size() > 0, "probe count");
+}
+
+Results test_client() {
+    Results r = {.name = "Client Tests"};
+
+    test_parse_client_status(r);
+
+    // skip these two if client node is dead...
+    if (true) {
+        test_fetch_client_status(r);
+        test_fetch_temps(r);
+    }
+
+    spdlog::set_level(spdlog::level::off);
+
+    return r;
+}
+
 Results test_config() {
     Results r = {.name = "Config Tests"};
 
@@ -187,6 +255,7 @@ int main(int argc, const char* argv[]) {
     run_test(test_version);
     run_test(test_taskrunner);
     run_test(test_temperature);
+    run_test(test_client);
     run_test(test_config);
 
     fmt::println("\n{}", summary.to_string());
