@@ -26,11 +26,17 @@ void run(std::function<void()> func, int period) {
         func();
         
         run_count++;
-        last_run = timestamp_seconds();
+        int ts = timestamp_seconds();
+        int delta = ts - last_run;
 
-        spdlog::info("count: {}, last: {}", run_count, last_run);
+        if (run_count > 1 && delta != period) {
+            spdlog::error("DELTA ERROR! count: {}, last: {}, delta: {}", run_count, last_run, delta);
+        } else {
+            spdlog::info("count: {}, last: {}, delta: {}", run_count, last_run, delta);
+        }
 
-        // using std::chrono::operator""ms;
+        last_run = ts;
+
         next += seconds(period);
 
         std::this_thread::sleep_until(next);
