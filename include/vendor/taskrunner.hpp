@@ -75,12 +75,18 @@ namespace taskrunner {
 
     void run(Task& task) {
         spdlog::info("starting task: {}, period: {} seconds.", task.name, task.period);
+        bool keep_running = true;
 
         // TODO should this create it's own thread?
 
         try {
-            while (true) {
+            while (keep_running) {
                 auto now = std::chrono::steady_clock::now();
+                task.last_run = timestamp_seconds();
+
+                spdlog::info("task: {}", task.to_string());
+
+                // run the job
                 task.runner();
                 task.run_count++;
 
@@ -89,6 +95,8 @@ namespace taskrunner {
 
                 std::this_thread::sleep_until(next);
             }
+
+            spdlog::info("worker: {} stopped...", task.name);
         } catch (std::exception& e) {
             spdlog::error("Fatal error running task: {}, {}", task.name, e.what());
             throw e;
