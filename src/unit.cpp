@@ -62,6 +62,23 @@ Results test_taskrunner() {
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
+    spdlog::set_level(spdlog::level::info);
+    // test the task exception
+    auto ex_worker = []() {
+        spdlog::info("ex worker will throw a service exception");
+        throw app::ServiceException("Service Exception, Worker failed");
+    };
+
+    auto ex_task = taskrunner::createTask("exception-task", 2, ex_worker);
+
+    try {
+        taskrunner::run(ex_task);
+        r.equals(false, "should not get this far");
+    } catch (std::exception& e) {
+        spdlog::info("ex: {}", e.what());
+        r.equals(true, "should catch here");
+    }
+
     spdlog::set_level(spdlog::level::off);
 
     return r;

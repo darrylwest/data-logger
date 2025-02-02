@@ -10,6 +10,9 @@
 
 #include <iostream>
 #include <sstream>
+#include <thread>
+
+#include <spdlog/spdlog.h>
 
 namespace taskrunner {
     // get the timestamp in millis
@@ -53,8 +56,6 @@ namespace taskrunner {
 
             return oss.str();
         }
-
-        // start ticker?
     };
 
     // create the task
@@ -72,4 +73,21 @@ namespace taskrunner {
         return task;
     }
 
+    void run(Task& task) {
+        spdlog::info("starting task: {}, period: {} seconds.", task.name, task.period);
+
+        try {
+            auto now = std::chrono::steady_clock::now();
+            task.runner();
+            task.run_count++;
+
+            using std::chrono::operator""ms;
+            auto next = now + (task.period * 1000ms);
+
+            std::this_thread::sleep_until(next);
+        } catch (std::exception& e) {
+            spdlog::error("Fatal error running task: {}, {}", task.name, e.what());
+            throw e;
+        }
+    }
 }  // namespace app
