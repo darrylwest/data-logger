@@ -106,7 +106,12 @@ namespace taskrunner {
             spdlog::error("Fatal error running task: {}, {}", name, e.what());
             throw e;
         }
+    }
 
+    std::thread start(Task& task) {
+        std::thread t(run, task.runner, task.name.c_str(), task.period);
+
+        return t;
     }
 
 }  // namespace app

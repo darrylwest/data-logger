@@ -44,8 +44,9 @@ void run(const std::function<void()> func, const char* name, const int period) {
 
 }
 
-std::thread start_task(const std::function<void()> func, const char* name, const int period) {
-    std::thread t(run, func, name, period);
+std::thread start_task(taskrunner::Task& task) {
+    std::thread t(run, task.runner, task.name.c_str(), task.period);
+    // spdlog::info("started task thread: {} for {}", t.get_id(), task.name);
 
     return t;
 }
@@ -62,7 +63,7 @@ int main() {
     };
 
     auto task = taskrunner::createTask("test", 10, worker);
-    auto t1 = start_task(task.runner, task.name.c_str(), task.period);
+    auto t1 = start_task(task);
     
     // wait for the thread to complete
     t1.join();
