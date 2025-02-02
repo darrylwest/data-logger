@@ -6,28 +6,40 @@
 #include <thread>
 
 #include <spdlog/spdlog.h>
-#include "../include/vendor/taskrunner.hpp"
 
-void run(taskrunner::Task& task) {
+unsigned int timestamp_seconds() {
+    auto now = std::chrono::system_clock::now();
+    auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
+
+    return timestamp;
+}
+
+void run(std::function<void()> func, int period) {
     bool keep_running = true;
+    int run_count = 0;
+    int last_run = timestamp_seconds();
+
+    using namespace std::chrono;
+    auto next = steady_clock::now();
 
     while (keep_running) {
-        auto now = std::chrono::steady_clock::now();
-        task.last_run = taskrunner::timestamp_seconds();
+        func();
+        
+        run_count++;
+        last_run = timestamp_seconds();
 
-        task.runner();
-        task.run_count++;
+        spdlog::info("count: {}, last: {}", run_count, last_run);
 
-        using std::chrono::operator""ms;
-        auto next = now + (task.period * 1000ms);
+        // using std::chrono::operator""ms;
+        next += seconds(period);
 
         std::this_thread::sleep_until(next);
     }
 
 }
 
-std::thread start_task(taskrunner::Task& task) {
-    std::thread t(run, task);
+std::thread start_task(std::function<void()> func, int period) {
+    std::thread t(run, func, period);
 
     return t;
 }
@@ -43,10 +55,7 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(850));
     };
 
-    int period = 10;
-    auto task = taskrunner::createTask("test-task", period, worker);
-
-    auto t1 = start_task(task);
+    auto t1 = start_task(worker, 10);
     
     // wait for the thread to complete
     t1.join();
