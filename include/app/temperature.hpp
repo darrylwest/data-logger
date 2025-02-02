@@ -46,8 +46,9 @@ namespace app {
         }
     };
 
-    // parse the json reading response
-    TemperatureData parse_reading(const std::string& json_text);
+    namespace temperature {
+        // parse the json reading response
+        TemperatureData parse_reading(const std::string& json_text);
 
-    // TemperatureData read_temps();
+    }  // namespace temperature
 }  // namespace app

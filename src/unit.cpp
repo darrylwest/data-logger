@@ -84,7 +84,7 @@ Results test_temperature() {
     // spdlog::set_level(spdlog::level::info);
 
     const auto reading = createSampleReading();
-    app::TemperatureData data = app::parse_reading(reading);
+    app::TemperatureData data = app::temperature::parse_reading(reading);
 
     r.equals(data.reading_at == "2025-01-31T14:27:46", "reading date should be set");
     r.equals(data.timestamp == 1738362466, "timestamp should match");

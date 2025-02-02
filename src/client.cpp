@@ -63,7 +63,7 @@ namespace app {
 
             if (auto res = client.Get("/temps")) {
                 if (res->status == 200) {
-                    return app::parse_reading(res->body);
+                    return app::temperature::parse_reading(res->body);
                 } else {
                     spdlog::error("request faild to {}/status with status: {}", url, res->status);
                 }
