@@ -72,7 +72,7 @@ Results test_taskrunner() {
     auto ex_task = taskrunner::createTask("exception-task", 2, ex_worker);
 
     try {
-        taskrunner::run(ex_task);
+        taskrunner::run(ex_task.runner, ex_task.name.c_str(), ex_task.period);
         r.equals(false, "should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());

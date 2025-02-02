@@ -73,33 +73,40 @@ namespace taskrunner {
         return task;
     }
 
-    void run(Task& task) {
-        spdlog::info("starting task: {}, period: {} seconds.", task.name, task.period);
+    void run(const std::function<void()> func, const char* name, const int period) {
         bool keep_running = true;
 
-        // TODO should this create it's own thread?
+        int last_run = taskrunner::timestamp_seconds();
+        int run_count = 0;
+
+        using namespace std::chrono;
+        auto next = steady_clock::now();
 
         try {
             while (keep_running) {
-                auto now = std::chrono::steady_clock::now();
-                task.last_run = timestamp_seconds();
+                func();
 
-                spdlog::info("task: {}", task.to_string());
+                run_count++;
+                int ts = taskrunner::timestamp_seconds();
+                int delta = ts - last_run;
 
-                // run the job
-                task.runner();
-                task.run_count++;
+                if (run_count > 1 && delta != period) {
+                    spdlog::error("DELTA ERROR! count: {}, last: {}, delta: {}", run_count, last_run, delta);
+                } else {
+                    spdlog::info("count: {}, last: {}, delta: {}", run_count, last_run, delta);
+                }
 
-                using std::chrono::operator""ms;
-                auto next = now + (task.period * 1000ms);
+                last_run = ts;
+
+                next += seconds(period);
 
                 std::this_thread::sleep_until(next);
             }
-
-            spdlog::info("worker: {} stopped...", task.name);
         } catch (std::exception& e) {
-            spdlog::error("Fatal error running task: {}, {}", task.name, e.what());
+            spdlog::error("Fatal error running task: {}, {}", name, e.what());
             throw e;
         }
+
     }
+
 }  // namespace app

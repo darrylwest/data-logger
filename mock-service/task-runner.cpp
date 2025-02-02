@@ -6,46 +6,46 @@
 #include <thread>
 
 #include <spdlog/spdlog.h>
+#include "../include/vendor/taskrunner.hpp"
 
-unsigned int timestamp_seconds() {
-    auto now = std::chrono::system_clock::now();
-    auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
-
-    return timestamp;
-}
-
-void run(std::function<void()> func, int period) {
+void run(const std::function<void()> func, const char* name, const int period) {
     bool keep_running = true;
+
+    int last_run = taskrunner::timestamp_seconds();
     int run_count = 0;
-    int last_run = timestamp_seconds();
 
     using namespace std::chrono;
     auto next = steady_clock::now();
 
-    while (keep_running) {
-        func();
+    try {
+        while (keep_running) {
+            func();
         
-        run_count++;
-        int ts = timestamp_seconds();
-        int delta = ts - last_run;
+            run_count++;
+            int ts = taskrunner::timestamp_seconds();
+            int delta = ts - last_run;
 
-        if (run_count > 1 && delta != period) {
-            spdlog::error("DELTA ERROR! count: {}, last: {}, delta: {}", run_count, last_run, delta);
-        } else {
-            spdlog::info("count: {}, last: {}, delta: {}", run_count, last_run, delta);
+            if (run_count > 1 && delta != period) {
+                spdlog::error("DELTA ERROR! count: {}, last: {}, delta: {}", run_count, last_run, delta);
+            } else {
+                spdlog::info("count: {}, last: {}, delta: {}", run_count, last_run, delta);
+            }
+
+            last_run = ts;
+
+            next += seconds(period);
+
+            std::this_thread::sleep_until(next);
         }
-
-        last_run = ts;
-
-        next += seconds(period);
-
-        std::this_thread::sleep_until(next);
+    } catch (std::exception& e) {
+        spdlog::error("Fatal error running task: {}, {}", name, e.what());
+        throw e;
     }
 
 }
 
-std::thread start_task(std::function<void()> func, int period) {
-    std::thread t(run, func, period);
+std::thread start_task(const std::function<void()> func, const char* name, const int period) {
+    std::thread t(run, func, name, period);
 
     return t;
 }
@@ -61,7 +61,8 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(850));
     };
 
-    auto t1 = start_task(worker, 10);
+    auto task = taskrunner::createTask("test", 10, worker);
+    auto t1 = start_task(task.runner, task.name.c_str(), task.period);
     
     // wait for the thread to complete
     t1.join();
