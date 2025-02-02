@@ -12,6 +12,7 @@
 #include <toml.hpp>
 #include <vendor/taskrunner.hpp>
 #include <vendor/testlib.hpp>
+#include <app/exceptions.hpp>
 
 using namespace rcstestlib;
 
@@ -238,6 +239,79 @@ Results test_config() {
     return r;
 }
 
+bool bad_db_file(const std::string& filename) {
+    if (filename == "bad_db_file") {
+        throw app::DatabaseException("Db Failed to connect to file: " + filename);
+    } else if (filename == "bad_filename") {
+        throw app::FileException("Failed to open: " + filename);
+    }
+
+    // return false; should never get here
+    return false;
+}
+
+bool bad_http_get(const std::string& url) {
+    if (url == "http://bad_network.com") {
+        throw app::NetworkException("Failed to connect to url: " + url);
+    } else if (url == "http://service_down.com") {
+        throw app::ServiceException("Service Failed for url: " + url);
+    } else if (url == "http://bad_parse.com") {
+        throw app::ParseException("JSON parse failed at url: " + url);
+    }
+
+    // return false; should never get here
+    return false;
+}
+
+Results test_exceptions() {
+    Results r = {.name = "Exception Tests"};
+    spdlog::set_level(spdlog::level::info);
+
+    try {
+        bool ok = bad_http_get("http://bad_network.com");
+        r.equals(ok, "should not get here");
+    } catch (const std::exception& e) {
+        spdlog::info("exception: {}", e.what());
+        r.equals(true);
+    }
+
+    try {
+        bool ok = bad_http_get("http://service_down.com");
+        r.equals(ok, "should not get here");
+    } catch (const std::exception& e) {
+        spdlog::info("exception: {}", e.what());
+        r.equals(true);
+    }
+
+    try {
+        bool ok = bad_http_get("http://bad_parse.com");
+        r.equals(ok, "should not get here");
+    } catch (const std::exception& e) {
+        spdlog::info("exception: {}", e.what());
+        r.equals(true);
+    }
+
+    try {
+        bool ok = bad_db_file("bad_db_file");
+        r.equals(ok, "should not get here");
+    } catch (const std::exception& e) {
+        spdlog::info("exception: {}", e.what());
+        r.equals(true);
+    }
+
+    try {
+        bool ok = bad_db_file("bad_filename");
+        r.equals(ok, "should not get here");
+    } catch (const std::exception& e) {
+        spdlog::info("exception: {}", e.what());
+        r.equals(true);
+    }
+
+    spdlog::set_level(spdlog::level::off);
+
+    return r;
+}
+
 int main(int argc, const char* argv[]) {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
@@ -260,6 +334,7 @@ int main(int argc, const char* argv[]) {
     run_test(test_temperature);
     run_test(test_client);
     run_test(test_config);
+    run_test(test_exceptions);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
