@@ -167,6 +167,9 @@ Results test_client() {
     if (true) {
         test_fetch_client_status(r);
         test_fetch_temps(r);
+    } else {
+        r.skip(true);
+        r.skip(true);
     }
 
     spdlog::set_level(spdlog::level::off);
