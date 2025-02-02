@@ -21,10 +21,15 @@ using namespace colors;
 // namespace app;
 
 struct Config {
+    std::string scheme = "http://";
     std::string host = "localhost";
     std::string port = "29099";
     bool start_server = true;
     std::string logfile = "logs/integration-test.log";
+
+    std::string get_url() {
+        return scheme + host + ":" + port;
+    }
 };
 
 // Define the function to start the service
@@ -56,7 +61,7 @@ void run_server(std::atomic<bool>& running, const Config& config) {
     pclose(pipe);
 
     // Wait for a brief period to allow the service to initialize
-    std::this_thread::sleep_for(std::chrono::milliseconds(1200));
+    std::this_thread::sleep_for(std::chrono::milliseconds(800));
 }
 
 // use cxxopts to parse host and port
@@ -87,7 +92,7 @@ int main(int argc, char* argv[]) {
     fmt::println("");
 
     // Create a client for testing
-    httplib::Client cli("https://" + config.host + ":" + config.port);
+    httplib::Client cli(config.get_url());
     cli.enable_server_certificate_verification(false);
 
     // Test 1: Verify version endpoint
@@ -121,7 +126,7 @@ int main(int argc, char* argv[]) {
     server_thread.join();
 
     // give the service time to fully shutdown
-    std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    std::this_thread::sleep_for(std::chrono::milliseconds(600));
 
     // Verify server has stopped
     // try to Shut down the server

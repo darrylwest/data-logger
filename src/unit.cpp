@@ -265,7 +265,8 @@ bool bad_http_get(const std::string& url) {
 
 Results test_exceptions() {
     Results r = {.name = "Exception Tests"};
-    spdlog::set_level(spdlog::level::info);
+
+    // spdlog::set_level(spdlog::level::info);
 
     try {
         bool ok = bad_http_get("http://bad_network.com");
