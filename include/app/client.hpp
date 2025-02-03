@@ -7,6 +7,7 @@
 
 #include <spdlog/spdlog.h>
 
+// #include <vendor/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -67,6 +68,7 @@ namespace app {
         ClientStatus fetch_status(ClientNode& node);
         TemperatureData fetch_temps(ClientNode& node);
         std::vector<ClientNode> create_nodes();
+        // std::vector<taskrunner::Task> create_temps_tasks(std::vector<ClientNode&> nodes);
 
     }  // namespace client
 }  // namespace app
