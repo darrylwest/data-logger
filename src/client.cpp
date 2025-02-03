@@ -69,12 +69,28 @@ namespace app {
                 }
             } else {
                 auto err = httplib::to_string(res.error());
-                spdlog::error("Status request faild to {}, {} {}", url, err, res->status);
+                spdlog::error("request faild to {}, {} {}", url, err, res->status);
             }
 
             // TODO error handling
             TemperatureData data;
             return data;
+        }
+
+        // create and return the client nodes; (should read from config.toml)
+        std::vector<ClientNode> create_nodes() {
+            std::vector<ClientNode> nodes;
+            auto node = ClientNode{
+                .location = "cottage",
+                .ip = "10.0.1.197",
+                .port = 2030,
+                .active = true,
+                .last_access = 0,
+            };
+
+            nodes.push_back(node);
+
+            return nodes;
         }
 
     }  // namespace client

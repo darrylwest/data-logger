@@ -10,44 +10,43 @@
 
 // special
 #include <app/client.hpp>
-#include <vendor/taskrunner.hpp>
 #include <thread>
+#include <vendor/taskrunner.hpp>
 
 // TODO move this once it's semi-stable
 namespace app {
     namespace nodes {
         using namespace app::client;
+        using namespace taskrunner;
 
-        // TODO read from config
-        std::vector<ClientNode> createNodes() {
-            std::vector<ClientNode> nodes;
-            auto node = ClientNode{
-                .location = "cottage",
-                .ip = "10.0.1.197",
-                .port = 2030,
-                .active = true,
-                .last_access = 0,
-            };
-
-            nodes.push_back(node);
-
-            return nodes;
-        }
-
-        taskrunner::Task createTempsTask(ClientNode& node, const int period = 10) {
+        taskrunner::Task create_temps_task(ClientNode& node, const int period = 10) {
+            // store in local db to get averages; store average to database
             auto worker = [&node]() {
                 auto data = app::client::fetch_temps(node);
+                node.last_access = taskrunner::timestamp_seconds();
+                // TODO store to database
                 spdlog::info("temps: {}", data.to_string());
             };
-            
+
             auto task = taskrunner::createTask(node.location.c_str(), period, worker);
 
             return task;
         }
-    }
-}
 
-int main(int argc, char *argv[]) {
+        std::vector<Task> create_temps_task_list(std::vector<ClientNode>& nodes) {
+            std::vector<taskrunner::Task> tasks;
+
+            for (auto& node : nodes) {
+                tasks.push_back(create_temps_task(node));
+            }
+
+            return tasks;
+        }
+
+    }  // namespace nodes
+}  // namespace app
+
+int main(int argc, char* argv[]) {
     const auto vers = app::Version();
 
     auto config = app::parse_cli(argc, argv);
@@ -57,11 +56,11 @@ int main(int argc, char *argv[]) {
     // auto tasks = getTasks();
     // taskrunner::start_tasks(tasks);
     // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
-    auto nodes = app::nodes::createNodes();
-    auto task = app::nodes::createTempsTask(nodes.at(0));
-    
-    std::vector<taskrunner::Task> tasks;
-    tasks.push_back(task);
+    auto nodes = app::client::create_nodes();
+    // auto task = app::nodes::create_temps_task(nodes.at(0));
+
+    // std::vector<taskrunner::Task> tasks;
+    auto tasks = app::nodes::create_temps_task_list(nodes);
 
     taskrunner::halt_threads.clear();
 
