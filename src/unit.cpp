@@ -45,7 +45,7 @@ Results test_taskrunner() {
     auto task = taskrunner::createTask("test-task", period, worker);
 
     int ts_in_the_past = 1738353093;
-    r.equals(task.name == "test-task", "name should match");
+    r.equals(std::string(task.name) == "test-task", "name should match");
     r.equals(task.started_at > ts_in_the_past, "name should match");
     r.equals(task.run_count == 0, "never run");
     r.equals(task.period == period, "period should match");
@@ -72,7 +72,7 @@ Results test_taskrunner() {
     auto ex_task = taskrunner::createTask("exception-task", 2, ex_worker);
 
     try {
-        taskrunner::run(ex_task.runner, ex_task.name.c_str(), ex_task.period);
+        taskrunner::run(ex_task.runner, ex_task.name, ex_task.period);
         r.equals(false, "should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());

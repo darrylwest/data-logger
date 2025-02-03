@@ -32,8 +32,7 @@ namespace app {
 
             for (const auto probe : v.probes)
                 os << ", sensor: " << probe.sensor << ", location: " << probe.location
-                   << ", tempC: " << probe.tempC << ","
-                   << ", tempF: " << probe.tempF << ".";
+                   << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
 
             return os;
         }

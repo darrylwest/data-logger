@@ -13,7 +13,7 @@ namespace app {
 
         // parse json reading/probe response
         TemperatureData parse_reading(const std::string& json_text) {
-            spdlog::info("parsed text: {}", json_text);
+            spdlog::debug("parsed text: {}", json_text);
 
             TemperatureData data;
             try {

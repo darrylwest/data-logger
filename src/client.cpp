@@ -69,7 +69,7 @@ namespace app {
                 }
             } else {
                 auto err = httplib::to_string(res.error());
-                spdlog::error("Status request faild to {}, {} {}", url, err, res->status);
+                spdlog::error("request faild to {}, {} {}", url, err, res->status);
             }
 
             // TODO error handling
