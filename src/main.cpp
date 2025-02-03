@@ -33,7 +33,7 @@ namespace app {
             return task;
         }
 
-        std::vector<Task> create_temps_task_list(std::vector<ClientNode> nodes) {
+        std::vector<Task> create_temps_task_list(std::vector<ClientNode>& nodes) {
             std::vector<taskrunner::Task> tasks;
 
             for (auto& node : nodes) {
@@ -57,10 +57,10 @@ int main(int argc, char* argv[]) {
     // taskrunner::start_tasks(tasks);
     // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
     auto nodes = app::client::create_nodes();
-    auto task = app::nodes::create_temps_task(nodes.at(0));
+    // auto task = app::nodes::create_temps_task(nodes.at(0));
 
-    std::vector<taskrunner::Task> tasks;
-    tasks.push_back(task);
+    // std::vector<taskrunner::Task> tasks;
+    auto tasks = app::nodes::create_temps_task_list(nodes);
 
     taskrunner::halt_threads.clear();
 
