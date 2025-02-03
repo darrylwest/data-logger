@@ -7,12 +7,12 @@
 
 #include <app/cli.hpp>
 #include <app/client.hpp>
+#include <app/exceptions.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <toml.hpp>
 #include <vendor/taskrunner.hpp>
 #include <vendor/testlib.hpp>
-#include <app/exceptions.hpp>
 
 using namespace rcstestlib;
 

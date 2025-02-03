@@ -1,12 +1,12 @@
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
-#include <vector>
 
 #include <app/cli.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/version.hpp>
+#include <vector>
 
 int main(int argc, char *argv[]) {
     const auto vers = app::Version();

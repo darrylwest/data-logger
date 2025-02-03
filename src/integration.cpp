@@ -27,9 +27,7 @@ struct Config {
     bool start_server = true;
     std::string logfile = "logs/integration-test.log";
 
-    std::string get_url() {
-        return scheme + host + ":" + port;
-    }
+    std::string get_url() { return scheme + host + ":" + port; }
 };
 
 // Define the function to start the service
