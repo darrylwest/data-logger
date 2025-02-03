@@ -11,40 +11,7 @@
 // special
 #include <app/client.hpp>
 #include <thread>
-#include <vendor/taskrunner.hpp>
-
-// TODO move this once it's semi-stable
-namespace app {
-    namespace nodes {
-        using namespace app::client;
-        using namespace taskrunner;
-
-        taskrunner::Task create_temps_task(ClientNode& node, const int period = 10) {
-            // store in local db to get averages; store average to database
-            auto worker = [&node]() {
-                auto data = app::client::fetch_temps(node);
-                node.last_access = taskrunner::timestamp_seconds();
-                // TODO store to database
-                spdlog::info("temps: {}", data.to_string());
-            };
-
-            auto task = taskrunner::createTask(node.location.c_str(), period, worker);
-
-            return task;
-        }
-
-        std::vector<Task> create_temps_task_list(std::vector<ClientNode>& nodes) {
-            std::vector<taskrunner::Task> tasks;
-
-            for (auto& node : nodes) {
-                tasks.push_back(create_temps_task(node));
-            }
-
-            return tasks;
-        }
-
-    }  // namespace nodes
-}  // namespace app
+#include <app/nodes.hpp>
 
 int main(int argc, char* argv[]) {
     const auto vers = app::Version();

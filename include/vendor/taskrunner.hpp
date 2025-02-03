@@ -17,10 +17,10 @@
 #include <spdlog/spdlog.h>
 
 namespace taskrunner {
-    static std::atomic_flag halt_threads;
+    extern std::atomic_flag halt_threads;
 
     // get the timestamp in millis
-    unsigned long timestamp_millis() {
+    inline unsigned long timestamp_millis() {
         auto now = std::chrono::system_clock::now();
         auto timestamp = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
 
@@ -28,7 +28,7 @@ namespace taskrunner {
     }
 
     // get the timestamp in seconds
-    unsigned int timestamp_seconds() {
+    inline unsigned int timestamp_seconds() {
         auto now = std::chrono::system_clock::now();
         auto timestamp = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
 
