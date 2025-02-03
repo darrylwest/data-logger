@@ -8,10 +8,10 @@
 #include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/exceptions.hpp>
+#include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <toml.hpp>
-#include <vendor/taskrunner.hpp>
 #include <vendor/testlib.hpp>
 
 using namespace rcstestlib;
@@ -24,7 +24,7 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 2);
-    r.equals(vers.patch == 2);
+    r.equals(vers.patch == 3);
     r.equals(vers.build >= 100);
 
     return r;
@@ -42,7 +42,7 @@ Results test_taskrunner() {
     };
 
     int period = 15;  // in seconds
-    auto task = taskrunner::createTask("test-task", period, worker);
+    auto task = app::taskrunner::createTask("test-task", period, worker);
 
     int ts_in_the_past = 1738353093;
     r.equals(std::string(task.name) == "test-task", "name should match");
@@ -57,8 +57,8 @@ Results test_taskrunner() {
     auto tstr = task.to_string();
     r.equals(tstr != "", "should match");
 
-    unsigned long tms = taskrunner::timestamp_millis();
-    unsigned long tss = taskrunner::timestamp_seconds();
+    unsigned long tms = app::taskrunner::timestamp_millis();
+    unsigned long tss = app::taskrunner::timestamp_seconds();
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
@@ -69,10 +69,10 @@ Results test_taskrunner() {
         throw app::ServiceException("Service Exception, Worker failed");
     };
 
-    auto ex_task = taskrunner::createTask("exception-task", 2, ex_worker);
+    auto ex_task = app::taskrunner::createTask("exception-task", 2, ex_worker);
 
     try {
-        taskrunner::run(ex_task.runner, ex_task.name, ex_task.period);
+        app::taskrunner::run(ex_task.runner, ex_task.name, ex_task.period);
         r.equals(false, "should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());

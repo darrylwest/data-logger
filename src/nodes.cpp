@@ -1,24 +1,26 @@
 // nodes.cpp
-#include <app/nodes.hpp>
 #include <spdlog/spdlog.h>
-#include <vendor/taskrunner.hpp>
+
+#include <app/nodes.hpp>
+#include <app/taskrunner.hpp>
 
 namespace app {
     namespace nodes {
+        using namespace app::taskrunner;
 
-        taskrunner::Task create_temps_task(app::client::ClientNode& node, int period) {
+        Task create_temps_task(app::client::ClientNode& node, int period) {
             auto worker = [&node]() {
                 auto data = app::client::fetch_temps(node);
-                node.last_access = taskrunner::timestamp_seconds();
+                node.last_access = timestamp_seconds();
                 spdlog::info("temps: {}", data.to_string());
             };
 
-            auto task = taskrunner::createTask(node.location.c_str(), period, worker);
+            auto task = createTask(node.location.c_str(), period, worker);
             return task;
         }
 
-        std::vector<taskrunner::Task> create_temps_task_list(std::vector<app::client::ClientNode>& nodes) {
-            std::vector<taskrunner::Task> tasks;
+        std::vector<Task> create_temps_task_list(std::vector<app::client::ClientNode>& nodes) {
+            std::vector<Task> tasks;
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
             }
@@ -27,4 +29,3 @@ namespace app {
 
     }  // namespace nodes
 }  // namespace app
-

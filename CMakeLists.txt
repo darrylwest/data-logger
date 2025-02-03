@@ -102,6 +102,7 @@ add_executable(data-logger
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/nodes.cpp
+    ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/main.cpp)
@@ -111,6 +112,7 @@ add_executable(unit
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/nodes.cpp
+    ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/unit.cpp)
