@@ -4,12 +4,14 @@
 
 #include <sstream>
 #include <thread>
+#include <atomic>
 
 #include <spdlog/spdlog.h>
 #include "../include/vendor/taskrunner.hpp"
 
+static std::atomic_flag halt_threads;
+
 void run(const std::function<void()> func, const char* name, const int period) {
-    bool keep_running = true;
 
     int last_run = taskrunner::timestamp_seconds();
     int run_count = 0;
@@ -18,7 +20,7 @@ void run(const std::function<void()> func, const char* name, const int period) {
     auto next = steady_clock::now();
 
     try {
-        while (keep_running) {
+        while (!halt_threads.test()) {
             func();
         
             run_count++;
@@ -52,7 +54,8 @@ std::thread start_task(taskrunner::Task& task) {
 }
 
 int main() {
-    
+    halt_threads.clear();
+
     int counter = 0;
     auto worker = [&counter]() {
         counter++;
@@ -64,9 +67,17 @@ int main() {
 
     auto task = taskrunner::createTask("test", 10, worker);
     auto t1 = start_task(task);
+
+    spdlog::info("Thread started for task: {}", task.name);
+
+    std::this_thread::sleep_for(std::chrono::seconds(62));
+    spdlog::warn("shutdown called, shutting down threads...");
+    halt_threads.test_and_set();
     
     // wait for the thread to complete
     t1.join();
+
+    spdlog::info("thread joined.");
 
 
     return 0;

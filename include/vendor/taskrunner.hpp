@@ -11,10 +11,14 @@
 #include <iostream>
 #include <sstream>
 #include <thread>
+#include <atomic>
+#include <vector>
 
 #include <spdlog/spdlog.h>
 
 namespace taskrunner {
+    static std::atomic_flag halt_threads;
+
     // get the timestamp in millis
     unsigned long timestamp_millis() {
         auto now = std::chrono::system_clock::now();
@@ -73,8 +77,8 @@ namespace taskrunner {
         return task;
     }
 
+    // run the func; if period == 0 then this is a one-shot-and-out task
     void run(const std::function<void()> func, const char* name, const int period) {
-        bool keep_running = true;
 
         int last_run = taskrunner::timestamp_seconds();
         int run_count = 0;
@@ -83,8 +87,12 @@ namespace taskrunner {
         auto next = steady_clock::now();
 
         try {
-            while (keep_running) {
+            while (!halt_threads.test()) {
                 func();
+                if (period == 0) {
+                    spdlog::info("{} is a one-shot task, complete.", name);
+                    return;
+                }
 
                 run_count++;
                 int ts = taskrunner::timestamp_seconds();
@@ -112,6 +120,18 @@ namespace taskrunner {
         std::thread t(run, task.runner, task.name.c_str(), task.period);
 
         return t;
+    }
+
+    // start a list of threads; clears the halt_threads flag
+    auto start_tasks(const std::vector<Task> list) {
+        halt_threads.clear();
+        int count = 0;
+        for (auto task : list) {
+            const auto t = start(task);
+            count++;
+        }
+
+        return count;
     }
 
 }  // namespace app
