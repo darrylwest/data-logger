@@ -13,6 +13,7 @@ static std::atomic_flag halt_threads;
 
 void run(const std::function<void()> func, const char* name, const int period) {
 
+    int error_count = 0;
     int last_run = taskrunner::timestamp_seconds();
     int run_count = 0;
 
@@ -20,7 +21,7 @@ void run(const std::function<void()> func, const char* name, const int period) {
     auto next = steady_clock::now();
 
     try {
-        while (!halt_threads.test()) {
+        while (!halt_threads.test() && error_count < 5) {
             func();
         
             run_count++;
@@ -28,6 +29,7 @@ void run(const std::function<void()> func, const char* name, const int period) {
             int delta = ts - last_run;
 
             if (run_count > 1 && delta != period) {
+                error_count++;
                 spdlog::error("DELTA ERROR! count: {}, last: {}, delta: {}", run_count, last_run, delta);
             } else {
                 spdlog::info("count: {}, last: {}, delta: {}", run_count, last_run, delta);
@@ -70,9 +72,11 @@ int main() {
 
     spdlog::info("Thread started for task: {}", task.name);
 
-    std::this_thread::sleep_for(std::chrono::seconds(62));
-    spdlog::warn("shutdown called, shutting down threads...");
-    halt_threads.test_and_set();
+    if (false) {
+        std::this_thread::sleep_for(std::chrono::seconds(62));
+        spdlog::warn("shutdown called, shutting down threads...");
+        halt_threads.test_and_set();
+    }
     
     // wait for the thread to complete
     t1.join();
