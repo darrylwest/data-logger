@@ -18,22 +18,6 @@ namespace app {
     namespace nodes {
         using namespace app::client;
 
-        // TODO read from config
-        std::vector<ClientNode> createNodes() {
-            std::vector<ClientNode> nodes;
-            auto node = ClientNode{
-                .location = "cottage",
-                .ip = "10.0.1.197",
-                .port = 2030,
-                .active = true,
-                .last_access = 0,
-            };
-
-            nodes.push_back(node);
-
-            return nodes;
-        }
-
         taskrunner::Task createTempsTask(ClientNode& node, const int period = 10) {
             // store in local db to get averages; store average to database
             auto worker = [&node]() {
@@ -60,7 +44,7 @@ int main(int argc, char* argv[]) {
     // auto tasks = getTasks();
     // taskrunner::start_tasks(tasks);
     // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
-    auto nodes = app::nodes::createNodes();
+    auto nodes = app::client::create_nodes();
     auto task = app::nodes::createTempsTask(nodes.at(0));
 
     std::vector<taskrunner::Task> tasks;

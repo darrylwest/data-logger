@@ -80,13 +80,15 @@ namespace taskrunner {
     // run the func; if period == 0 then this is a one-shot-and-out task
     void run(const std::function<void()> func, const char* name, const int period) {
 
+        // re-create the task for easy reporting
         auto task = createTask(name, period, func);
 
-        task.last_run = taskrunner::timestamp_seconds();
         task.run_count = 0;
 
         using namespace std::chrono;
         auto next = steady_clock::now();
+
+        task.last_run = taskrunner::timestamp_seconds();
 
         try {
             while (!halt_threads.test()) {
@@ -102,7 +104,7 @@ namespace taskrunner {
 
                 task.run_count++;
 
-                if (task.run_count > 1 && delta != period) {
+                if (task.run_count > 1 && std::abs(delta - period) > 1) {
                     spdlog::warn("DELTA ERROR! task: {}, delta: {}", task.to_string(), delta);
                 } else {
                     spdlog::info("task: {}, delta: {}", task.to_string(), delta);
@@ -120,6 +122,7 @@ namespace taskrunner {
         }
     }
 
+    // start a thread using the task values
     std::thread start(const Task& task) {
         std::thread t(run, task.runner, task.name, task.period);
 

@@ -77,5 +77,21 @@ namespace app {
             return data;
         }
 
+        // create and return the client nodes; (should read from config.toml)
+        std::vector<ClientNode> create_nodes() {
+            std::vector<ClientNode> nodes;
+            auto node = ClientNode{
+                .location = "cottage",
+                .ip = "10.0.1.197",
+                .port = 2030,
+                .active = true,
+                .last_access = 0,
+            };
+
+            nodes.push_back(node);
+
+            return nodes;
+        }
+
     }  // namespace client
 }  // namespace app

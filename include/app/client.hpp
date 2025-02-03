@@ -11,6 +11,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
+#include <vector>
 
 namespace app {
     namespace client {
@@ -65,6 +66,7 @@ namespace app {
         ClientStatus parse_status(const std::string& json_text);
         ClientStatus fetch_status(ClientNode& node);
         TemperatureData fetch_temps(ClientNode& node);
+        std::vector<ClientNode> create_nodes();
 
     }  // namespace client
 }  // namespace app
