@@ -116,22 +116,21 @@ namespace taskrunner {
         }
     }
 
-    std::thread start(Task& task) {
+    std::thread start(const Task& task) {
         std::thread t(run, task.runner, task.name.c_str(), task.period);
 
         return t;
     }
 
     // start a list of threads; clears the halt_threads flag
-    auto start_tasks(const std::vector<Task> list) {
+    std::vector<std::thread> start_tasks(const std::vector<Task> list) {
         halt_threads.clear();
-        int count = 0;
+        std::vector<std::thread> tlist;
         for (auto task : list) {
-            const auto t = start(task);
-            count++;
+            // move the thread into the list
+            tlist.emplace_back(start(task));
         }
 
-        return count;
+        return tlist;
     }
-
 }  // namespace app

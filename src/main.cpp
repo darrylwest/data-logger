@@ -34,13 +34,13 @@ namespace app {
             return nodes;
         }
 
-        taskrunner::Task createNodeTask(ClientNode& node) {
+        taskrunner::Task createTempsTask(ClientNode& node, const int period = 10) {
             auto worker = [&node]() {
                 auto data = app::client::fetch_temps(node);
                 spdlog::info("temps: {}", data.to_string());
             };
             
-            auto task = taskrunner::createTask(node.location.c_str(), 10, worker);
+            auto task = taskrunner::createTask(node.location.c_str(), period, worker);
 
             return task;
         }
@@ -58,17 +58,24 @@ int main(int argc, char *argv[]) {
     // taskrunner::start_tasks(tasks);
     // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
     auto nodes = app::nodes::createNodes();
-    auto task = app::nodes::createNodeTask(nodes.at(0));
-    spdlog::info("task: {}", task.to_string());
-    // taskrunner::start(task);
-    std::thread t1(taskrunner::run, task.runner, task.name.c_str(), task.period);
+    auto task = app::nodes::createTempsTask(nodes.at(0));
+    
+    std::vector<taskrunner::Task> tasks;
+    tasks.push_back(task);
 
-    // now start the listener
+    taskrunner::halt_threads.clear();
+
+    auto tlist = taskrunner::start_tasks(tasks);
+
+    // now start the web/http listener
     auto ok = app::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
 
+    // shut it down
     taskrunner::halt_threads.test_and_set();
-    t1.join();
+    for (auto& t : tlist) {
+        t.join();
+    }
 
     return 0;
 }
