@@ -8,7 +8,8 @@ set -eu
 
 export root=`pwd`
 
-project=data-logger
+export project=data-logger
+export port=9999
 
 # parse the cli
 while [[ $# -gt 0 ]]
@@ -74,6 +75,10 @@ do
 
             exit 0
         ;;
+        shutdown)
+            curl -X DELETE "http://localhost:${port}/shutdown"
+            shift
+        ;;
 
         pull)
             git pull
@@ -92,6 +97,7 @@ do
             echo "   pull     : pull the latest repo changes"
             echo "   clean    : remove binary builds but leave the build folder"
             echo "   clobber  : remove the entire build folder"
+            echo "   shutdown : shutdown a local instance"
             echo "   help     : show this help"
             
             exit 0
