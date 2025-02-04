@@ -15,7 +15,7 @@ namespace app {
                 node.last_access = ts;
                 spdlog::info("ts: {}, temps: {}", ts, data.to_string());
                 // send to db with timestamp
-                // db.put(ts, data);
+                // db.put(data);
             };
 
             auto task = createTask(node.location.c_str(), period, worker);

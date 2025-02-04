@@ -3,3 +3,4 @@ client-fetch
 succeed-fail
 retry-service
 task-runner
+struct-enum

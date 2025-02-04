@@ -20,4 +20,7 @@ namespace app {
     // Function to run the server
     bool run_service(const Config &config);
 
+    // remove this later...
+    std::string create_fake_temps();
+
 }  // namespace app

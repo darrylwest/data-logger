@@ -7,6 +7,7 @@
 
 #include <app/cli.hpp>
 #include <app/client.hpp>
+#include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
@@ -24,7 +25,7 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 2);
-    r.equals(vers.patch == 3);
+    r.equals(vers.patch == 4);
     r.equals(vers.build >= 100);
 
     return r;
@@ -330,6 +331,18 @@ Results test_exceptions() {
     return r;
 }
 
+Results test_database() {
+    Results r = {.name = "Database Tests"};
+
+    spdlog::set_level(spdlog::level::info);
+
+    r.equals(true);
+
+    spdlog::set_level(spdlog::level::off);
+
+    return r;
+}
+
 int main(int argc, const char* argv[]) {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
@@ -353,6 +366,7 @@ int main(int argc, const char* argv[]) {
     run_test(test_client);
     run_test(test_config);
     run_test(test_exceptions);
+    run_test(test_database);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";

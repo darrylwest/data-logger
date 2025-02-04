@@ -13,63 +13,55 @@
 #include <stdexcept>
 
 namespace app {
-    using json = nlohmann::json;
-    namespace fs = std::filesystem;
+    namespace database {
+        using json = nlohmann::json;
 
-    struct Database {
-        std::string datapath = "./data";
+        struct ReadingType {
+            enum class Value : short {
+                Status,
+                Temperature,
+                Light,
+                Humidity,
+                Proximity,
+                Distance,
+            };
 
-        // fake response for now
-        std::string getTemps() { return createFakeTemps(); }
-
-        std::string read_file(const std::string &filename) const {
-            std::ifstream file(filename);
-            if (!file) {
-                spdlog::error("could not open db file: {}", filename);
-                throw std::runtime_error("Error opening Db file:  " + filename);
+            // return the label
+            static std::string to_label(Value v) {
+                switch (v) {
+                    case Value::Status:
+                        return "Status";
+                    case Value::Temperature:
+                        return "Temperature";
+                    case Value::Light:
+                        return "Light";
+                    case Value::Humidity:
+                        return "Humidity";
+                    case Value::Proximity:
+                        return "Proximity";
+                    case Value::Distance:
+                        return "Distance";
+                    default:
+                        return "Unknown";
+                }
             }
 
-            return std::string((std::istreambuf_iterator<char>(file)),
-                               std::istreambuf_iterator<char>());
-        }
+            // return the numeric value
+            static short to_value(Value reading_type) { return static_cast<short>(reading_type); }
+        };
 
-        std::string createFakeTemps() {
-            json j;
+        struct DbKey {
+            std::string datetime;
+            ReadingType::Value type;
+            std::string location;
+        };
 
-            // Add labels
-            j["labels"]
-                = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
-                   "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
-                   "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
+        // create the db key from iso8601 datetime string, the reading type and location
+        DbKey create_key(std::string datetime, ReadingType::Value type, std::string location);
 
-            // Sensor 1 data
-            json sensor1
-                = {{"sensor_id", "sensor_1"},
-                   {"label", "cottage-south"},
-                   {"data", {49.5781,  50.2531,  50.8156,  50.7406,  51.5281,  51.8094,  51.9688,
-                             51.9969,  52.3906,  52.5312,  52.5219,  53.6375,  52.7,     52.82187,
-                             52.82187, 49.71875, 47.75937, 46.46563, 45.94062, 44.51563, 44.51563,
-                             43.95313, 43.95313, 43.86875, 43.86875}},
-                   {"borderColor", "red"},
-                   {"fill", false}};
+        // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
+        std::string parse_datetime(const std::string& datetime);
 
-            // Sensor 2 data
-            json sensor2 = {{"sensor_id", "sensor_2"},
-                            {"label", "shed-west"},
-                            {"data", {49.32900,  49.521116, 50.02136,  51.18444,  52.293116,
-                                      51.43887,  52.48388,  52.980233, 53.10152,  52.00872,
-                                      52.635993, 54.16272,  52.29799,  53.557073, 51.98579,
-                                      48.73718,  48.225931, 45.70019,  45.66436,  44.396992,
-                                      44.27969,  43.71025,  43.768674, 44.14863,  43.34765}},
-                            {"borderColor", "blue"},
-                            {"fill", false}};
-
-            // Add datasets and end_date
-            j["datasets"] = {sensor1, sensor2};
-            j["end_date"] = "2025-01-30T21:00";
-
-            return j.dump();
-        }
-    };
-
+        struct Database {};
+    }  // namespace database
 }  // namespace app
