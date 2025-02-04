@@ -54,6 +54,19 @@ namespace app {
             std::string datetime;
             ReadingType::Value type;
             std::string location;
+
+            friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
+                os << v.datetime << ReadingType::to_value(v.type) << "." << v.location;
+
+                return os;
+            }
+
+            std::string to_string() const {
+                std::ostringstream oss;
+                oss << *this;
+
+                return oss.str();
+            }
         };
 
         // create the db key from iso8601 datetime string, the reading type and location

@@ -352,12 +352,15 @@ void test_create_key(Results& r) {
     r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
     r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
     r.equals(key.location == "cottage-south", "key location");
+
+    spdlog::info("key: {}", key.to_string());
+    r.equals(key.to_string() == "2025020411401.cottage-south", "key location");
 }
 
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
     test_parse_datetime(r);
     test_create_key(r);
