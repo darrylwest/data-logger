@@ -359,14 +359,13 @@ void test_create_key(Results& r) {
 }
 
 // Unit test method to populate with random data
-void populate_database(app::database::Database& db) {
+void populate_database(app::database::Database& db, int size = 500) {
 
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_int_distribution<> key_len_dist(15, 18);
     std::uniform_int_distribution<> char_dist('a', 'z');
 
-    int size = 500;
     for (int i = 0; i < size; ++i) {
         std::string key, value;
         int key_len = key_len_dist(gen);
@@ -391,9 +390,16 @@ void test_database_data(Results& r) {
     app::database::Database db = app::database::Database();
     r.equals(db.size() == 0, "db empty size");
 
-    populate_database(db);
+    int size = 500;
+    populate_database(db, size);
 
-    r.equals(db.size() == 500, "db size");
+    r.equals(db.size() == size, "db size");
+
+    auto keys = db.keys();
+    r.equals(keys.size() == size, "db keys size");
+
+    auto ok = db.save("/tmp/test.db");
+    r.equals(ok, "save the database");
 
 }
 

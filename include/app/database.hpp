@@ -151,8 +151,8 @@ namespace app {
                 return true;
             }
 
-            // Thread-safe dump to file
-            bool dump(const std::string& filename) const {
+            // Thread-safe dump/save to file
+            bool save(const std::string& filename) const {
                 std::lock_guard<std::mutex> lock(mtx);
                 std::ofstream outfile(filename);
                 if (!outfile.is_open()) {
