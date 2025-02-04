@@ -4,6 +4,7 @@
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include <random>
 
 #include <app/cli.hpp>
 #include <app/client.hpp>
@@ -357,6 +358,45 @@ void test_create_key(Results& r) {
     r.equals(key.to_string() == "2025020411401.cottage-south", "key location");
 }
 
+// Unit test method to populate with random data
+void populate_database(app::database::Database& db) {
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> key_len_dist(15, 18);
+    std::uniform_int_distribution<> char_dist('a', 'z');
+
+    int size = 500;
+    for (int i = 0; i < size; ++i) {
+        std::string key, value;
+        int key_len = key_len_dist(gen);
+        int value_len = key_len_dist(gen);
+
+        for (int j = 0; j < key_len; ++j) {
+            key += static_cast<char>(char_dist(gen));
+        }
+        for (int j = 0; j < value_len; ++j) {
+            value += static_cast<char>(char_dist(gen));
+        }
+
+        if (!db.set(key, value)) {
+            throw app::DatabaseException("error putting key/value");
+        }
+    }
+
+    spdlog::info("Database populated with {} random key-value pairs.", size);
+}
+
+void test_database_data(Results& r) {
+    app::database::Database db = app::database::Database();
+    r.equals(db.size() == 0, "db empty size");
+
+    populate_database(db);
+
+    r.equals(db.size() == 500, "db size");
+
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
@@ -364,6 +404,7 @@ Results test_database() {
 
     test_parse_datetime(r);
     test_create_key(r);
+    test_database_data(r);
 
     spdlog::set_level(spdlog::level::off);
 
