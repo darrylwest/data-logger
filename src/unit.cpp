@@ -331,12 +331,20 @@ Results test_exceptions() {
     return r;
 }
 
+void test_parse_datetime(Results& r) {
+    std::string datetime = "2025-02-04T11:40:23";
+
+    auto dt = app::database::parse_datetime(datetime);
+    r.equals(dt == "202502041140", "parse date time for key");
+    r.equals(dt.size() == 12, "dt size");
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
     spdlog::set_level(spdlog::level::info);
 
-    r.equals(true);
+    test_parse_datetime(r);
 
     spdlog::set_level(spdlog::level::off);
 
