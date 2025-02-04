@@ -9,10 +9,13 @@ namespace app {
         using namespace app::taskrunner;
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
-            auto worker = [&node]() {
+            auto worker = [&]() {
                 auto data = app::client::fetch_temps(node);
-                node.last_access = timestamp_seconds();
-                spdlog::info("temps: {}", data.to_string());
+                int ts = timestamp_seconds();
+                node.last_access = ts;
+                spdlog::info("ts: {}, temps: {}", ts, data.to_string());
+                // send to db with timestamp
+                // db.put(ts, data);
             };
 
             auto task = createTask(node.location.c_str(), period, worker);

@@ -26,9 +26,6 @@ int main(int argc, char* argv[]) {
     // start_tasks(tasks);
     // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
     auto nodes = app::client::create_nodes();
-    // auto task = app::nodes::create_temps_task(nodes.at(0));
-
-    // std::vector<Task> tasks;
     auto tasks = app::nodes::create_temps_task_list(nodes);
 
     halt_threads.clear();
@@ -39,7 +36,7 @@ int main(int argc, char* argv[]) {
     auto ok = app::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
 
-    // shut it down
+    // shut down the ticker tasks
     halt_threads.test_and_set();
     for (auto& t : tlist) {
         t.join();
