@@ -332,11 +332,26 @@ Results test_exceptions() {
 }
 
 void test_parse_datetime(Results& r) {
+    using namespace app::database;
+
     std::string datetime = "2025-02-04T11:40:23";
 
-    auto dt = app::database::parse_datetime(datetime);
+    auto dt = parse_datetime(datetime);
     r.equals(dt == "202502041140", "parse date time for key");
     r.equals(dt.size() == 12, "dt size");
+}
+
+void test_create_key(Results& r) {
+    using namespace app::database;
+
+    std::string datetime = "2025-02-04T11:40:23";
+    DbKey key = create_key(datetime, ReadingType::Value::Temperature, "cottage-south");
+
+    r.equals(key.datetime == "202502041140", "create key");
+    r.equals(key.type == ReadingType::Value::Temperature, "reading type");
+    r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
+    r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
+    r.equals(key.location == "cottage-south", "key location");
 }
 
 Results test_database() {
@@ -345,6 +360,7 @@ Results test_database() {
     spdlog::set_level(spdlog::level::info);
 
     test_parse_datetime(r);
+    test_create_key(r);
 
     spdlog::set_level(spdlog::level::off);
 
