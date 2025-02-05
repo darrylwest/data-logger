@@ -445,6 +445,8 @@ void test_truncate_to_minute(Results& r) {
 }
 
 void test_append_key_value(Results& r) {
+    spdlog::set_level(spdlog::level::info);
+
     const auto filename = "/tmp/append.db";
     const auto key = app::database::create_key("2025-02-36T07:36", "test-location");
     const auto value = "7.553";
@@ -452,6 +454,15 @@ void test_append_key_value(Results& r) {
 
     r.equals(true, "didn't throw");
     // TODO read the file back and verify key/value
+
+    try {
+        const auto badfile = "bad-file/folder/temps/bad.db";
+        app::database::append_key_value(badfile, key, value);
+        r.equals(false, "fail: should throw on filename: bad-file/...");
+    } catch (const app::FileException& e) {
+        r.equals(true, "should throw");
+        spdlog::error("bad file: {}", e.what());
+    }
 }
 
 Results test_database() {
