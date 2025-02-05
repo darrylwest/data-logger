@@ -24,7 +24,7 @@ namespace app {
                 for (const auto probe : data.probes) {
                     // db.(key, data);
                     auto key = app::database::create_key(at, probe.location);
-                    spdlog::info("probe: {}, {} = {}", probe.location, key, probe.tempC);
+                    spdlog::info("probe: {}, key: {}, value: {}", probe.location, key.to_string(), probe.tempC);
                 }
 
                 // append the database file
