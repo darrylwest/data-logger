@@ -465,6 +465,28 @@ void test_append_key_value(Results& r) {
     }
 }
 
+void test_read_current(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
+
+    using namespace app::database;
+    const auto filename = "data/temperature/current.deck-west.db";
+    Database db;
+
+    // read the current file
+    db.read(filename, true);
+
+    spdlog::info("dbsize: {}", db.size());
+    const auto keys = db.keys();
+    r.equals(keys.size() == db.size(), "size matters");
+
+    // get just selected keys
+    const auto noon_keys = db.keys("2025020512");
+    r.equals(noon_keys.size() == 12, "always 12 entries for the hour");
+    for (const auto& key : db.keys("2025020512")) {
+        spdlog::info("key: {}={}", key, db.get(key));
+    }
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
@@ -475,6 +497,7 @@ Results test_database() {
     test_database_data(r);
     test_truncate_to_minute(r);
     test_append_key_value(r);
+    test_read_current(r);
 
     spdlog::set_level(spdlog::level::off);
 
