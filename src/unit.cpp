@@ -444,6 +444,16 @@ void test_truncate_to_minute(Results& r) {
     r.equals(truncated == "2025-02-05T08:00", "top of hour minute");
 }
 
+void test_append_key_value(Results& r) {
+    const auto filename = "/tmp/append.db";
+    const auto key = app::database::create_key("2025-02-36T07:36", "test-location");
+    const auto value = "7.553";
+    app::database::append_key_value(filename, key, value);
+
+    r.equals(true, "didn't throw");
+    // TODO read the file back and verify key/value
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
@@ -453,6 +463,7 @@ Results test_database() {
     test_create_key(r);
     test_database_data(r);
     test_truncate_to_minute(r);
+    test_append_key_value(r);
 
     spdlog::set_level(spdlog::level::off);
 

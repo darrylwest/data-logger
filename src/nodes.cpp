@@ -1,10 +1,10 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
-#include <vector>
 
-#include <app/nodes.hpp>
 #include <app/database.hpp>
+#include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
+#include <vector>
 
 namespace app {
     namespace nodes {
@@ -12,7 +12,7 @@ namespace app {
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
             // create a db for this task based on temps and node.location
-            // filename = data/temps/probe-location/day-date.detail
+            // filename = data/temperature/probe-location/day-date.detail
 
             auto worker = [&]() mutable {
                 auto data = app::client::fetch_temps(node);
@@ -24,7 +24,12 @@ namespace app {
                 for (const auto probe : data.probes) {
                     // db.(key, data);
                     auto key = app::database::create_key(at, probe.location);
-                    spdlog::info("probe: {}, key: {}, value: {}", probe.location, key.to_string(), probe.tempC);
+
+                    // TODO create a method for this? pull data folder from config...
+                    const auto filename = "data/temperature/current." + probe.location + ".db";
+                    spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(), probe.tempC);
+
+                    app::database::append_key_value(filename, key, std::to_string(probe.tempC));
                 }
 
                 // append the database file

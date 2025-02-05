@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <app/database.hpp>
+#include <app/exceptions.hpp>
 #include <nlohmann/json.hpp>
 
 /*
@@ -45,7 +46,9 @@ namespace app {
             auto timePoint = std::chrono::system_clock::from_time_t(std::mktime(&tm));
 
             // Truncate to nearest 5 minutes
-            auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timePoint.time_since_epoch()) % minute;
+            auto minutes
+                = std::chrono::duration_cast<std::chrono::minutes>(timePoint.time_since_epoch())
+                  % minute;
             timePoint -= minutes;
 
             // Convert back to time_t
@@ -56,6 +59,20 @@ namespace app {
             std::ostringstream result;
             result << std::put_time(truncatedTm, "%Y-%m-%dT%H:%M");
             return result.str();
+        }
+
+        // append the key/value to the file; throws on error
+        void append_key_value(const std::string& filename, const DbKey& key,
+                              const std::string& value) {
+            std::ofstream file(filename, std::ios::app);
+
+            if (!file.is_open()) {
+                spdlog::error("error opening file: {}", filename);
+                throw app::FileException("error opening file: " + filename);
+            }
+
+            file << key << "=" << value << std::endl;
+            file.close();
         }
 
     }  // namespace database
