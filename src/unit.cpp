@@ -346,16 +346,17 @@ void test_create_key(Results& r) {
     using namespace app::database;
 
     std::string datetime = "2025-02-04T11:40:23";
-    DbKey key = create_key(datetime, ReadingType::Value::Temperature, "cottage-south");
+    DbKey key = create_key(datetime, "cottage-south");
 
     r.equals(key.datetime == "202502041140", "create key");
-    r.equals(key.type == ReadingType::Value::Temperature, "reading type");
-    r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
-    r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
-    r.equals(key.location == "cottage-south", "key location");
+    // r.equals(key.type == ReadingType::Value::Temperature, "reading type");
+    // r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
+    // r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
+
+    r.equals(key.location == "cottage-south", "probe location");
 
     spdlog::info("key: {}", key.to_string());
-    r.equals(key.to_string() == "2025020411401.cottage-south", "key location");
+    r.equals(key.to_string() == "202502041140.cottage-south", "date/probe key");
 }
 
 // Unit test method to populate with random data

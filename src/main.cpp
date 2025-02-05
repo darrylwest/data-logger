@@ -24,10 +24,11 @@ int main(int argc, char* argv[]) {
     // define and start the ticker + jobs
     // auto tasks = getTasks();
     // start_tasks(tasks);
-    // list: fetch_readings, save_database, fetch_client_status, backup_database, init_database
+    // list: fetch_temp_readings, fetch_other_readings, fetch_client_status
     auto nodes = app::client::create_nodes();
     auto tasks = app::nodes::create_temps_task_list(nodes);
 
+    // used for graceful shutdown
     halt_threads.clear();
 
     auto tlist = start_tasks(tasks);

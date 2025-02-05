@@ -13,9 +13,9 @@ namespace app {
     namespace database {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
-        DbKey create_key(std::string datetime, ReadingType::Value type, std::string location) {
+        DbKey create_key(std::string datetime, std::string location) {
             auto dt = parse_datetime(datetime);
-            return DbKey{.datetime = dt, .type = type, .location = location};
+            return DbKey{.datetime = dt, .location = location};
         }
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm

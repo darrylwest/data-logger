@@ -1,15 +1,18 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
+#include <vector>
 
 #include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
-#include <vector>
 
 namespace app {
     namespace nodes {
         using namespace app::taskrunner;
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
+            // create a db for this task based on temps and node.location
+            // filename = data/temps/probe-location/day-date.detail
+
             auto worker = [&]() mutable {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
@@ -20,6 +23,8 @@ namespace app {
                     // db.(key, data);
                     spdlog::info("probe: {} = {}", probe.location, probe.tempC);
                 }
+
+                // append the database file
 
                 node.last_access = ts;
             };

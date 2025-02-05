@@ -36,19 +36,19 @@ namespace app {
             static std::string to_label(Value v) {
                 switch (v) {
                     case Value::Status:
-                        return "Status";
+                        return "status";
                     case Value::Temperature:
-                        return "Temperature";
+                        return "temperature";
                     case Value::Light:
-                        return "Light";
+                        return "light";
                     case Value::Humidity:
-                        return "Humidity";
+                        return "humidity";
                     case Value::Proximity:
-                        return "Proximity";
+                        return "proximity";
                     case Value::Distance:
-                        return "Distance";
+                        return "distance";
                     default:
-                        return "Unknown";
+                        return "unknown";
                 }
             }
 
@@ -58,11 +58,10 @@ namespace app {
 
         struct DbKey {
             std::string datetime;
-            ReadingType::Value type;
             std::string location;
 
             friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
-                os << v.datetime << ReadingType::to_value(v.type) << "." << v.location;
+                os << v.datetime << "." << v.location;
 
                 return os;
             }
@@ -75,8 +74,8 @@ namespace app {
             }
         };
 
-        // create the db key from iso8601 datetime string, the reading type and location
-        DbKey create_key(std::string datetime, ReadingType::Value type, std::string location);
+        // create the db key from iso8601 datetime string and the probe location
+        DbKey create_key(std::string datetime, std::string location);
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
         std::string parse_datetime(const std::string& datetime);
