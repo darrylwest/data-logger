@@ -1,38 +1,28 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
+#include <vector>
 
 #include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
-#include <vector>
 
 namespace app {
     namespace nodes {
         using namespace app::taskrunner;
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
-            std::map<std::string, float> cache;
 
-            auto worker = [cache = std::move(cache), &node = node]() mutable {
+            auto worker = [&]() mutable {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
 
-                // save data from each probe
+                spdlog::info("temps: {}", ts, data.to_string());
+
                 for (const auto probe : data.probes) {
-                    std::string key = probe.location + std::to_string(ts);
-                    cache[key] = probe.tempC;
+                    // db.(key, data);
+                    spdlog::info("probe: {} = {}", probe.location, probe.tempC);
                 }
 
-                int minute = ts / 60;
-                if (minute != (node.last_access / 60)) {
-                    spdlog::info("save to database at minute = {}", minute);
-                    for (const auto& [key, value] : cache) {
-                        spdlog::info("{}={}", key, value);
-                    }
-                    cache.clear();
-                }
                 node.last_access = ts;
-                spdlog::info("temps: {}", ts, data.to_string());
-                // db.(key, data);
             };
 
             auto task = createTask(node.location.c_str(), period, worker);

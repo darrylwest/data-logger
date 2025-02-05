@@ -11,7 +11,7 @@ namespace app {
         using namespace app::client;
 
         // create the task with a default of 15 second period
-        Task create_temps_task(app::client::ClientNode& node, int period = 15);
+        Task create_temps_task(app::client::ClientNode& node, int period = 60);
         std::vector<Task> create_temps_task_list(std::vector<ClientNode>& nodes);
 
         // Task create_status_task(app::client::ClientNode& node, int period = 0)
