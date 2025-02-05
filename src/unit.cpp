@@ -445,7 +445,7 @@ void test_truncate_to_minute(Results& r) {
 }
 
 void test_append_key_value(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
     const auto filename = "/tmp/append.db";
     const auto key = app::database::create_key("2025-02-36T07:36", "test-location");
