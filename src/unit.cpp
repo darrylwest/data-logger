@@ -428,6 +428,22 @@ void test_database_data(Results& r) {
     r.equals(ok, "save the database");
 }
 
+void test_truncate_to_minute(Results& r) {
+    using namespace app::database;
+
+    std::string isodate = "2025-02-05T07:49:22";
+    std::string truncated = truncate_to_minutes(isodate);
+    r.equals(truncated == "2025-02-05T07:45", "45 minute");
+
+    isodate = "2025-02-05T07:51:22";
+    truncated = truncate_to_minutes(isodate);
+    r.equals(truncated == "2025-02-05T07:50", "50 minute");
+
+    isodate = "2025-02-05T08:01:22";
+    truncated = truncate_to_minutes(isodate);
+    r.equals(truncated == "2025-02-05T08:00", "top of hour minute");
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
@@ -436,6 +452,7 @@ Results test_database() {
     test_parse_datetime(r);
     test_create_key(r);
     test_database_data(r);
+    test_truncate_to_minute(r);
 
     spdlog::set_level(spdlog::level::off);
 

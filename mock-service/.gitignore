@@ -4,3 +4,4 @@ succeed-fail
 retry-service
 task-runner
 struct-enum
+truncate-minutes

@@ -80,6 +80,8 @@ namespace app {
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
         std::string parse_datetime(const std::string& datetime);
 
+        std::string truncate_to_minutes(const std::string& isodate, const int minute = 5);
+
         struct Database {
           private:
             std::map<std::string, std::string> data;

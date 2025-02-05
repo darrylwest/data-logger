@@ -34,6 +34,30 @@ namespace app {
             return result;
         }
 
+        // truncate the iso8601 date to the nearest minute, default 5 minute mark
+        std::string truncate_to_minutes(const std::string& isodate, const int minute) {
+            // Parse the ISO 8601 datetime string
+            std::tm tm = {};
+            std::istringstream ss(isodate);
+            ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
+
+            // Convert to time_point
+            auto timePoint = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+
+            // Truncate to nearest 5 minutes
+            auto minutes = std::chrono::duration_cast<std::chrono::minutes>(timePoint.time_since_epoch()) % minute;
+            timePoint -= minutes;
+
+            // Convert back to time_t
+            std::time_t truncatedTime = std::chrono::system_clock::to_time_t(timePoint);
+            std::tm* truncatedTm = std::localtime(&truncatedTime);
+
+            // Format the result back to ISO 8601 without seconds
+            std::ostringstream result;
+            result << std::put_time(truncatedTm, "%Y-%m-%dT%H:%M");
+            return result.str();
+        }
+
     }  // namespace database
 }  // namespace app
 
