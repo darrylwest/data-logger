@@ -4,19 +4,19 @@
 
 #pragma once
 
-#include <map>
-#include <string>
-#include <vector>
-#include <mutex>
-#include <optional>
 #include <spdlog/spdlog.h>
 
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <mutex>
 #include <nlohmann/json.hpp>
-#include <stdexcept>
+#include <optional>
 #include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace app {
     namespace database {
@@ -82,11 +82,11 @@ namespace app {
         std::string parse_datetime(const std::string& datetime);
 
         struct Database {
-        private:
+          private:
             std::map<std::string, std::string> data;
-            mutable std::mutex mtx; // mutable to allow locking in const methods
+            mutable std::mutex mtx;  // mutable to allow locking in const methods
 
-        public:
+          public:
             // Thread-safe set method
             bool set(const std::string& key, const std::string& value) {
                 std::lock_guard<std::mutex> lock(mtx);
@@ -101,7 +101,7 @@ namespace app {
                 if (it != data.end()) {
                     return it->second;
                 }
-                return ""; // Return an empty string if key is not found
+                return "";  // Return an empty string if key is not found
             }
 
             // Thread-safe remove method
@@ -123,9 +123,7 @@ namespace app {
             }
 
             // return the current database size
-            size_t size() {
-                return data.size();
-            }
+            size_t size() { return data.size(); }
 
             // Thread-safe read from file
             bool read(const std::string& filename, bool clear = false) {
@@ -163,7 +161,7 @@ namespace app {
                 }
                 return true;
             }
-        }; // database
+        };  // database
 
     }  // namespace database
 }  // namespace app

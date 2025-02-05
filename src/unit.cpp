@@ -4,7 +4,6 @@
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
-#include <random>
 
 #include <app/cli.hpp>
 #include <app/client.hpp>
@@ -13,6 +12,7 @@
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
+#include <random>
 #include <toml.hpp>
 #include <vendor/testlib.hpp>
 
@@ -360,22 +360,46 @@ void test_create_key(Results& r) {
 
 // Unit test method to populate with random data
 void populate_database(app::database::Database& db, int size = 500) {
-
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<> key_len_dist(15, 18);
-    std::uniform_int_distribution<> char_dist('a', 'z');
+
+    int day = 1;
+    int hour = 0;
+    int minute = 0;
+    float t1 = 9.00;
+    float t2 = 8.94;
+    float t3 = 9.04;
+    float t4 = 9.06;
 
     for (int i = 0; i < size; ++i) {
         std::string key, value;
-        int key_len = key_len_dist(gen);
-        int value_len = key_len_dist(gen);
 
-        for (int j = 0; j < key_len; ++j) {
-            key += static_cast<char>(char_dist(gen));
+        key = fmt::format("202502{:02d}{:02d}{:02d}{}", day, hour, minute, ".cottage-south");
+
+        minute++;
+        if (minute > 59) {
+            hour++;
+            minute = 0;
         }
-        for (int j = 0; j < value_len; ++j) {
-            value += static_cast<char>(char_dist(gen));
+
+        if (hour > 23) {
+            day++;
+            hour = 0;
+        }
+
+        // value = fmt::format("{:6f} {:6f} {:6f} {:6f}", t1, t2, t3, t4);
+        value = fmt::format("{:6f}", t1);
+
+        if (i < size / 2) {
+            t1 += 0.01;
+            t2 += 0.005;
+            t3 += 0.007;
+            t4 += 0.01;
+        } else {
+            t1 -= 0.01;
+            t2 -= 0.005;
+            t3 -= 0.007;
+            t4 -= 0.01;
         }
 
         if (!db.set(key, value)) {
@@ -390,7 +414,8 @@ void test_database_data(Results& r) {
     app::database::Database db = app::database::Database();
     r.equals(db.size() == 0, "db empty size");
 
-    int size = 500;
+    // 1 days of data
+    int size = (60 * 24);
     populate_database(db, size);
 
     r.equals(db.size() == size, "db size");
@@ -400,7 +425,6 @@ void test_database_data(Results& r) {
 
     auto ok = db.save("/tmp/test.db");
     r.equals(ok, "save the database");
-
 }
 
 Results test_database() {

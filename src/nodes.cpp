@@ -3,19 +3,36 @@
 
 #include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
+#include <vector>
 
 namespace app {
     namespace nodes {
         using namespace app::taskrunner;
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
-            auto worker = [&]() {
+            std::map<std::string, float> cache;
+
+            auto worker = [cache = std::move(cache), &node = node]() mutable {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
+
+                // save data from each probe
+                for (const auto probe : data.probes) {
+                    std::string key = probe.location + std::to_string(ts);
+                    cache[key] = probe.tempC;
+                }
+
+                int minute = ts / 60;
+                if (minute != (node.last_access / 60)) {
+                    spdlog::info("save to database at minute = {}", minute);
+                    for (const auto& [key, value] : cache) {
+                        spdlog::info("{}={}", key, value);
+                    }
+                    cache.clear();
+                }
                 node.last_access = ts;
-                spdlog::info("ts: {}, temps: {}", ts, data.to_string());
-                // send to db with timestamp
-                // db.put(data);
+                spdlog::info("temps: {}", ts, data.to_string());
+                // db.(key, data);
             };
 
             auto task = createTask(node.location.c_str(), period, worker);
