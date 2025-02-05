@@ -1,21 +1,20 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
-#include <vector>
 
 #include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
+#include <vector>
 
 namespace app {
     namespace nodes {
         using namespace app::taskrunner;
 
         Task create_temps_task(app::client::ClientNode& node, int period) {
-
             auto worker = [&]() mutable {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
 
-                spdlog::info("temps: {}", ts, data.to_string());
+                spdlog::info("ts {}, temps: {}", ts, data.to_string());
 
                 for (const auto probe : data.probes) {
                     // db.(key, data);

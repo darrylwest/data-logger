@@ -62,30 +62,38 @@ namespace app {
             auto next = steady_clock::now();
 
             task.last_run = taskrunner::timestamp_seconds();
+            int tick_count = period;
 
             try {
                 while (!halt_threads.test()) {
-                    func();
-                    int ts = taskrunner::timestamp_seconds();
+                    if (tick_count >= period) {
+                        func();
+                        int ts = taskrunner::timestamp_seconds();
 
-                    if (period == 0) {
-                        spdlog::info("{} is a one-shot task, complete.", name);
-                        return;
+                        if (period == 0) {
+                            spdlog::info("{} is a one-shot task, complete.", name);
+                            return;
+                        }
+
+                        int delta = ts - task.last_run;
+
+                        task.run_count++;
+
+                        if (task.run_count > 1 && std::abs(delta - period) > 1) {
+                            spdlog::warn("DELTA ERROR! task: {}, delta: {}", task.to_string(),
+                                         delta);
+                        } else {
+                            spdlog::info("task: {}, delta: {}", task.to_string(), delta);
+                        }
+
+                        task.last_run = ts;
+                        tick_count = 0;
                     }
 
-                    int delta = ts - task.last_run;
+                    // always increment
+                    tick_count++;
 
-                    task.run_count++;
-
-                    if (task.run_count > 1 && std::abs(delta - period) > 1) {
-                        spdlog::warn("DELTA ERROR! task: {}, delta: {}", task.to_string(), delta);
-                    } else {
-                        spdlog::info("task: {}, delta: {}", task.to_string(), delta);
-                    }
-
-                    task.last_run = ts;
-
-                    next += seconds(period);
+                    next += seconds(1);
 
                     std::this_thread::sleep_until(next);
                 }
