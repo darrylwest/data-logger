@@ -3,6 +3,7 @@
 #include <vector>
 
 #include <app/nodes.hpp>
+#include <app/database.hpp>
 #include <app/taskrunner.hpp>
 
 namespace app {
@@ -17,11 +18,13 @@ namespace app {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
 
-                spdlog::info("ts {}, temps: {}", ts, data.to_string());
+                std::string at = app::database::truncate_to_minutes(data.reading_at);
+                spdlog::info("ts {}, temps: {}, at: {}", ts, data.to_string(), at);
 
                 for (const auto probe : data.probes) {
                     // db.(key, data);
-                    spdlog::info("probe: {} = {}", probe.location, probe.tempC);
+                    auto key = app::database::create_key(at, probe.location);
+                    spdlog::info("probe: {}, {} = {}", probe.location, key, probe.tempC);
                 }
 
                 // append the database file
