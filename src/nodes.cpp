@@ -9,8 +9,9 @@
 namespace app {
     namespace nodes {
         using namespace app::taskrunner;
+        using namespace app::client;
 
-        Task create_temps_task(app::client::ClientNode& node, int period) {
+        Task create_temps_task(ClientNode& node, int period) {
             // create a db for this task based on temps and node.location
             // filename = data/temperature/probe-location/day-date.detail
 
@@ -42,7 +43,7 @@ namespace app {
         }
 
         // create a list of temps tasks from the node list
-        void append_temps_tasks(std::vector<app::client::ClientNode>& nodes,
+        void append_temps_tasks(std::vector<ClientNode>& nodes,
                                 std::vector<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
@@ -50,7 +51,7 @@ namespace app {
         }
 
         // create a task to query the client status
-        Task create_status_task(app::client::ClientNode& node, const int period) {
+        Task create_status_task(ClientNode& node, const int period) {
             auto worker = [&]() {
                 const auto status = app::client::fetch_status(node);
 
