@@ -14,6 +14,9 @@
 #include <thread>
 #include <vector>
 
+template <typename T>
+alias Vec std::vector<T>;
+
 namespace app {
     namespace taskrunner {
         extern std::atomic_flag halt_threads;
@@ -58,6 +61,6 @@ namespace app {
         std::thread start(const Task& task);
 
         // start a list of threads; clears the halt_threads flag
-        std::vector<std::thread> start_tasks(const std::vector<Task> list);
+        Vec<std::thread> start_tasks(const Vec<Task> list);
     }  // namespace taskrunner
 }  // namespace app

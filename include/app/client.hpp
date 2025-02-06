@@ -5,13 +5,13 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
-
 #include <app/temperature.hpp>
 #include <iostream>
-#include <nlohmann/json.hpp>
 #include <sstream>
 #include <vector>
+
+template <typename T>
+alias Vec std::vector<T>;
 
 namespace app {
     namespace client {
@@ -66,7 +66,7 @@ namespace app {
         ClientStatus parse_status(const std::string& json_text);
         ClientStatus fetch_status(ClientNode& node);
         TemperatureData fetch_temps(ClientNode& node);
-        std::vector<ClientNode> create_nodes();
+        Vec<ClientNode> create_nodes();
 
     }  // namespace client
 }  // namespace app
