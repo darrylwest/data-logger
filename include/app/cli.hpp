@@ -4,19 +4,18 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
-
-#include <app/version.hpp>
+#include <app/types.hpp>
 #include <iostream>
+#include <sstream>
 
 namespace app {
 
     struct Config {
-        std::string host = "0.0.0.0";
+        Str host = "0.0.0.0";
         int port = 9999;
-        std::string www = "./html";
-        std::string cert_file = ".ssh/cert.pem";
-        std::string key_file = ".ssh/key.pem";
+        Str www = "./html";
+        Str cert_file = ".ssh/cert.pem";
+        Str key_file = ".ssh/key.pem";
         bool verbose = false;
 
         friend std::ostream& operator<<(std::ostream& os, const Config v) {
@@ -30,7 +29,7 @@ namespace app {
             return os;
         }
 
-        std::string to_string() const {
+        Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 

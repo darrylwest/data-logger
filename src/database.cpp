@@ -111,9 +111,9 @@ namespace app {
         }
 
         // Thread-safe keys method with optional filter
-        std::vector<Str> Database::keys(const Str& search) const {
+        Vec<Str> Database::keys(const Str& search) const {
             std::lock_guard<std::mutex> lock(mtx);
-            std::vector<Str> key_list;
+            Vec<Str> key_list;
             for (const auto& [key, _] : data) {
                 if (search.empty() || key.find(search) != Str::npos) {
                     key_list.push_back(key);

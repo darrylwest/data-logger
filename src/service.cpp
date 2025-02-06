@@ -2,23 +2,20 @@
 // 2025-02-01 18:27:44 dpw
 //
 
-#include <httplib.h>
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
-#include <app/database.hpp>
-#include <app/logging.hpp>
 #include <app/service.hpp>
+#include <app/types.hpp>
 #include <cstdio>
 #include <iostream>
-#include <nlohmann/json.hpp>
 
 namespace app {
     using namespace httplib;
     using json = nlohmann::json;
 
     // remove this later...
-    std::string create_fake_temps();
+    Str create_fake_temps();
 
     auto db = database::Database();
 
@@ -107,7 +104,7 @@ namespace app {
         return svr.listen(config.host, config.port);
     }
 
-    std::string create_fake_temps() {
+    Str create_fake_temps() {
         json j;
 
         // Add labels

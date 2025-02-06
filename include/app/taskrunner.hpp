@@ -40,7 +40,7 @@ namespace app {
                 return os;
             }
 
-            std::string to_string() const {
+            Str to_string() const {
                 std::ostringstream oss;
                 oss << *this;
 
@@ -49,10 +49,10 @@ namespace app {
         };
 
         // create the task
-        Task createTask(const char* task_name, int period, std::function<void()> task_runner);
+        Task createTask(const char* task_name, int period, Func<void()> task_runner);
 
         // run the func; if period == 0 then this is a one-shot-and-out task
-        void run(const std::function<void()> func, const char* name, const int period);
+        void run(const Func<void()> func, const char* name, const int period);
 
         // start a thread using the task values
         std::thread start(const Task& task);
