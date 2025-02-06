@@ -26,8 +26,8 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 2);
-    r.equals(vers.patch == 4);
-    r.equals(vers.build >= 100);
+    r.equals(vers.patch == 5);
+    r.equals(vers.build >= 140);
 
     return r;
 }
@@ -333,7 +333,7 @@ Results test_exceptions() {
 }
 
 void test_parse_datetime(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
     using namespace app::database;
 
     std::string datetime = "2025-02-04T11:40:23";

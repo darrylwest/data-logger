@@ -42,12 +42,11 @@ namespace app {
         }
 
         // create a list of temps tasks from the node list
-        std::vector<Task> create_temps_task_list(std::vector<app::client::ClientNode>& nodes) {
-            std::vector<Task> tasks;
+        void append_temps_tasks(std::vector<app::client::ClientNode>& nodes,
+                                std::vector<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
             }
-            return tasks;
         }
 
         // create a task to query the client status
@@ -71,13 +70,10 @@ namespace app {
         }
 
         // create a list of status tasks from the node list
-        std::vector<Task> create_status_task_list(std::vector<ClientNode>& nodes,
-                                                  std::vector<Task>& tasks) {
-            // std::vector<Task> tasks;
+        void append_status_tasks(std::vector<ClientNode>& nodes, std::vector<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_status_task(node));
             }
-            return tasks;
         }
 
     }  // namespace nodes
