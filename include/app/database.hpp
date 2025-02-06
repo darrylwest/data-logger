@@ -75,20 +75,20 @@ namespace app {
         };
 
         // create the db key from iso8601 datetime string and the probe location
-        DbKey create_key(std::string datetime, std::string location);
+        const DbKey create_key(const std::string datetime, const std::string location);
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        std::string parse_datetime(const std::string& datetime);
+        const std::string parse_datetime(const std::string& datetime);
 
         // truncate an iso date to the nearest n minutes, defaulting to 5 minutes
-        std::string truncate_to_minutes(const std::string& isodate, const int minute = 5);
+        const std::string truncate_to_minutes(const std::string& isodate, const int minute = 5);
 
         // append the key/value to the file; throws FileException on error
-        void append_key_value(const std::string& filename, const DbKey& key,
+        const void append_key_value(const std::string& filename, const DbKey& key,
                               const std::string& value);
 
         // get the current local time from the timestamp
-        std::string timestamp_to_local(const std::time_t timestamp);
+        const std::string timestamp_to_local(const std::time_t timestamp);
 
         struct Database {
           private:

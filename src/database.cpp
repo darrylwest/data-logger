@@ -16,13 +16,13 @@ namespace app {
     namespace database {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
-        DbKey create_key(std::string datetime, std::string location) {
+        const DbKey create_key(const std::string datetime, const std::string location) {
             auto dt = parse_datetime(datetime);
             return DbKey{.datetime = dt, .location = location};
         }
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        std::string parse_datetime(const std::string& datetime) {
+        const std::string parse_datetime(const std::string& datetime) {
             std::string result;
             result.reserve(12);  // Reserve space for "YYYYMMDDHHMM"
 
@@ -38,7 +38,7 @@ namespace app {
         }
 
         // truncate the iso8601 date to the nearest minute, default 5 minute mark
-        std::string truncate_to_minutes(const std::string& isodate, const int minute) {
+        const std::string truncate_to_minutes(const std::string& isodate, const int minute) {
             // Parse the ISO 8601 datetime string
             std::tm tm = {};
             std::istringstream ss(isodate);
@@ -64,7 +64,7 @@ namespace app {
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written
-        void append_key_value(const std::string& filename, const DbKey& key,
+        const void append_key_value(const std::string& filename, const DbKey& key,
                               const std::string& value) {
             std::ofstream file(filename, std::ios::app);
 
@@ -80,7 +80,7 @@ namespace app {
         }
 
         // get the current local time from the timestamp
-        std::string timestamp_to_local(const std::time_t timestamp) {
+        const std::string timestamp_to_local(const std::time_t timestamp) {
             using namespace std::chrono;
             system_clock::time_point tp = system_clock::from_time_t(timestamp);
 

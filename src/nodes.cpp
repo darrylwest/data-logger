@@ -76,5 +76,7 @@ namespace app {
             }
         }
 
+        // Task create_startup_task()
+
     }  // namespace nodes
 }  // namespace app
