@@ -77,10 +77,10 @@ Results test_taskrunner() {
 
     try {
         app::taskrunner::run(ex_task.runner, ex_task.name, ex_task.period);
-        r.equals(false, "should not get this far");
+        r.fail("should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());
-        r.equals(true, "should catch here");
+        r.pass("should catch here");
     }
 
     spdlog::set_level(spdlog::level::off);
@@ -291,10 +291,10 @@ Results test_exceptions() {
 
     try {
         bool ok = bad_http_get("http://bad_network.com");
-        r.equals(ok, "should not get here");
+        r.fail("should not get here from a bad http get");
     } catch (const std::exception& e) {
         spdlog::info("exception: {}", e.what());
-        r.equals(true);
+        r.pass("exception throw ok");
     }
 
     try {
