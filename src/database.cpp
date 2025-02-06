@@ -94,7 +94,37 @@ namespace app {
 
             return oss.str();
         }
+
+        bool Database::set(const std::string& key, const std::string& value) {
+            std::lock_guard<std::mutex> lock(mtx);
+            data[key] = value;
+            return true;
+        }
+
+        std::string Database::get(const std::string& key) const {
+            std::lock_guard<std::mutex> lock(mtx);
+            auto it = data.find(key);
+            if (it != data.end()) {
+                return it->second;
+            }
+            return "";  // Return an empty string if key is not found
+        }
+
+        // Thread-safe keys method with optional filter
+        std::vector<std::string> Database::keys(const std::string& search) const {
+            std::lock_guard<std::mutex> lock(mtx);
+            std::vector<std::string> key_list;
+            for (const auto& [key, _] : data) {
+                if (search.empty() || key.find(search) != std::string::npos) {
+                    key_list.push_back(key);
+                }
+            }
+            return key_list;
+        }
+
+        size_t Database::size() const { return data.size(); }
     }  // namespace database
+
 }  // namespace app
 
 /*

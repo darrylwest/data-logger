@@ -93,21 +93,10 @@ namespace app {
 
           public:
             // Thread-safe set method
-            bool set(const std::string& key, const std::string& value) {
-                std::lock_guard<std::mutex> lock(mtx);
-                data[key] = value;
-                return true;
-            }
+            bool set(const std::string& key, const std::string& value);
 
             // Thread-safe get method
-            std::string get(const std::string& key) const {
-                std::lock_guard<std::mutex> lock(mtx);
-                auto it = data.find(key);
-                if (it != data.end()) {
-                    return it->second;
-                }
-                return "";  // Return an empty string if key is not found
-            }
+            std::string get(const std::string& key) const;
 
             // Thread-safe remove method
             bool remove(const std::string& key) {
@@ -116,19 +105,10 @@ namespace app {
             }
 
             // Thread-safe keys method with optional filter
-            std::vector<std::string> keys(const std::string& search = "") const {
-                std::lock_guard<std::mutex> lock(mtx);
-                std::vector<std::string> key_list;
-                for (const auto& [key, _] : data) {
-                    if (search.empty() || key.find(search) != std::string::npos) {
-                        key_list.push_back(key);
-                    }
-                }
-                return key_list;
-            }
+            std::vector<std::string> keys(const std::string& search = "") const ;
 
             // return the current database size
-            size_t size() { return data.size(); }
+            size_t size() const;
 
             // Thread-safe read from file
             bool read(const std::string& filename, bool clear = false) {
