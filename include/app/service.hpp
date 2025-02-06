@@ -5,12 +5,8 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
 #include <vendor/httplib.h>
-
 #include <app/cli.hpp>
-#include <cstdio>
-#include <iostream>
 
 namespace app {
 
@@ -20,7 +16,5 @@ namespace app {
     // Function to run the server
     bool run_service(const Config &config);
 
-    // remove this later...
-    std::string create_fake_temps();
 
 }  // namespace app

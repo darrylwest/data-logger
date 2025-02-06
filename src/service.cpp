@@ -17,6 +17,9 @@ namespace app {
     using namespace httplib;
     using json = nlohmann::json;
 
+    // remove this later...
+    std::string create_fake_temps();
+
     auto db = database::Database();
 
     // Function to set up the server and apply configurations
