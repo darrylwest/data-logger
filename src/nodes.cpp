@@ -1,9 +1,7 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
 
-#include <app/database.hpp>
 #include <app/nodes.hpp>
-#include <app/taskrunner.hpp>
 
 namespace app {
     namespace nodes {

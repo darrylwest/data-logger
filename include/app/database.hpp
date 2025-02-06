@@ -4,20 +4,16 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
-
 #include <app/types.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <mutex>
-#include <nlohmann/json.hpp>
 #include <sstream>
 
 namespace app {
     namespace database {
-        using json = nlohmann::json;
 
         struct ReadingType {
             enum class Value : short {
@@ -110,42 +106,12 @@ namespace app {
             // return the current database size
             size_t size() const;
 
-            // Thread-safe read from file
-            bool read(const Str& filename, bool clear = false) {
-                std::lock_guard<std::mutex> lock(mtx);
-                std::ifstream infile(filename);
-                if (!infile.is_open()) {
-                    return false;
-                }
+            // read from file to populate database; optionally clear the db first
+            bool read(const Str& filename, const bool clear = false);
 
-                if (clear) {
-                    spdlog::info("clearing the database prior to read");
-                    data.clear();
-                }
+            // save the current database to filename
+            bool save(const Str& filename) const;
 
-                Str line;
-                while (std::getline(infile, line)) {
-                    std::istringstream iss(line);
-                    Str key, value;
-                    if (std::getline(iss, key, '=') && std::getline(iss, value)) {
-                        data[key] = value;
-                    }
-                }
-                return true;
-            }
-
-            // Thread-safe dump/save to file
-            bool save(const Str& filename) const {
-                std::lock_guard<std::mutex> lock(mtx);
-                std::ofstream outfile(filename);
-                if (!outfile.is_open()) {
-                    return false;
-                }
-                for (const auto& [key, value] : data) {
-                    outfile << key << "=" << value << "\n";
-                }
-                return true;
-            }
         };  // database
 
     }  // namespace database

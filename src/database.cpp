@@ -8,7 +8,7 @@
 #include <app/types.hpp>
 #include <chrono>
 #include <iomanip>
-#include <nlohmann/json.hpp>
+// #include <nlohmann/json.hpp>
 
 /*
  * create a k/v compatible with future redis integration
@@ -123,6 +123,43 @@ namespace app {
         }
 
         size_t Database::size() const { return data.size(); }
+
+        // Thread-safe read from file
+        bool Database::read(const Str& filename, bool clear) {
+            std::lock_guard<std::mutex> lock(mtx);
+            std::ifstream infile(filename);
+            if (!infile.is_open()) {
+                return false;
+            }
+
+            if (clear) {
+                spdlog::info("clearing the database prior to read");
+                data.clear();
+            }
+
+            Str line;
+            while (std::getline(infile, line)) {
+                std::istringstream iss(line);
+                Str key, value;
+                if (std::getline(iss, key, '=') && std::getline(iss, value)) {
+                    data[key] = value;
+                }
+            }
+            return true;
+        }
+
+        // Thread-safe dump/save to file
+        bool Database::save(const Str& filename) const {
+            std::lock_guard<std::mutex> lock(mtx);
+            std::ofstream outfile(filename);
+            if (!outfile.is_open()) {
+                return false;
+            }
+            for (const auto& [key, value] : data) {
+                outfile << key << "=" << value << "\n";
+            }
+            return true;
+        }
     }  // namespace database
 
 }  // namespace app
