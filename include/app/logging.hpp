@@ -5,9 +5,6 @@
 #pragma once
 
 #include <httplib.h>
-#include <spdlog/spdlog.h>
-
-#include <iostream>
 
 namespace app {
 

@@ -29,7 +29,7 @@ do
             /bin/rm -f $root/build/unit
 
             # cmake --build build/ 
-            (cd build && make -j4)
+            (cd build && time make -j4)
 
             # $root/build/$project --version
             # ln $root/build/cryptor $root/build/unit

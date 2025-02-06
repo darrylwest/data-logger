@@ -5,14 +5,8 @@
 
 #pragma once
 
-#include <spdlog/spdlog.h>
-
-#include <chrono>
 #include <iostream>
-#include <optional>
-#include <regex>
 #include <sstream>
-#include <string>
 
 namespace app {
     struct TemperatureProbe {
