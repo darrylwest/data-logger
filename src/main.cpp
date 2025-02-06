@@ -26,7 +26,11 @@ int main(int argc, char* argv[]) {
     // start_tasks(tasks);
     // list: fetch_temp_readings, fetch_other_readings, fetch_client_status
     auto nodes = app::client::create_nodes();
-    auto tasks = app::nodes::create_temps_task_list(nodes);
+    std::vector<Task> tasks;
+
+    // add all tasks to nodes
+    app::nodes::append_temps_tasks(nodes, tasks);
+    app::nodes::append_status_tasks(nodes, tasks);
 
     // used for graceful shutdown
     halt_threads.clear();

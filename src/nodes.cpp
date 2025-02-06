@@ -41,12 +41,39 @@ namespace app {
             return task;
         }
 
-        std::vector<Task> create_temps_task_list(std::vector<app::client::ClientNode>& nodes) {
-            std::vector<Task> tasks;
+        // create a list of temps tasks from the node list
+        void append_temps_tasks(std::vector<app::client::ClientNode>& nodes,
+                                std::vector<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
             }
-            return tasks;
+        }
+
+        // create a task to query the client status
+        Task create_status_task(app::client::ClientNode& node, const int period) {
+            auto worker = [&]() {
+                const auto status = app::client::fetch_status(node);
+
+                const auto isodate = app::database::timestamp_to_local(status.timestamp);
+                spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp,
+                             status.uptime, status.access_count, status.errors);
+
+                auto key = app::database::create_key(isodate, node.ip);
+                const auto filename = "data/status/current." + node.ip + ".db";
+                spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(), status.to_string());
+
+                app::database::append_key_value(filename, key, status.to_string());
+            };
+
+            auto task = createTask(node.location.c_str(), period, worker);
+            return task;
+        }
+
+        // create a list of status tasks from the node list
+        void append_status_tasks(std::vector<ClientNode>& nodes, std::vector<Task>& tasks) {
+            for (auto& node : nodes) {
+                tasks.push_back(create_status_task(node));
+            }
         }
 
     }  // namespace nodes

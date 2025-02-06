@@ -26,8 +26,8 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 2);
-    r.equals(vers.patch == 4);
-    r.equals(vers.build >= 100);
+    r.equals(vers.patch == 5);
+    r.equals(vers.build >= 140);
 
     return r;
 }
@@ -333,6 +333,7 @@ Results test_exceptions() {
 }
 
 void test_parse_datetime(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
     using namespace app::database;
 
     std::string datetime = "2025-02-04T11:40:23";
@@ -340,6 +341,12 @@ void test_parse_datetime(Results& r) {
     auto dt = parse_datetime(datetime);
     r.equals(dt == "202502041140", "parse date time for key");
     r.equals(dt.size() == 12, "dt size");
+
+    const time_t ts = 1738779849;
+    const auto isodate = timestamp_to_local(ts);
+    spdlog::info("ts: {}, dt: {}", ts, isodate);
+
+    spdlog::set_level(spdlog::level::off);
 }
 
 void test_create_key(Results& r) {
@@ -465,6 +472,28 @@ void test_append_key_value(Results& r) {
     }
 }
 
+void test_read_current(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
+
+    using namespace app::database;
+    const auto filename = "data/temperature/current.deck-west.db";
+    Database db;
+
+    // read the current file
+    db.read(filename, true);
+
+    spdlog::info("dbsize: {}", db.size());
+    const auto keys = db.keys();
+    r.equals(keys.size() == db.size(), "size matters");
+
+    // get just selected keys
+    const auto noon_keys = db.keys("2025020512");
+    r.equals(noon_keys.size() == 12, "always 12 entries for the hour");
+    for (const auto& key : db.keys("2025020512")) {
+        spdlog::info("key: {}={}", key, db.get(key));
+    }
+}
+
 Results test_database() {
     Results r = {.name = "Database Tests"};
 
@@ -475,6 +504,7 @@ Results test_database() {
     test_database_data(r);
     test_truncate_to_minute(r);
     test_append_key_value(r);
+    test_read_current(r);
 
     spdlog::set_level(spdlog::level::off);
 
