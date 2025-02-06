@@ -53,6 +53,21 @@ struct Results {
         }
     }
 
+    // pass this test; useful in try/catch tests
+    void pass(std::string comment = "") {
+        tests++;
+        passed++;
+    }
+
+    // fail this test; useful in try/catch tests
+    void fail(std::string comment = "") {
+        tests++;
+        failed++;
+        if (comment != "") {
+            std::cerr << red << "ERROR! " << comment << reset << std::endl;
+        }
+    }
+
     // use skip to replace equals when you want to skip a test
     void skip(bool ok, std::string comment = "") {
         tests++;
