@@ -12,7 +12,7 @@ namespace app {
         using json = nlohmann::json;
 
         // parse json reading/probe response
-        TemperatureData parse_reading(const std::string& json_text) {
+        TemperatureData parse_reading(const Str& json_text) {
             spdlog::debug("parsed text: {}", json_text);
 
             TemperatureData data;

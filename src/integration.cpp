@@ -21,21 +21,21 @@ using namespace colors;
 // namespace app;
 
 struct Config {
-    std::string scheme = "http://";
-    std::string host = "localhost";
-    std::string port = "29099";
+    Str scheme = "http://";
+    Str host = "localhost";
+    Str port = "29099";
     bool start_server = true;
-    std::string logfile = "logs/integration-test.log";
+    Str logfile = "logs/integration-test.log";
 
-    std::string get_url() { return scheme + host + ":" + port; }
+    Str get_url() { return scheme + host + ":" + port; }
 };
 
 // Define the function to start the service
 void run_server(std::atomic<bool>& running, const Config& config) {
     running = true;
 
-    std::string cmd = fmt::format("./build/data-logger --host {} --port {} > {} 2>&1 & echo $!",
-                                  config.host, config.port, config.logfile);
+    Str cmd = fmt::format("./build/data-logger --host {} --port {} > {} 2>&1 & echo $!",
+                          config.host, config.port, config.logfile);
 
     fmt::println("{}Server Start Command: {}{}{}", cyan, yellow, cmd, reset);
 
@@ -70,7 +70,7 @@ int main(int argc, char* argv[]) {
 
     // TODO parse the cli to reconfig...
 
-    std::string msg = "DataLogger Integration Tests, Version: ";
+    Str msg = "DataLogger Integration Tests, Version: ";
     fmt::println("\n{}{}{}{}{}", cyan, msg, yellow, app::Version().to_string(), reset);
 
     rcstestlib::Results r = {.name = "Integration Test Summary"};
@@ -104,8 +104,7 @@ int main(int argc, char* argv[]) {
     // Verify index page title
     if (auto res = cli.Get("/")) {
         r.equals(res->status == 200);
-        r.equals(res->body.find("<title>") != std::string::npos,
-                 "the plain home page should exist.");
+        r.equals(res->body.find("<title>") != Str::npos, "the plain home page should exist.");
         fmt::println("\t{}Test passed: Index page contains a title.", green, reset);
     } else {
         fmt::println("\t{}Test failed: Unable to reach index page.{}", red, reset);
@@ -114,7 +113,7 @@ int main(int argc, char* argv[]) {
     // Shut down the server
     if (auto res = cli.Delete("/shutdown")) {
         r.equals(res->status == 200, "return status should be 200");
-        r.equals(res->body.find("down") != std::string::npos, "the response should say down");
+        r.equals(res->body.find("down") != Str::npos, "the response should say down");
         fmt::println("\t{}Test passed: Shutdown endpoint had correct response.{}", green, reset);
     } else {
         fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.", red, reset);

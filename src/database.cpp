@@ -141,7 +141,7 @@ namespace app {
 {"reading_at":{"time":"2025-02-04T09:08:38","ts":1738688918},"probes":[{"sensor":0,"location":"deck-west","millis":676004124,"tempC":12.10938,"tempF":53.79688}]}
 
 * create the web/UI json structure
-std::string createFakeTemps() {
+Str
     json j;
 
     // Add labels

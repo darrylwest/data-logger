@@ -4,7 +4,6 @@
 #include <app/database.hpp>
 #include <app/nodes.hpp>
 #include <app/taskrunner.hpp>
-#include <vector>
 
 namespace app {
     namespace nodes {
@@ -19,7 +18,7 @@ namespace app {
                 auto data = app::client::fetch_temps(node);
                 int ts = timestamp_seconds();
 
-                std::string at = app::database::truncate_to_minutes(data.reading_at);
+                Str at = app::database::truncate_to_minutes(data.reading_at);
                 spdlog::info("ts {}, temps: {}, at: {}", ts, data.to_string(), at);
 
                 for (const auto probe : data.probes) {
@@ -43,7 +42,7 @@ namespace app {
         }
 
         // create a list of temps tasks from the node list
-        void append_temps_tasks(std::vector<ClientNode>& nodes, std::vector<Task>& tasks) {
+        void append_temps_tasks(Vec<ClientNode>& nodes, Vec<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
             }
@@ -70,7 +69,7 @@ namespace app {
         }
 
         // create a list of status tasks from the node list
-        void append_status_tasks(std::vector<ClientNode>& nodes, std::vector<Task>& tasks) {
+        void append_status_tasks(Vec<ClientNode>& nodes, Vec<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_status_task(node));
             }

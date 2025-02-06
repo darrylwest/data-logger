@@ -47,7 +47,7 @@ Results test_taskrunner() {
     auto task = app::taskrunner::createTask("test-task", period, worker);
 
     int ts_in_the_past = 1738353093;
-    r.equals(std::string(task.name) == "test-task", "name should match");
+    r.equals(Str(task.name) == "test-task", "name should match");
     r.equals(task.started_at > ts_in_the_past, "name should match");
     r.equals(task.run_count == 0, "never run");
     r.equals(task.period == period, "period should match");
@@ -88,7 +88,7 @@ Results test_taskrunner() {
 
 // put this in unit tests
 const auto createSampleReading() {
-    std::string text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
+    Str text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
                 {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
@@ -142,7 +142,7 @@ app::client::ClientNode create_test_client() {
 void test_parse_client_status(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
-    std::string json_text
+    Str json_text
         = R"({"status":{"version":"0.5.26-135","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
 
     app::client::ClientStatus status = app::client::parse_status(json_text);
@@ -207,16 +207,16 @@ Results test_config() {
         auto config = toml::parse("./config/test-config.toml");
 
         // Verify the parsed data
-        std::string name = toml::find<std::string>(config, "name");
+        Str name = toml::find<Str>(config, "name");
         r.equals(name == "temperature", "name should match");
 
         // TODO pull out the temperature locations
-        auto locations = toml::find<std::vector<toml::value>>(config, "locations");
+        auto locations = toml::find<Vec<toml::value>>(config, "locations");
         r.equals(locations.size() >= 2, "should be at least two locations");
 
         for (const auto& loc : locations) {
-            std::string location = toml::find<std::string>(loc, "location");
-            std::string ip = toml::find<std::string>(loc, "ip");
+            Str location = toml::find<Str>(loc, "location");
+            Str ip = toml::find<Str>(loc, "ip");
             int port = toml::find<int>(loc, "port");
             bool active = toml::find<bool>(loc, "active");
 
@@ -234,12 +234,12 @@ Results test_config() {
                 r.equals(false, "not a valid location");
             }
 
-            auto probes = toml::find<std::vector<toml::value>>(loc, "probes");
+            auto probes = toml::find<Vec<toml::value>>(loc, "probes");
             r.equals(probes.size() >= 1, "probes for each location");
 
             for (const auto& probe : probes) {
                 int sensor = toml::find<int>(probe, "sensor");
-                std::string probe_location = toml::find<std::string>(probe, "location");
+                Str probe_location = toml::find<Str>(probe, "location");
 
                 spdlog::info("sensor: {} location: {}", sensor, probe_location);
 
@@ -258,7 +258,7 @@ Results test_config() {
     return r;
 }
 
-bool bad_db_file(const std::string& filename) {
+bool bad_db_file(const Str& filename) {
     if (filename == "bad_db_file") {
         throw app::DatabaseException("Db Failed to connect to file: " + filename);
     } else if (filename == "bad_filename") {
@@ -269,7 +269,7 @@ bool bad_db_file(const std::string& filename) {
     return false;
 }
 
-bool bad_http_get(const std::string& url) {
+bool bad_http_get(const Str& url) {
     if (url == "http://bad_network.com") {
         throw app::NetworkException("Failed to connect to url: " + url);
     } else if (url == "http://service_down.com") {
@@ -336,7 +336,7 @@ void test_parse_datetime(Results& r) {
     // spdlog::set_level(spdlog::level::info);
     using namespace app::database;
 
-    std::string datetime = "2025-02-04T11:40:23";
+    Str datetime = "2025-02-04T11:40:23";
 
     auto dt = parse_datetime(datetime);
     r.equals(dt == "202502041140", "parse date time for key");
@@ -352,7 +352,7 @@ void test_parse_datetime(Results& r) {
 void test_create_key(Results& r) {
     using namespace app::database;
 
-    std::string datetime = "2025-02-04T11:40:23";
+    Str datetime = "2025-02-04T11:40:23";
     DbKey key = create_key(datetime, "cottage-south");
 
     r.equals(key.datetime == "202502041140", "create key");
@@ -380,7 +380,7 @@ void populate_database(app::database::Database& db, int size = 500) {
     float t4 = 9.06;
 
     for (int i = 0; i < size; ++i) {
-        std::string key, value;
+        Str key, value;
 
         key = fmt::format("202502{:02d}{:02d}{:02d}{}", day, hour, minute, ".cottage-south");
 
@@ -438,8 +438,8 @@ void test_database_data(Results& r) {
 void test_truncate_to_minute(Results& r) {
     using namespace app::database;
 
-    std::string isodate = "2025-02-05T07:49:22";
-    std::string truncated = truncate_to_minutes(isodate);
+    Str isodate = "2025-02-05T07:49:22";
+    Str truncated = truncate_to_minutes(isodate);
     r.equals(truncated == "2025-02-05T07:45", "45 minute");
 
     isodate = "2025-02-05T07:51:22";

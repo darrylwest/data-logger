@@ -7,7 +7,6 @@
 
 #include <app/cli.hpp>
 #include <app/version.hpp>
-#include <cxxopts.hpp>
 #include <toml.hpp>
 #include <vendor/cxxopts.hpp>
 
@@ -25,10 +24,10 @@ namespace app {
             options
                 .add_options()
                     ("p,port", "listening port", cxxopts::value<int>())
-                    ("H,host", "listening host", cxxopts::value<std::string>())
-                    ("w,www", "web base folder",  cxxopts::value<std::string>())
-                    ("C,cert", "the cert pem file", cxxopts::value<std::string>())
-                    ("K,key", "the key pem file", cxxopts::value<std::string>())
+                    ("H,host", "listening host", cxxopts::value<Str>())
+                    ("w,www", "web base folder",  cxxopts::value<Str>())
+                    ("C,cert", "the cert pem file", cxxopts::value<Str>())
+                    ("K,key", "the key pem file", cxxopts::value<Str>())
                     ("v,verbose", "verbose")
                     ("V,version", "Show the current version and exit")
                     ("h,help", "Show this help")
@@ -53,24 +52,24 @@ namespace app {
             }
 
             if (result.count("host")) {
-                config.host = result["host"].as<std::string>();
+                config.host = result["host"].as<Str>();
             }
 
             if (result.count("www")) {
-                config.www = result["www"].as<std::string>();
+                config.www = result["www"].as<Str>();
             }
 
             if (result.count("cert")) {
-                config.cert_file = result["cert"].as<std::string>();
+                config.cert_file = result["cert"].as<Str>();
             }
 
             if (result.count("key")) {
-                config.key_file = result["key"].as<std::string>();
+                config.key_file = result["key"].as<Str>();
             }
 
             // @see https://github.com/ToruNiina/toml11 for docs
             auto data = toml::parse("config/config.toml");
-            // std::string name = data.at("main").at("name").as_string();
+            // Str name = data.at("main").at("name").as_string();
             // fmt::println("My name from config: {}", name);
 
         } catch (const std::exception& exp) {

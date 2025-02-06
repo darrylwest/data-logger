@@ -2,23 +2,19 @@
 // 2025-02-01 dpw
 //
 
-#include <httplib.h>
-#include <spdlog/spdlog.h>
-
 #include <app/client.hpp>
 #include <app/temperature.hpp>
-#include <iostream>
 #include <nlohmann/json.hpp>
 
 namespace app {
     namespace client {
         using json = nlohmann::json;
 
-        ClientStatus parse_status(const std::string& json_text) {
+        ClientStatus parse_status(const Str& json_text) {
             json jsn = json::parse(json_text);
 
             auto j = jsn["status"];
-            std::string version = j["version"];
+            Str version = j["version"];
 
             ClientStatus status = {
                 .version = j["version"],
@@ -78,8 +74,8 @@ namespace app {
         }
 
         // create and return the client nodes; (should read from config.toml)
-        std::vector<ClientNode> create_nodes() {
-            std::vector<ClientNode> nodes;
+        Vec<ClientNode> create_nodes() {
+            Vec<ClientNode> nodes;
             auto node = ClientNode{
                 .location = "cottage",
                 .ip = "10.0.1.197",
