@@ -12,11 +12,7 @@
 #include <map>
 #include <mutex>
 #include <nlohmann/json.hpp>
-#include <optional>
 #include <sstream>
-#include <stdexcept>
-#include <string>
-#include <vector>
 
 namespace app {
     namespace database {
