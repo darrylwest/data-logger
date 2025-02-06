@@ -58,8 +58,8 @@ namespace app {
                 spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp,
                              status.uptime, status.access_count, status.errors);
 
-                auto key = app::database::create_key(isodate, node.ip);
-                const auto filename = "data/status/current." + node.ip + ".db";
+                auto key = app::database::create_key(isodate, node.location);
+                const auto filename = "data/status/current." + node.location + ".db";
                 spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(), status.to_string());
 
                 app::database::append_key_value(filename, key, status.to_string());
