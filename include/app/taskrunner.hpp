@@ -30,7 +30,7 @@ namespace app {
             int last_run;                   // unix timestamp in seconds
             int period;                     // in seconds
             unsigned long run_count;
-            std::function<void()> runner;
+            Func<void()> runner;
 
             friend std::ostream& operator<<(std::ostream& os, const Task v) {
                 // better to use <format> but it breaks on linux and fmt broken on darwin

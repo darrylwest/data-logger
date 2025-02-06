@@ -4,14 +4,7 @@
 //
 //
 
-#include <spdlog/spdlog.h>
-
 #include <app/taskrunner.hpp>
-#include <atomic>
-#include <iostream>
-#include <sstream>
-#include <thread>
-#include <vector>
 
 namespace app {
     namespace taskrunner {
@@ -37,7 +30,7 @@ namespace app {
         }
 
         // create the task
-        Task createTask(const char* task_name, int period, std::function<void()> task_runner) {
+        Task createTask(const char* task_name, int period, Func<void()> task_runner) {
             auto ts = timestamp_seconds();
             auto task = Task{
                 .name = task_name,
@@ -52,7 +45,7 @@ namespace app {
         }
 
         // run the func; if period == 0 then this is a one-shot-and-out task
-        void run(const std::function<void()> func, const char* name, const int period) {
+        void run(const Func<void()> func, const char* name, const int period) {
             // re-create the task for easy reporting
             auto task = createTask(name, period, func);
 
@@ -111,9 +104,9 @@ namespace app {
         }
 
         // start a list of threads; clears the halt_threads flag
-        std::vector<std::thread> start_tasks(const std::vector<Task> list) {
+        Vec<std::thread> start_tasks(const Vec<Task> list) {
             halt_threads.clear();
-            std::vector<std::thread> tlist;
+            Vec<std::thread> tlist;
             for (auto task : list) {
                 // move the thread into the list
                 tlist.emplace_back(start(task));

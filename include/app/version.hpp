@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <app/types.hpp>
 #include <iostream>
 #include <sstream>
 
@@ -25,7 +26,7 @@ namespace app {
             return os;
         }
 
-        std::string to_string() const {
+        Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 

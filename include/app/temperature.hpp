@@ -5,21 +5,22 @@
 
 #pragma once
 
+#include <app/types.hpp>
 #include <iostream>
 #include <sstream>
 
 namespace app {
     struct TemperatureProbe {
         int sensor;
-        std::string location;
+        Str location;
         float tempC;
         float tempF;
     };
 
     struct TemperatureData {
-        std::string reading_at;
+        Str reading_at;
         int timestamp;
-        std::vector<TemperatureProbe> probes;
+        Vec<TemperatureProbe> probes;
 
         friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
             os << "reading_at: " << v.reading_at << ", ts: " << v.timestamp;
@@ -31,7 +32,7 @@ namespace app {
             return os;
         }
 
-        std::string to_string() const {
+        Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 
@@ -41,7 +42,7 @@ namespace app {
 
     namespace temperature {
         // parse the json reading response
-        TemperatureData parse_reading(const std::string& json_text);
+        TemperatureData parse_reading(const Str& json_text);
 
     }  // namespace temperature
 }  // namespace app

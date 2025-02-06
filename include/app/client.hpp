@@ -13,10 +13,10 @@
 namespace app {
     namespace client {
         struct ClientStatus {
-            std::string version;
+            Str version;
             int timestamp;
             int started;
-            std::string uptime;
+            Str uptime;
             int access_count;
             int errors;
 
@@ -28,7 +28,7 @@ namespace app {
                 return os;
             }
 
-            std::string to_string() const {
+            Str to_string() const {
                 std::ostringstream oss;
                 oss << *this;
 
@@ -37,8 +37,8 @@ namespace app {
         };
 
         struct ClientNode {
-            std::string location;
-            std::string ip;
+            Str location;
+            Str ip;
             int port;
             bool active;
             int last_access;
@@ -52,7 +52,7 @@ namespace app {
                 return os;
             }
 
-            std::string to_string() const {
+            Str to_string() const {
                 std::ostringstream oss;
                 oss << *this;
 
@@ -60,7 +60,7 @@ namespace app {
             }
         };
 
-        ClientStatus parse_status(const std::string& json_text);
+        ClientStatus parse_status(const Str& json_text);
         ClientStatus fetch_status(ClientNode& node);
         TemperatureData fetch_temps(ClientNode& node);
         Vec<ClientNode> create_nodes();

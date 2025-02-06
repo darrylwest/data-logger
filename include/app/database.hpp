@@ -105,7 +105,7 @@ namespace app {
             }
 
             // Thread-safe keys method with optional filter
-            std::vector<Str> keys(const Str& search = "") const;
+            Vec<Str> keys(const Str& search = "") const;
 
             // return the current database size
             size_t size() const;
