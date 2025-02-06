@@ -6,15 +6,17 @@
 #pragma once
 
 #include <vendor/httplib.h>
-
+#include <app/types.hpp>
 #include <app/cli.hpp>
 
 namespace app {
 
     // Function to set up the server and apply configurations
-    bool setup_service(httplib::SSLServer &svr, const Config &config);
+    bool setup_service(httplib::Server &svr, const Config &config);
 
     // Function to run the server
     bool run_service(const Config &config);
+
+    Str create_temps_response(const Vec<Str>& labels, const Str end_date);
 
 }  // namespace app
