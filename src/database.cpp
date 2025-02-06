@@ -63,9 +63,8 @@ namespace app {
             return result.str();
         }
 
-        // append the key/value to the file; throws on error
-        void append_key_value(const std::string& filename, const DbKey& key,
-                              const std::string& value) {
+        // append the key/value to the file; throws on error; returns the number of bytes written
+        int append_key_value(const std::string& filename, const DbKey& key, const std::string& value) {
             std::ofstream file(filename, std::ios::app);
 
             if (!file.is_open()) {
@@ -77,6 +76,8 @@ namespace app {
 
             file << key << "=" << value << std::endl;
             file.close();
+
+
         }
 
         // get the current local time from the timestamp

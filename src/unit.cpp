@@ -476,7 +476,7 @@ void test_read_current(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
     using namespace app::database;
-    const auto filename = "data/temperature/current.deck-west.db";
+    const auto filename = "data/temperature/current.deck-west.test";
     Database db;
 
     // read the current file
