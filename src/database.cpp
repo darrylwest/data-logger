@@ -64,7 +64,8 @@ namespace app {
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written
-        void append_key_value(const std::string& filename, const DbKey& key, const std::string& value) {
+        void append_key_value(const std::string& filename, const DbKey& key,
+                              const std::string& value) {
             std::ofstream file(filename, std::ios::app);
 
             if (!file.is_open()) {

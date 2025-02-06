@@ -43,8 +43,7 @@ namespace app {
         }
 
         // create a list of temps tasks from the node list
-        void append_temps_tasks(std::vector<ClientNode>& nodes,
-                                std::vector<Task>& tasks) {
+        void append_temps_tasks(std::vector<ClientNode>& nodes, std::vector<Task>& tasks) {
             for (auto& node : nodes) {
                 tasks.push_back(create_temps_task(node));
             }
