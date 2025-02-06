@@ -6,6 +6,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <app/types.hpp>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -29,7 +30,7 @@ namespace app {
             };
 
             // return the label
-            static std::string to_label(Value v) {
+            static Str to_label(Value v) {
                 switch (v) {
                     case Value::Status:
                         return "status";
@@ -53,8 +54,8 @@ namespace app {
         };
 
         struct DbKey {
-            std::string datetime;
-            std::string location;
+            Str datetime;
+            Str location;
 
             friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
                 os << v.datetime << "." << v.location;
@@ -62,7 +63,7 @@ namespace app {
                 return os;
             }
 
-            std::string to_string() const {
+            Str to_string() const {
                 std::ostringstream oss;
                 oss << *this;
 
@@ -71,47 +72,46 @@ namespace app {
         };
 
         // create the db key from iso8601 datetime string and the probe location
-        const DbKey create_key(const std::string datetime, const std::string location);
+        const DbKey create_key(const Str datetime, const Str location);
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        const std::string parse_datetime(const std::string& datetime);
+        const Str parse_datetime(const Str& datetime);
 
         // truncate an iso date to the nearest n minutes, defaulting to 5 minutes
-        const std::string truncate_to_minutes(const std::string& isodate, const int minute = 5);
+        const Str truncate_to_minutes(const Str& isodate, const int minute = 5);
 
         // append the key/value to the file; throws FileException on error
-        const void append_key_value(const std::string& filename, const DbKey& key,
-                              const std::string& value);
+        const void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
         // get the current local time from the timestamp
-        const std::string timestamp_to_local(const std::time_t timestamp);
+        const Str timestamp_to_local(const std::time_t timestamp);
 
         struct Database {
           private:
-            std::map<std::string, std::string> data;
+            std::map<Str, Str> data;
             mutable std::mutex mtx;  // mutable to allow locking in const methods
 
           public:
             // Thread-safe set method
-            bool set(const std::string& key, const std::string& value);
+            bool set(const Str& key, const Str& value);
 
             // Thread-safe get method
-            std::string get(const std::string& key) const;
+            Str get(const Str& key) const;
 
             // Thread-safe remove method
-            bool remove(const std::string& key) {
+            bool remove(const Str& key) {
                 std::lock_guard<std::mutex> lock(mtx);
                 return data.erase(key) > 0;
             }
 
             // Thread-safe keys method with optional filter
-            std::vector<std::string> keys(const std::string& search = "") const ;
+            std::vector<Str> keys(const Str& search = "") const;
 
             // return the current database size
             size_t size() const;
 
             // Thread-safe read from file
-            bool read(const std::string& filename, bool clear = false) {
+            bool read(const Str& filename, bool clear = false) {
                 std::lock_guard<std::mutex> lock(mtx);
                 std::ifstream infile(filename);
                 if (!infile.is_open()) {
@@ -123,10 +123,10 @@ namespace app {
                     data.clear();
                 }
 
-                std::string line;
+                Str line;
                 while (std::getline(infile, line)) {
                     std::istringstream iss(line);
-                    std::string key, value;
+                    Str key, value;
                     if (std::getline(iss, key, '=') && std::getline(iss, value)) {
                         data[key] = value;
                     }
@@ -135,7 +135,7 @@ namespace app {
             }
 
             // Thread-safe dump/save to file
-            bool save(const std::string& filename) const {
+            bool save(const Str& filename) const {
                 std::lock_guard<std::mutex> lock(mtx);
                 std::ofstream outfile(filename);
                 if (!outfile.is_open()) {

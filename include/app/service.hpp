@@ -6,6 +6,7 @@
 #pragma once
 
 #include <vendor/httplib.h>
+
 #include <app/cli.hpp>
 
 namespace app {
@@ -15,6 +16,5 @@ namespace app {
 
     // Function to run the server
     bool run_service(const Config &config);
-
 
 }  // namespace app

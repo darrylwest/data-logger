@@ -6,12 +6,9 @@
 #pragma once
 
 #include <app/temperature.hpp>
+#include <app/types.hpp>
 #include <iostream>
 #include <sstream>
-#include <vector>
-
-template <typename T>
-alias Vec std::vector<T>;
 
 namespace app {
     namespace client {

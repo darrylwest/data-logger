@@ -8,14 +8,11 @@
 
 #pragma once
 
+#include <app/types.hpp>
 #include <atomic>
 #include <iostream>
 #include <sstream>
 #include <thread>
-#include <vector>
-
-template <typename T>
-alias Vec std::vector<T>;
 
 namespace app {
     namespace taskrunner {

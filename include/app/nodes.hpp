@@ -3,7 +3,7 @@
 
 #include <app/client.hpp>
 #include <app/taskrunner.hpp>
-#include <vector>
+#include <app/types.hpp>
 
 namespace app {
     namespace nodes {

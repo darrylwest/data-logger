@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
+#include <app/types.hpp>
 #include <chrono>
 #include <iomanip>
 #include <nlohmann/json.hpp>
@@ -16,14 +17,14 @@ namespace app {
     namespace database {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
-        const DbKey create_key(const std::string datetime, const std::string location) {
+        const DbKey create_key(const Str datetime, const Str location) {
             auto dt = parse_datetime(datetime);
             return DbKey{.datetime = dt, .location = location};
         }
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        const std::string parse_datetime(const std::string& datetime) {
-            std::string result;
+        const Str parse_datetime(const Str& datetime) {
+            Str result;
             result.reserve(12);  // Reserve space for "YYYYMMDDHHMM"
 
             // Copy only digits
@@ -38,23 +39,23 @@ namespace app {
         }
 
         // truncate the iso8601 date to the nearest minute, default 5 minute mark
-        const std::string truncate_to_minutes(const std::string& isodate, const int minute) {
+        const Str truncate_to_minutes(const Str& isodate, const int minute) {
+            using namespace std::chrono;
             // Parse the ISO 8601 datetime string
             std::tm tm = {};
             std::istringstream ss(isodate);
             ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
 
             // Convert to time_point
-            auto timePoint = std::chrono::system_clock::from_time_t(std::mktime(&tm));
+            auto timePoint = system_clock::from_time_t(std::mktime(&tm));
 
             // Truncate to nearest 5 minutes
             auto minutes
-                = std::chrono::duration_cast<std::chrono::minutes>(timePoint.time_since_epoch())
-                  % minute;
+                = duration_cast<std::chrono::minutes>(timePoint.time_since_epoch()) % minute;
             timePoint -= minutes;
 
             // Convert back to time_t
-            std::time_t truncatedTime = std::chrono::system_clock::to_time_t(timePoint);
+            std::time_t truncatedTime = system_clock::to_time_t(timePoint);
             std::tm* truncatedTm = std::localtime(&truncatedTime);
 
             // Format the result back to ISO 8601 without seconds
@@ -64,8 +65,7 @@ namespace app {
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written
-        const void append_key_value(const std::string& filename, const DbKey& key,
-                              const std::string& value) {
+        const void append_key_value(const Str& filename, const DbKey& key, const Str& value) {
             std::ofstream file(filename, std::ios::app);
 
             if (!file.is_open()) {
@@ -80,7 +80,7 @@ namespace app {
         }
 
         // get the current local time from the timestamp
-        const std::string timestamp_to_local(const std::time_t timestamp) {
+        const Str timestamp_to_local(const std::time_t timestamp) {
             using namespace std::chrono;
             system_clock::time_point tp = system_clock::from_time_t(timestamp);
 
@@ -95,13 +95,13 @@ namespace app {
             return oss.str();
         }
 
-        bool Database::set(const std::string& key, const std::string& value) {
+        bool Database::set(const Str& key, const Str& value) {
             std::lock_guard<std::mutex> lock(mtx);
             data[key] = value;
             return true;
         }
 
-        std::string Database::get(const std::string& key) const {
+        Str Database::get(const Str& key) const {
             std::lock_guard<std::mutex> lock(mtx);
             auto it = data.find(key);
             if (it != data.end()) {
@@ -111,11 +111,11 @@ namespace app {
         }
 
         // Thread-safe keys method with optional filter
-        std::vector<std::string> Database::keys(const std::string& search) const {
+        std::vector<Str> Database::keys(const Str& search) const {
             std::lock_guard<std::mutex> lock(mtx);
-            std::vector<std::string> key_list;
+            std::vector<Str> key_list;
             for (const auto& [key, _] : data) {
-                if (search.empty() || key.find(search) != std::string::npos) {
+                if (search.empty() || key.find(search) != Str::npos) {
                     key_list.push_back(key);
                 }
             }
