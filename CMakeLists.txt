@@ -126,6 +126,13 @@ target_link_libraries(data-logger PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(unit PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(integration PRIVATE ${DEPENDENT_LIBRARIES})
 
+set_target_properties(data-logger PROPERTIES UNITY_BUILD ON)
+set_target_properties(unit PROPERTIES UNITY_BUILD ON)
+set_target_properties(integration PROPERTIES UNITY_BUILD ON)
+
+# Consider limiting the number of files per unity build
+set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4) # Example
+
 # Static linking for standalone executable
 if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
