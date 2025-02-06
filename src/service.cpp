@@ -52,9 +52,10 @@ namespace app {
 
             // TODO : create a function to generate these based on end date and interval.
             // this is set to 30 minutes; there are always 25 labels; move this to temperature?
-            Vec<Str> labels = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
-               "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", 
-               "17:30", "18:00", "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
+            Vec<Str> labels
+                = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
+                   "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
+                   "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
 
             const auto json_text = create_temps_response(labels, end_date);
             // parse the interval and end_date
@@ -110,7 +111,7 @@ namespace app {
         return svr.listen(config.host, config.port);
     }
 
-    Str create_temps_response(const Vec<Str>& labels, const Str end_date) {
+    Str create_temps_response(const Vec<Str> &labels, const Str end_date) {
         json j;
 
         // Add labels

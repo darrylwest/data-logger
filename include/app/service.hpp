@@ -6,8 +6,9 @@
 #pragma once
 
 #include <vendor/httplib.h>
-#include <app/types.hpp>
+
 #include <app/cli.hpp>
+#include <app/types.hpp>
 
 namespace app {
 
@@ -17,6 +18,6 @@ namespace app {
     // Function to run the server
     bool run_service(const Config &config);
 
-    Str create_temps_response(const Vec<Str>& labels, const Str end_date);
+    Str create_temps_response(const Vec<Str> &labels, const Str end_date);
 
 }  // namespace app

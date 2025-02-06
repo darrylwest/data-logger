@@ -112,7 +112,7 @@ namespace app {
             // save the current database to filename
             bool save(const Str& filename) const;
 
-        }; // struct database
+        };  // struct database
 
     }  // namespace database
 }  // namespace app
