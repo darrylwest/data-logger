@@ -333,6 +333,7 @@ Results test_exceptions() {
 }
 
 void test_parse_datetime(Results& r) {
+    spdlog::set_level(spdlog::level::info);
     using namespace app::database;
 
     std::string datetime = "2025-02-04T11:40:23";
@@ -340,6 +341,12 @@ void test_parse_datetime(Results& r) {
     auto dt = parse_datetime(datetime);
     r.equals(dt == "202502041140", "parse date time for key");
     r.equals(dt.size() == 12, "dt size");
+
+    const time_t ts = 1738779849;
+    const auto isodate = timestamp_to_local(ts);
+    spdlog::info("ts: {}, dt: {}", ts, isodate);
+
+    spdlog::set_level(spdlog::level::off);
 }
 
 void test_create_key(Results& r) {

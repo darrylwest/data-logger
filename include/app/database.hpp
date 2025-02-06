@@ -87,6 +87,9 @@ namespace app {
         void append_key_value(const std::string& filename, const DbKey& key,
                               const std::string& value);
 
+        // get the current local time from the timestamp
+        std::string timestamp_to_local(const std::time_t timestamp);
+
         struct Database {
           private:
             std::map<std::string, std::string> data;

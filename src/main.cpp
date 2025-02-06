@@ -28,6 +28,9 @@ int main(int argc, char* argv[]) {
     auto nodes = app::client::create_nodes();
     auto tasks = app::nodes::create_temps_task_list(nodes);
 
+    // insert the status tasks
+    app::nodes::create_status_task_list(nodes, tasks);
+
     // used for graceful shutdown
     halt_threads.clear();
 

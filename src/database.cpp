@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
+#include <chrono>
+#include <iomanip>
 #include <nlohmann/json.hpp>
 
 /*
@@ -77,6 +79,21 @@ namespace app {
             file.close();
         }
 
+        // get the current local time from the timestamp
+        std::string timestamp_to_local(const std::time_t timestamp) {
+            using namespace std::chrono;
+            system_clock::time_point tp = system_clock::from_time_t(timestamp);
+
+            std::time_t tt = system_clock::to_time_t(tp);
+
+            std::tm local_tm = *std::localtime(&tt);
+
+            std::ostringstream oss;
+
+            oss << std::put_time(&local_tm, "%Y-%m-%dT%H:%M:%S%z");
+
+            return oss.str();
+        }
     }  // namespace database
 }  // namespace app
 
