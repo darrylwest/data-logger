@@ -518,7 +518,7 @@ Results test_service() {
 
     Results r = {.name = "Database Tests"};
 
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::off);
 
     Str end_date = "2025-02-06";
     Vec<Str> labels = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30",
