@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     // start_tasks(tasks);
     // list: fetch_temp_readings, fetch_other_readings, fetch_client_status
     auto nodes = app::client::create_nodes();
-    std::vector<Task> tasks;
+    Vec<Task> tasks;
 
     // add all tasks to nodes
     app::nodes::append_temps_tasks(nodes, tasks);
@@ -39,7 +39,7 @@ int main(int argc, char* argv[]) {
 
     auto tlist = start_tasks(tasks);
 
-    // read a shutdown hook from filesystem or signal
+    // read a shutdown hook from unix socket or signal
     //
     // shut down the ticker tasks
     //
