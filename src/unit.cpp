@@ -334,7 +334,7 @@ void test_parse_datetime(Results& r) {
 
     Str datetime = "2025-02-04T11:40:23";
 
-    auto dt = parse_datetime(datetime);
+    auto dt = parse_datetime_to_minutes(datetime);
     r.equals(dt == "202502041140", "parse date time for key");
     r.equals(dt.size() == 12, "dt size");
 

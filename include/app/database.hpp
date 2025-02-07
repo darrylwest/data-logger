@@ -71,7 +71,7 @@ namespace app {
         const DbKey create_key(const Str datetime, const Str location);
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        const Str parse_datetime(const Str& datetime);
+        const Str parse_datetime_to_minutes(const Str& datetime);
 
         // truncate an iso date to the nearest n minutes, defaulting to 5 minutes
         const Str truncate_to_minutes(const Str& isodate, const int minute = 5);

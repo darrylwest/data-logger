@@ -18,12 +18,12 @@ namespace app {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
         const DbKey create_key(const Str datetime, const Str location) {
-            auto dt = parse_datetime(datetime);
+            auto dt = parse_datetime_to_minutes(datetime);
             return DbKey{.datetime = dt, .location = location};
         }
 
         // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        const Str parse_datetime(const Str& datetime) {
+        const Str parse_datetime_to_minutes(const Str& datetime) {
             Str result;
             result.reserve(12);  // Reserve space for "YYYYMMDDHHMM"
 
