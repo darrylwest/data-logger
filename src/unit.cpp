@@ -514,7 +514,7 @@ Results test_database() {
 Results test_service() {
     using json = nlohmann::json;
 
-    Results r = {.name = "Database Tests"};
+    Results r = {.name = "Service Tests"};
 
     spdlog::set_level(spdlog::level::off);
 
@@ -538,6 +538,16 @@ Results test_service() {
     r.equals(datasets.size() >= 2, "dataset size");
 
     spdlog::set_level(spdlog::level::off);
+    return r;
+}
+
+Results test_datetime() {
+    Results r = {.name = "Datetime Tests"};
+
+    spdlog::set_level(spdlog::level::info);
+
+    r.pass("ok");
+
     return r;
 }
 
@@ -566,6 +576,7 @@ int main(int argc, const char* argv[]) {
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_service);
+    run_test(test_datetime);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
