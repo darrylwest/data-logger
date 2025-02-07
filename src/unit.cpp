@@ -557,6 +557,13 @@ Results test_datetimelib() {
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
+    auto iso_now = datetimelib::local_iso_datetime();
+    spdlog::info("now local iso: {}", iso_now);
+
+    auto iso_dt = datetimelib::local_iso_datetime(tsz);
+    spdlog::info("local iso: {}", iso_dt);
+    r.equals(iso_dt == "2025-02-06T16:40:55-0800", "iso time");
+
     return r;
 }
 

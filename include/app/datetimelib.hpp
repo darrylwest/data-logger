@@ -12,5 +12,5 @@ namespace datetimelib {
     unsigned long timestamp_millis();
 
     // returns the local datetime in iso8601 format
-    Str get_local_datetime();
+    Str local_iso_datetime(const std::time_t now_seconds = 0);
 }
