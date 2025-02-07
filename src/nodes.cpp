@@ -2,6 +2,7 @@
 #include <spdlog/spdlog.h>
 
 #include <app/nodes.hpp>
+#include <app/datetimelib.hpp>
 
 namespace app {
     namespace nodes {
@@ -14,7 +15,7 @@ namespace app {
 
             auto worker = [&]() mutable {
                 auto data = app::client::fetch_temps(node);
-                int ts = timestamp_seconds();
+                int ts = datetimelib::timestamp_seconds();
 
                 Str at = app::database::truncate_to_minutes(data.reading_at);
                 spdlog::info("ts {}, temps: {}, at: {}", ts, data.to_string(), at);

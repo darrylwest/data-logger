@@ -60,11 +60,6 @@ Results test_taskrunner() {
     auto tstr = task.to_string();
     r.equals(tstr != "", "should match");
 
-    unsigned long tms = app::taskrunner::timestamp_millis();
-    unsigned long tss = app::taskrunner::timestamp_seconds();
-    spdlog::info("tms: {}, tss: {}", tms, tss);
-    r.equals(tms / 10000 == tss / 10, "times should match");
-
     // spdlog::set_level(spdlog::level::info);
     // test the task exception
     auto ex_worker = []() {
@@ -549,7 +544,18 @@ Results test_datetimelib() {
 
     auto unix_ts = datetimelib::timestamp_seconds();
     spdlog::info("unix ts: {}", unix_ts);
-    r.equals(unix_ts > 1738888855, "unix ts should be in the future");
+    unsigned int tsz = 1738888855;
+    r.equals(unix_ts > tsz, "unix ts should be in the future");
+
+    unsigned long tszl = 1738888855000;
+    auto mts = datetimelib::timestamp_millis();
+    spdlog::info("millis ts: {}", mts);
+    r.equals(mts > tszl, "millis ts should be in the future");
+
+    unsigned long tms = datetimelib::timestamp_millis();
+    unsigned long tss = datetimelib::timestamp_seconds();
+    spdlog::info("tms: {}, tss: {}", tms, tss);
+    r.equals(tms / 10000 == tss / 10, "times should match");
 
     return r;
 }

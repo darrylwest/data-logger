@@ -18,12 +18,6 @@ namespace app {
     namespace taskrunner {
         extern std::atomic_flag halt_threads;
 
-        // get the timestamp in millis
-        unsigned long timestamp_millis();
-
-        // get the timestamp in seconds
-        unsigned int timestamp_seconds();
-
         struct Task {
             const char* name;
             const unsigned int started_at;  // unix timestamp in seconds
