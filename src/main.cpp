@@ -12,11 +12,15 @@
 #include <app/client.hpp>
 #include <app/nodes.hpp>
 #include <thread>
+#include <app/datetime.hpp>
 
 using namespace app::taskrunner;
 
 int main(int argc, char* argv[]) {
     const auto vers = app::Version();
+    const auto local = datetime::get_local_datetime();
+
+    spdlog::info("local datetime: {}", local);
 
     auto config = app::parse_cli(argc, argv);
     spdlog::info("DataLogger Version: {}", vers.to_string());

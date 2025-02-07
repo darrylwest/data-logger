@@ -2,11 +2,16 @@
 // 2025-02-01 18:27:44 dpw
 //
 
+#include <vendor/httplib.h>
 #include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
 
 #include <app/cli.hpp>
+#include <app/database.hpp>
 #include <app/service.hpp>
+#include <app/logging.hpp>
 #include <app/types.hpp>
+#include <app/version.hpp>
 #include <cstdio>
 #include <iostream>
 
