@@ -27,8 +27,8 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 2);
-    r.equals(vers.patch == 5);
-    r.equals(vers.build >= 140);
+    r.equals(vers.patch == 6);
+    r.equals(vers.build >= 150);
 
     return r;
 }
