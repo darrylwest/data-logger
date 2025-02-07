@@ -71,10 +71,10 @@ Results test_taskrunner() {
 
     try {
         app::taskrunner::run(ex_task.runner, ex_task.name, ex_task.period);
-        r.fail("should not get this far");
+        r.fail("task should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());
-        r.pass("should catch here");
+        r.pass("task should catch here");
     }
 
     spdlog::set_level(spdlog::level::off);
@@ -156,6 +156,7 @@ void test_parse_client_status(Results& r) {
 
 // this really needs a mock
 void test_fetch_client_status(Results& r) {
+    // spdlog::set_level(spdlog::level::info);
     auto node = create_test_client();
 
     app::client::ClientStatus status = app::client::fetch_status(node);
@@ -181,8 +182,8 @@ Results test_client() {
 
     // skip these two if client node is dead...
     if (true) {
-        test_fetch_client_status(r);
         test_fetch_temps(r);
+        test_fetch_client_status(r);
     } else {
         r.skip(true);
         r.skip(true);

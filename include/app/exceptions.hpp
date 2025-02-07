@@ -2,6 +2,8 @@
 // exception handling
 //
 
+#pragma once
+
 #include <spdlog/spdlog.h>
 
 #include <app/types.hpp>

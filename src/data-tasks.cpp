@@ -15,9 +15,20 @@
 #include <app/nodes.hpp>
 #include <thread>
 
+#include <iostream>
+#include <csignal>
+
 using namespace app::taskrunner;
 
+void signal_handler(int signal) {
+    if (signal == SIGSEGV) {
+        std::cerr << "Segmentation fault!" << std::endl;
+        std::exit(EXIT_FAILURE);
+    }
+}
+
 int main(int argc, char* argv[]) {
+    std::signal(SIGSEGV, signal_handler);
     const auto vers = app::Version();
 
     auto config = app::parse_cli(argc, argv);
