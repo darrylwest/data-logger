@@ -79,9 +79,6 @@ namespace app {
         // append the key/value to the file; throws FileException on error
         const void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
-        // get the current local time from the timestamp
-        const Str timestamp_to_local(const std::time_t timestamp);
-
         struct Database {
           private:
             std::map<Str, Str> data;

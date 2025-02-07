@@ -52,7 +52,7 @@ namespace app {
             auto worker = [&]() {
                 const auto status = app::client::fetch_status(node);
 
-                const auto isodate = app::database::timestamp_to_local(status.timestamp);
+                const auto isodate = datetimelib::local_iso_datetime(status.timestamp);
                 spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp,
                              status.uptime, status.access_count, status.errors);
 

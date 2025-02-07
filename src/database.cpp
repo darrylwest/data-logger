@@ -79,22 +79,6 @@ namespace app {
             file.close();
         }
 
-        // get the current local time from the timestamp
-        const Str timestamp_to_local(const std::time_t timestamp) {
-            using namespace std::chrono;
-            system_clock::time_point tp = system_clock::from_time_t(timestamp);
-
-            std::time_t tt = system_clock::to_time_t(tp);
-
-            std::tm local_tm = *std::localtime(&tt);
-
-            std::ostringstream oss;
-
-            oss << std::put_time(&local_tm, "%Y-%m-%dT%H:%M:%S%z");
-
-            return oss.str();
-        }
-
         bool Database::set(const Str& key, const Str& value) {
             std::lock_guard<std::mutex> lock(mtx);
             data[key] = value;
