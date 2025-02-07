@@ -1,8 +1,8 @@
 // nodes.cpp
 #include <spdlog/spdlog.h>
 
-#include <app/nodes.hpp>
 #include <app/datetimelib.hpp>
+#include <app/nodes.hpp>
 
 namespace app {
     namespace nodes {

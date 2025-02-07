@@ -19,4 +19,4 @@ namespace datetimelib {
 
     // truncate an iso date to the nearest n minutes, defaulting to 5 minutes
     const Str truncate_to_minutes(const Str& isodate, const int minute = 5);
-}
+}  // namespace datetimelib

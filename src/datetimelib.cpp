@@ -2,10 +2,9 @@
 // 2025-02-07 00:08:09 dpw
 //
 
-#include <chrono>
-#include <app/types.hpp>
 #include <app/datetimelib.hpp>
-
+#include <app/types.hpp>
+#include <chrono>
 
 namespace datetimelib {
     // unix timestamp
@@ -28,7 +27,7 @@ namespace datetimelib {
         using namespace std::chrono;
 
         // const auto ts = timestamp_seconds();
-        const time_t ts = (now_seconds == 0) ?  timestamp_seconds() : now_seconds;
+        const time_t ts = (now_seconds == 0) ? timestamp_seconds() : now_seconds;
 
         system_clock::time_point tp = system_clock::from_time_t(ts);
         std::time_t tt = std::chrono::system_clock::to_time_t(tp);
@@ -84,4 +83,4 @@ namespace datetimelib {
         return result.str();
     }
 
-}
+}  // namespace datetimelib
