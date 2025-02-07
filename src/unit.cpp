@@ -530,7 +530,7 @@ void test_parse_datetime_to_minutes(Results& r) {
 Results test_datetimelib() {
     Results r = {.name = "Datetime Tests"};
 
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::off);
 
     auto unix_ts = datetimelib::timestamp_seconds();
     spdlog::info("unix ts: {}", unix_ts);
@@ -556,6 +556,8 @@ Results test_datetimelib() {
 
     test_parse_datetime_to_minutes(r);
     test_truncate_to_minutes(r);
+
+    spdlog::set_level(spdlog::level::off);
 
     return r;
 }
