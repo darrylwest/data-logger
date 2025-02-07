@@ -42,4 +42,46 @@ namespace datetimelib {
 
         return oss.str();
     }
+
+    // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
+    const Str parse_datetime_to_minutes(const Str& datetime) {
+        Str result;
+        result.reserve(12);  // Reserve space for "YYYYMMDDHHMM"
+
+        // Copy only digits
+        std::copy_if(datetime.begin(), datetime.end(), std::back_inserter(result), ::isdigit);
+
+        // Truncate to first 12 characters (YYYYMMDDHHMM)
+        if (result.size() > 12) {
+            result.resize(12);
+        }
+
+        return result;
+    }
+
+    // truncate the iso8601 date to the nearest minute, default 5 minute mark
+    const Str truncate_to_minutes(const Str& isodate, const int minute) {
+        using namespace std::chrono;
+        // Parse the ISO 8601 datetime string
+        std::tm tm = {};
+        std::istringstream ss(isodate);
+        ss >> std::get_time(&tm, "%Y-%m-%dT%H:%M:%S");
+
+        // Convert to time_point
+        auto timePoint = system_clock::from_time_t(std::mktime(&tm));
+
+        // Truncate to nearest 5 minutes
+        auto mins = duration_cast<minutes>(timePoint.time_since_epoch()) % minute;
+        timePoint -= mins;
+
+        // Convert back to time_t
+        std::time_t truncatedTime = system_clock::to_time_t(timePoint);
+        std::tm* truncatedTm = std::localtime(&truncatedTime);
+
+        // Format the result back to ISO 8601 without seconds
+        std::ostringstream result;
+        result << std::put_time(truncatedTm, "%Y-%m-%dT%H:%M");
+        return result.str();
+    }
+
 }

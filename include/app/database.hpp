@@ -70,12 +70,6 @@ namespace app {
         // create the db key from iso8601 datetime string and the probe location
         const DbKey create_key(const Str datetime, const Str location);
 
-        // parse the datetimme string (iso8601) to a 12 character yyyymmddhhmm
-        const Str parse_datetime_to_minutes(const Str& datetime);
-
-        // truncate an iso date to the nearest n minutes, defaulting to 5 minutes
-        const Str truncate_to_minutes(const Str& isodate, const int minute = 5);
-
         // append the key/value to the file; throws FileException on error
         const void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
