@@ -109,6 +109,18 @@ add_executable(data-logger
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/main.cpp)
 
+add_executable(data-tasks
+    ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/logging.cpp
+    ${SRC_DIR}/temperature.cpp
+    ${SRC_DIR}/database.cpp
+    ${SRC_DIR}/datetimelib.cpp
+    ${SRC_DIR}/nodes.cpp
+    ${SRC_DIR}/taskrunner.cpp
+    ${SRC_DIR}/client.cpp
+    ${SRC_DIR}/service.cpp
+    ${SRC_DIR}/data-tasks.cpp)
+
 add_executable(unit 
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/logging.cpp
@@ -125,15 +137,18 @@ add_executable(integration ${SRC_DIR}/integration.cpp)
 
 
 target_link_libraries(data-logger PRIVATE ${DEPENDENT_LIBRARIES})
+target_link_libraries(data-tasks PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(unit PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(integration PRIVATE ${DEPENDENT_LIBRARIES})
 
 set_target_properties(data-logger PROPERTIES UNITY_BUILD ON)
+set_target_properties(data-tasks PROPERTIES UNITY_BUILD ON)
 set_target_properties(unit PROPERTIES UNITY_BUILD ON)
 set_target_properties(integration PROPERTIES UNITY_BUILD ON)
 
 # Consider limiting the number of files per unity build
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4) # Example
+set_target_properties(data-tasks PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4) # Example
 
 # Static linking for standalone executable
 if(NOT APPLE)

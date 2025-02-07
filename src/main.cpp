@@ -1,11 +1,14 @@
+//
+// 2025-02-07 15:47:16 dpw
+//
 
-#include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/version.hpp>
+#include <app/types.hpp>
 #include <vector>
 
 // special

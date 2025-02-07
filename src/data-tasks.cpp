@@ -6,7 +6,9 @@
 
 #include <app/cli.hpp>
 #include <app/version.hpp>
-#include <vector>
+#include <app/logging.hpp>
+#include <app/service.hpp>
+#include <app/types.hpp>
 
 // special
 #include <app/client.hpp>
