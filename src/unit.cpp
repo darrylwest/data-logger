@@ -8,7 +8,7 @@
 #include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
-#include <app/datetime.hpp>
+#include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/service.hpp>
 #include <app/taskrunner.hpp>
@@ -542,12 +542,12 @@ Results test_service() {
     return r;
 }
 
-Results test_datetime() {
+Results test_datetimelib() {
     Results r = {.name = "Datetime Tests"};
 
     spdlog::set_level(spdlog::level::info);
 
-    auto unix_ts = datetime::timestamp_seconds();
+    auto unix_ts = datetimelib::timestamp_seconds();
     spdlog::info("unix ts: {}", unix_ts);
     r.equals(unix_ts > 1738888855, "unix ts should be in the future");
 
@@ -579,7 +579,7 @@ int main(int argc, const char* argv[]) {
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_service);
-    run_test(test_datetime);
+    run_test(test_datetimelib);
 
     fmt::println("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";

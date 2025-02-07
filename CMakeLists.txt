@@ -102,7 +102,7 @@ add_executable(data-logger
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetime.cpp
+    ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
@@ -114,7 +114,7 @@ add_executable(unit
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetime.cpp
+    ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp

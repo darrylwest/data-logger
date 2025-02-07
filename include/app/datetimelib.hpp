@@ -4,7 +4,7 @@
 
 #pragma once
 
-namespace datetime {
+namespace datetimelib {
     // unix timestamp
     unsigned int timestamp_seconds();
 
