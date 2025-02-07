@@ -8,6 +8,7 @@
 #include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
+#include <app/datetime.hpp>
 #include <app/exceptions.hpp>
 #include <app/service.hpp>
 #include <app/taskrunner.hpp>
@@ -546,7 +547,9 @@ Results test_datetime() {
 
     spdlog::set_level(spdlog::level::info);
 
-    r.pass("ok");
+    auto unix_ts = datetime::timestamp_seconds();
+    spdlog::info("unix ts: {}", unix_ts);
+    r.equals(unix_ts > 1738888855, "unix ts should be in the future");
 
     return r;
 }
