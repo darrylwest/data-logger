@@ -3,7 +3,7 @@
         "description": "this is where the webservice config lives",
         "scheme": "http",
         "host": "0.0.0.0",
-        "port": "9090",
+        "port": 9090,
         "headers": [
             { "x-thing": "flarb" }
         ]

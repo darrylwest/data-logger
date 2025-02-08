@@ -1,33 +1,46 @@
 #
 # example ported from json config
 #
-name = "temperature"
+[webservice]
+description = "this is where the webservice config lives"
+scheme = "http"
+host = "0.0.0.0"
+port = 9090
 
-[[locations]]
+  [[webservice.headers]]
+  x-thing = "flarb"
+
+[[clients]]
 location = "cottage"
 ip = "10.0.1.197"
 port = 2030
 active = true
 
-  [[locations.probes]]
-  sensor = 0
-  location = "cottage-south"
-
-  [[locations.probes]]
-  sensor = 1
-  location = "cottage-east"
-
-[[locations]]
+[[clients]]
 location = "shed"
 ip = "10.0.1.115"
 port = 2030
 active = false
 
-  [[locations.probes]]
+[[temperature.locations]]
+client = "cottage"
+
+  [[temperature.locations.probes]]
+  sensor = 0
+  location = "cottage-south"
+
+  [[temperature.locations.probes]]
+  sensor = 1
+  location = "cottage-east"
+
+[[temperature.locations]]
+client = "shed"
+
+  [[temperature.locations.probes]]
   sensor = 0
   location = "shed-inside"
 
-  [[locations.probes]]
+  [[temperature.locations.probes]]
   sensor = 1
   location = "shed-west"
 
