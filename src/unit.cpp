@@ -201,7 +201,7 @@ Results test_config() {
 
     try {
         // parse the config file
-        auto config = toml::parse("./config/test-config.toml");
+        auto config = toml::parse("./config/config.toml");
 
         // Verify the parsed data
         Str name = toml::find<Str>(config, "name");

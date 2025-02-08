@@ -1,44 +1,54 @@
 {
+    "version": "0.6.0-100",
+    "logging": {
+        "level": "info",
+        "folder": "logs",
+        "file": "none"
+    },
     "webservice": {
-        "description": "this is where the webservice config lives",
         "scheme": "http",
         "host": "0.0.0.0",
         "port": 9090,
-        "headers": [
-            { "x-thing": "flarb" }
-        ]
+        "www": "html",
+        "tls": [
+            { "cert": ".ssh/cert.pem" },
+            { "key": ".ssh/key.pem" }
+        ],
+        "headers": [ ]
     },
     "clients": [
         {
             "location": "cottage",
             "ip": "10.0.1.197",
             "port": 2030,
-            "active": true
+            "active": true,
+            "sensors": [
+                {
+                    "type": "temperature",
+                    "path": "/temps",
+                    "probes": [
+                        { "sensor": 0, "location": "cottage-south" },
+                        { "sensor": 1, "location": "cottage-east" }
+                    ]
+                }
+            ]
         },
         {
             "location": "shed",
             "ip": "10.0.1.115",
             "port": 2030,
-            "active": false
+            "active": false,
+            "sensors": [
+                {
+                    "type": "temperature",
+                    "path": "/temps",
+                    "probes": [
+                        { "sensor": 0, "location": "shed-inside" },
+                        { "sensor": 1, "location": "shed-west" }
+                    ]
+                }
+            ]
         }
-    ],
-    "temperature": {
-        "locations": [
-            {
-                "client": "cottage",
-                "probes": [
-                    { "sensor": 0, "location": "cottage-south" },
-                    { "sensor": 1, "location": "cottage-east" }
-                ]
-            },
-            {
-                "client": "shed",
-                "probes": [
-                    { "sensor": 0, "location": "shed-inside" },
-                    { "sensor": 1, "location": "shed-west" }
-                ]
-            }
-        ]
-    }
+    ]
 }
 
