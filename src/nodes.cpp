@@ -14,6 +14,12 @@ namespace app {
 
             auto worker = [&]() mutable {
                 try {
+                    // read config to see if the client is still active
+                    if (!node.active) {
+                        return;
+                    }
+
+                    // read config for this node
                     auto data = app::client::fetch_temps(node);
                     int ts = datetimelib::timestamp_seconds();
 
@@ -56,6 +62,11 @@ namespace app {
             int error_count = 0;
             auto worker = [&]() {
                 try {
+                    // read config to see if the client is still active
+                    if (!node.active) {
+                        return;
+                    }
+
                     const auto status = app::client::fetch_status(node);
 
                     const auto isodate = datetimelib::local_iso_datetime(status.timestamp);

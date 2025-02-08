@@ -4,34 +4,16 @@
 //
 //
 
+#include <app/datetimelib.hpp>
 #include <app/taskrunner.hpp>
 
 namespace app {
     namespace taskrunner {
         std::atomic_flag halt_threads = ATOMIC_FLAG_INIT;
 
-        // get the timestamp in millis
-        unsigned long timestamp_millis() {
-            auto now = std::chrono::system_clock::now();
-            auto timestamp
-                = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch())
-                      .count();
-
-            return timestamp;
-        }
-
-        // get the timestamp in seconds
-        unsigned int timestamp_seconds() {
-            auto now = std::chrono::system_clock::now();
-            auto timestamp
-                = std::chrono::duration_cast<std::chrono::seconds>(now.time_since_epoch()).count();
-
-            return timestamp;
-        }
-
         // create the task
         Task createTask(const char* task_name, int period, Func<void()> task_runner) {
-            auto ts = timestamp_seconds();
+            auto ts = datetimelib::timestamp_seconds();
             auto task = Task{
                 .name = task_name,
                 .started_at = ts,
@@ -54,14 +36,14 @@ namespace app {
             using namespace std::chrono;
             auto next = steady_clock::now();
 
-            task.last_run = taskrunner::timestamp_seconds();
+            task.last_run = datetimelib::timestamp_seconds();
             int tick_count = period;
 
             try {
                 while (!halt_threads.test()) {
                     if (tick_count >= period) {
                         func();
-                        int ts = taskrunner::timestamp_seconds();
+                        int ts = datetimelib::timestamp_seconds();
 
                         if (period == 0) {
                             spdlog::info("{} is a one-shot task, complete.", name);

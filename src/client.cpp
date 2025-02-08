@@ -113,15 +113,13 @@ namespace app {
                 .last_access = 0,
             });
 
-            /*
             nodes.emplace_back(ClientNode{
                 .location = "cottage",
                 .ip = "10.0.1.115",
                 .port = 2030,
-                .active = true,
+                .active = false,
                 .last_access = 0,
             });
-            */
 
             spdlog::info("created {} client nodes", nodes.size());
 

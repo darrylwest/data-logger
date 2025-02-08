@@ -1,9 +1,14 @@
 {
-    "version": "0.6.0-100",
+    "version": "0.6.0-101",
     "logging": {
         "level": "info",
         "folder": "logs",
         "file": "none"
+    },
+    "data": {
+        "folder": "./data",
+        "temperature": "/temperature",
+        "status": "/status"
     },
     "webservice": {
         "scheme": "http",

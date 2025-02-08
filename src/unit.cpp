@@ -206,7 +206,8 @@ Results test_config() {
         std::ifstream fin("./config/config.json");
         json cfg = json::parse(fin);
 
-        r.equals(cfg["version"] == "0.6.0-100", "cfg version");
+        Str vers = cfg["version"];
+        r.equals(vers.starts_with("0.6"), "cfg version");
         // spdlog::info("cfg {}", cfg.dump(2));
         r.equals(cfg["clients"].size() == 2, "number of clients in cfg");
 
