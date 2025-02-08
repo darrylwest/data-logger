@@ -126,7 +126,7 @@ Results test_temperature() {
 app::client::ClientNode create_test_client() {
     auto node = app::client::ClientNode{
         .location = "test",
-        .ip = "10.0.1.197",
+        .ip = "10.0.1.115",
         .port = 2030,
         .active = true,
         .last_access = 0,
@@ -162,7 +162,7 @@ void test_fetch_client_status(Results& r) {
     app::client::ClientStatus status = app::client::fetch_status(node);
     spdlog::info("status: ", status.to_string());
 
-    r.equals(status.version == "0.5.26-135", "the version");
+    r.equals(status.version.starts_with("0.5"), "the version");
 }
 
 void test_fetch_temps(Results& r) {

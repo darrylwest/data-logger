@@ -3,6 +3,7 @@
 //
 
 #include <spdlog/fmt/fmt.h>
+
 #include <app/client.hpp>
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
@@ -58,7 +59,8 @@ namespace app {
                     return parse_status(res->body);
                 } else {
                     auto err = httplib::to_string(res.error());
-                    error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
+                    error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path,
+                                                res->status);
                     spdlog::error(error_message);
                 }
             } else {
@@ -85,7 +87,8 @@ namespace app {
                     spdlog::info("data fetched in {} millis", t1 - t0);
                     return app::temperature::parse_reading(res->body);
                 } else {
-                    error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
+                    error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path,
+                                                res->status);
                 }
             } else {
                 auto err = httplib::to_string(res.error());
@@ -110,13 +113,15 @@ namespace app {
                 .last_access = 0,
             });
 
+            /*
             nodes.emplace_back(ClientNode{
                 .location = "cottage",
-                .ip = "10.0.1.199",
+                .ip = "10.0.1.115",
                 .port = 2030,
                 .active = true,
                 .last_access = 0,
             });
+            */
 
             spdlog::info("created {} client nodes", nodes.size());
 

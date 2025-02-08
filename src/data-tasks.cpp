@@ -5,18 +5,17 @@
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
-#include <app/version.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
+#include <app/version.hpp>
 
 // special
 #include <app/client.hpp>
 #include <app/nodes.hpp>
-#include <thread>
-
-#include <iostream>
 #include <csignal>
+#include <iostream>
+#include <thread>
 
 using namespace app::taskrunner;
 

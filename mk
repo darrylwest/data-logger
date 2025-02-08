@@ -54,6 +54,12 @@ do
 
             shift
         ;;
+        run-data)
+            (cd build && make -j4)
+            $root/build/data-tasks
+
+            shift
+        ;;
         format)
             clang-format -i include/app/*.hpp src/*.cpp
             git status -s
@@ -91,7 +97,8 @@ do
             echo ""
             echo "   init     : run the cmake command to create the build folder"
             echo "   build    : compile cryptor to the build folder"
-            echo "   run      : runs the app and shows version"
+            echo "   run      : runs the web server app"
+            echo "   run-data : runs the data-tasks app"
             echo "   format   : runs clang-format over includes and src"
             echo "   watch    : run watcher over source and include"
             echo "   pull     : pull the latest repo changes"

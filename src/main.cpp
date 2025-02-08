@@ -7,8 +7,8 @@
 #include <app/cli.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
-#include <app/version.hpp>
 #include <app/types.hpp>
+#include <app/version.hpp>
 
 // special
 #include <app/client.hpp>
