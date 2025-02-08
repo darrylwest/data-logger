@@ -2,8 +2,8 @@
 // 2024-12-09 10:28:16 dpw
 //
 
-#include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include <fstream>
 
 #include <app/cli.hpp>
 #include <app/version.hpp>
@@ -12,6 +12,19 @@
 
 namespace app {
     namespace config {
+        using json = nlohmann::json;
+
+        // locate the config file and return the name
+        Str find_config_filename() {
+            return "./config/config.json";
+        }
+
+        // parse and return the config file
+        auto parse_config() {
+            const auto filename = find_config_filename();
+            std::ifstream fin(filename);
+            return json::parse(fin);
+        }
 
         /*
          * parse the command line
@@ -40,13 +53,13 @@ namespace app {
                 const auto version = app::Version();
                 const auto result = options.parse(argc, argv);
                 if (result.count("version")) {
-                    fmt::println("Version: {}", app::Version().to_string());
+                    std::cout << "Version: " << app::Version() << std::endl;
                     exit(0);
                 }
 
                 if (result.count("help")) {
-                    fmt::println("Version: {}", app::Version().to_string());
-                    fmt::println("{}", options.help());
+                    std::cout << "Version: " << app::Version() << std::endl;
+                    std::cout << options.help() << std::endl;
                     exit(0);
                 }
 

@@ -38,6 +38,13 @@ namespace app {
             }
         };
 
+        // parse the CLI and return web config
         Config parse_cli(const int argc, char* argv[]);
+
+        // parse and return the config file from filename
+        auto parse_config(const Str filename);
+
+        // locate and return the config filename
+        Str find_config_filename();
     }  // namespace config
 }  // namespace app

@@ -1,6 +1,9 @@
+//
 // nodes.cpp
+//
 #include <spdlog/spdlog.h>
 
+#include <app/cli.hpp>
 #include <app/datetimelib.hpp>
 #include <app/nodes.hpp>
 
@@ -9,15 +12,29 @@ namespace app {
         using namespace app::taskrunner;
         using namespace app::client;
 
+        bool is_active(const Str& location) {
+            const auto& cfg = app::config::parse_config();
+            
+            for (const auto& jclient : cfg["clients"]) {
+                if (jclient["location"] == location) {
+                    bool active = jclient["active"].template get<bool>();
+                    spdlog::info("client node: {} active: {}", location, active);
+                    return active;
+                }
+            }
+
+            spdlog::error("could not find client node for location: {}", location);
+
+            return false;
+        }
+
         Task create_temps_task(ClientNode& node, int period) {
             int error_count = 0;
 
             auto worker = [&]() mutable {
                 try {
-                    // read config to see if the client is still active
-                    if (!node.active) {
-                        return;
-                    }
+                    // read from config on each iteration
+                    if (!is_active(node.location)) return;
 
                     // read config for this node
                     auto data = app::client::fetch_temps(node);
@@ -96,8 +113,5 @@ namespace app {
                 tasks.push_back(create_status_task(node));
             }
         }
-
-        // Task create_startup_task()
-
     }  // namespace nodes
 }  // namespace app

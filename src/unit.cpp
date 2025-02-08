@@ -209,7 +209,7 @@ Results test_config() {
         Str vers = cfg["version"];
         r.equals(vers.starts_with("0.6"), "cfg version");
         // spdlog::info("cfg {}", cfg.dump(2));
-        r.equals(cfg["clients"].size() == 2, "number of clients in cfg");
+        r.equals(cfg["clients"].size() == 3, "number of clients in cfg");
 
     } catch (const std::exception& e) {
         std::cerr << "JSON ERROR: an error occurred: " << e.what() << std::endl;

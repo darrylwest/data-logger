@@ -2,10 +2,6 @@
 // 2025-02-01 dpw
 //
 
-#include <spdlog/fmt/fmt.h>
-#include <nlohmann/json.hpp>
-#include <fstream>
-
 #include <app/client.hpp>
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
@@ -105,22 +101,17 @@ namespace app {
 
         // create and return the client nodes; (should read from config.toml)
         Vec<ClientNode> create_nodes() {
-
-            Str filename = "./config/config.json";
             Vec<ClientNode> nodes;
 
-            // TODO : move this to cli / app::config
             try {
-                std::ifstream fin(filename);
-                json cfg = json::parse(fin);
-
+                json cfg = app::config::parse_config();
                 json jclients = cfg["clients"];
 
                 for (const auto& jclient : jclients) {
                     nodes.push_back(parse_client_node(jclient));
                 }
             } catch (const std::exception& e) {
-                Str msg = fmt::format("can't open config.json from: {}", filename);
+                Str msg = "error parsing config file: ";
                 spdlog::error(msg);
                 throw app::ParseException(msg);
 
@@ -133,19 +124,6 @@ namespace app {
             }
 
             return nodes;
-        }
-
-        // find the client from a list of clients
-        ClientNode find_client_node(const json jclients, const Str location) {
-            for (const auto& jclient : jclients) {
-                if (jclient["location"] == location) {
-                    return parse_client_node(jclient);
-                }
-            }
-
-            Str msg = fmt::format("can't find client for location: {}", location);
-            spdlog::error(msg);
-            throw app::ParseException(msg);
         }
 
         // parse the client from json and return the client node

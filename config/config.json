@@ -1,5 +1,5 @@
 {
-    "version": "0.6.0-102",
+    "version": "0.6.0-103",
     "home": "{{HOME}}/.data-logger",
     "logging": {
         "level": "info",
@@ -35,6 +35,22 @@
                     "probes": [
                         { "sensor": 0, "location": "cottage-south" },
                         { "sensor": 1, "location": "cottage-east" }
+                    ]
+                }
+            ]
+        },
+        {
+            "location": "deck",
+            "ip": "10.0.1.177",
+            "port": 2030,
+            "active": false,
+            "sensors": [
+                {
+                    "type": "temperature",
+                    "path": "/temps",
+                    "probes": [
+                        { "sensor": 0, "location": "deck-west" },
+                        { "sensor": 1, "location": "deck-east" }
                     ]
                 }
             ]

@@ -63,12 +63,20 @@ namespace app {
             }
         };
 
+        // parse status as returned from a client query
         ClientStatus parse_status(const Str& json_text);
+
+        // fetch the client status
         ClientStatus fetch_status(ClientNode& node);
+
+        // fetch temperatures from the client's probes
         TemperatureData fetch_temps(ClientNode& node);
+
+        // create the client node list as read from config.json
         Vec<ClientNode> create_nodes();
+
+        // parse the single client from json; return the client node
         ClientNode parse_client_node(const json& jclient);
-        ClientNode find_client_node(const json& jclients, const Str& location);
 
     }  // namespace client
 }  // namespace app
