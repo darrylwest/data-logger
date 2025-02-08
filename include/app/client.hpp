@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <nlohmann/json.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
 #include <iostream>
@@ -12,6 +13,8 @@
 
 namespace app {
     namespace client {
+        using json = nlohmann::json;
+
         struct ClientStatus {
             Str version;
             int timestamp;
@@ -64,6 +67,8 @@ namespace app {
         ClientStatus fetch_status(ClientNode& node);
         TemperatureData fetch_temps(ClientNode& node);
         Vec<ClientNode> create_nodes();
+        ClientNode parse_client_node(const json& jclient);
+        ClientNode find_client_node(const json& jclients, const Str& location);
 
     }  // namespace client
 }  // namespace app

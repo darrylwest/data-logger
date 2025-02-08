@@ -1,5 +1,6 @@
 {
-    "version": "0.6.0-101",
+    "version": "0.6.0-102",
+    "home": "{{HOME}}/.data-logger",
     "logging": {
         "level": "info",
         "folder": "logs",
