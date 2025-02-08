@@ -14,6 +14,7 @@
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
+#include <fstream>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <toml.hpp>
@@ -196,61 +197,25 @@ Results test_client() {
 
 Results test_config() {
     Results r = {.name = "Config Tests"};
+    using json = nlohmann::json;
 
-    // spdlog::set_level(spdlog::level::info); // or off
+    spdlog::set_level(spdlog::level::info);
 
     try {
         // parse the config file
-        auto config = toml::parse("./config/config.toml");
+        std::ifstream fin("./config/config.json");
+        json cfg = json::parse(fin);
 
-        // Verify the parsed data
-        Str name = toml::find<Str>(config, "name");
-        r.equals(name == "temperature", "name should match");
-
-        // TODO pull out the temperature locations
-        auto locations = toml::find<Vec<toml::value>>(config, "locations");
-        r.equals(locations.size() >= 2, "should be at least two locations");
-
-        for (const auto& loc : locations) {
-            Str location = toml::find<Str>(loc, "location");
-            Str ip = toml::find<Str>(loc, "ip");
-            int port = toml::find<int>(loc, "port");
-            bool active = toml::find<bool>(loc, "active");
-
-            spdlog::info("loc: {} ip: {} port: {}, active: {}", location, ip, port, active);
-
-            r.equals(location.size() > 2, "location text");
-
-            if (location == "cottage") {
-                r.equals(ip == "10.0.1.197", "cottage location ip");
-                r.equals(port == 2030, "port");
-            } else if (location == "shed") {
-                r.equals(ip == "10.0.1.115", "shed location ip");
-                r.equals(port == 2030, "port");
-            } else {
-                r.equals(false, "not a valid location");
-            }
-
-            auto probes = toml::find<Vec<toml::value>>(loc, "probes");
-            r.equals(probes.size() >= 1, "probes for each location");
-
-            for (const auto& probe : probes) {
-                int sensor = toml::find<int>(probe, "sensor");
-                Str probe_location = toml::find<Str>(probe, "location");
-
-                spdlog::info("sensor: {} location: {}", sensor, probe_location);
-
-                r.equals(sensor >= 0, "sensor 0 or 1");
-                r.equals(probe_location.size() > 3, "probe location");
-            }
-        }
+        r.equals(cfg["version"] == "0.6.0-100", "cfg version");
+        // spdlog::info("cfg {}", cfg.dump(2));
+        r.equals(cfg["clients"].size() == 2, "number of clients in cfg");
 
     } catch (const std::exception& e) {
-        std::cerr << "TOML ERROR: an error occurred: " << e.what() << std::endl;
-        r.equals(false, "fail exception");
+        std::cerr << "JSON ERROR: an error occurred: " << e.what() << std::endl;
+        r.fail("config parse fail exception");
     }
 
-    spdlog::set_level(spdlog::level::off);  // or off
+    spdlog::set_level(spdlog::level::off);
 
     return r;
 }

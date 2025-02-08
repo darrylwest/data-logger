@@ -13,10 +13,10 @@
 namespace app {
 
     // Function to set up the server and apply configurations
-    bool setup_service(httplib::Server &svr, const Config &config);
+    bool setup_service(httplib::Server &svr, const config::Config &config);
 
     // Function to run the server
-    bool run_service(const Config &config);
+    bool run_service(const config::Config &config);
 
     Str create_temps_response(const Vec<Str> &labels, const Str end_date);
 

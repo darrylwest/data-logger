@@ -20,7 +20,7 @@ using namespace app::taskrunner;
 int main(int argc, char* argv[]) {
     const auto vers = app::Version();
 
-    auto config = app::parse_cli(argc, argv);
+    auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataLogger Version: {}", vers.to_string());
 
     // define and start the non-data ticker + jobs

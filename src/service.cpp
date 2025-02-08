@@ -22,7 +22,7 @@ namespace app {
     auto db = database::Database();
 
     // Function to set up the server and apply configurations
-    bool setup_service(Server &svr, const Config &config) {
+    bool setup_service(Server &svr, const config::Config &config) {
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
             return false;
@@ -86,7 +86,7 @@ namespace app {
     }
 
     // Function to run the server
-    bool run_service(const Config &config) {
+    bool run_service(const config::Config &config) {
         Server svr;
 
         // Add CORS headers to every response

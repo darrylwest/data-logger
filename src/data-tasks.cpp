@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
     std::signal(SIGSEGV, signal_handler);
     const auto vers = app::Version();
 
-    auto config = app::parse_cli(argc, argv);
+    auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataTasks Version: {}", vers.to_string());
 
     // define and start the ticker + jobs
