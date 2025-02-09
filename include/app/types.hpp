@@ -11,6 +11,8 @@
 
 using Str = std::string;
 
+using StrView = std::string_view;
+
 template <typename T> using Vec = std::vector<T>;
 
 template <typename T> using Func = std::function<T>;

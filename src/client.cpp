@@ -6,6 +6,7 @@
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/temperature.hpp>
+#include <app/jsonkeys.hpp>
 
 namespace app {
     namespace client {
@@ -105,7 +106,7 @@ namespace app {
 
             try {
                 json cfg = app::config::parse_config();
-                json jclients = cfg["clients"];
+                json jclients = cfg[CLIENTS];
 
                 for (const auto& jclient : jclients) {
                     nodes.push_back(parse_client_node(jclient));
@@ -129,17 +130,19 @@ namespace app {
         ClientNode parse_client_node(const json& jclient) {
             ClientNode client;
 
-            client.location = jclient["location"];
-            client.ip = jclient["ip"];
-            client.port = jclient["port"].template get<int>();
-            client.active = jclient["active"].template get<bool>();
+            using namespace app::jsonkeys;
 
-            for (const auto& sensor : jclient["sensors"]) {
-                if (sensor["type"] != "temperature") continue;
+            client.location = jclient[LOCATION];
+            client.ip = jclient[IP];
+            client.port = jclient[PORT].template get<int>();
+            client.active = jclient[ACTIVE].template get<bool>();
 
-                for (const auto& probe : sensor["probes"]) {
-                    int sensor = probe["sensor"].template get<int>();
-                    client.probes[sensor] = probe["location"];
+            for (const auto& sensor : jclient[SENSORS]) {
+                if (sensor[TYPE] != TEMPERATURE) continue;
+
+                for (const auto& probe : sensor[PROBES]) {
+                    int sensor = probe[SENSOR].template get<int>();
+                    client.probes[sensor] = probe[LOCATION];
                 }
             }
 
