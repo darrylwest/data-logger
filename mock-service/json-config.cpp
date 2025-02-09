@@ -8,6 +8,8 @@
 #include <sstream>
 #include <nlohmann/json.hpp>
 #include <fstream>
+#include <map>
+#include <vector>
 
 using json = nlohmann::json;
 
@@ -16,6 +18,7 @@ struct Client {
     std::string ip;
     int port;
     bool active;
+    std::map<int, std::string> probes;
 };
 
 std::string get_web_url(json ws) {
@@ -30,12 +33,28 @@ std::string get_client_url(json client) {
 
 Client parse_client(json cfg, std::string location) {
     Client cli;
-    for (const auto& client : cfg["clients"]) {
-        if (client["location"] == location) {
+    for (const auto& jclient : cfg["clients"]) {
+        if (jclient["location"] == location) {
             cli.location = location;
-            cli.ip = client["ip"];
-            cli.port = client["port"].template get<int>();
-            cli.active = client["active"].template get<bool>();
+            cli.ip = jclient["ip"];
+            cli.port = jclient["port"].template get<int>();
+            cli.active = jclient["active"].template get<bool>();
+
+            std::cout << "sensors: " << jclient["sensors"] << std::endl;
+
+            for (const auto& sensor : jclient["sensors"]) {
+                if (sensor["type"] != "temperature") {
+                    continue;
+                }
+
+                std::cout << "probes: " << sensor["probes"] << std::endl;
+
+                for (const auto& probe : sensor["probes"]) {
+                    int sensor = probe["sensor"].template get<int>();
+                    cli.probes[sensor] = probe["location"];
+                }
+            }
+
             return cli;
         }
     }
@@ -61,12 +80,16 @@ int main() {
     json clients = data["clients"];
     std::cout << "clients: " << clients.dump() << std::endl;
 
-    auto client = parse_client(data, "shedr");
+    auto client = parse_client(data, "cottage");
     auto active = client.active ? "yes" : "no";
-    std::cout << "shed client ip: " << client.ip
+    std::cout << client.location << ", ip: " << client.ip
         << ":" << client.port 
         << " active: " << active
         << std::endl;
+
+    for (const auto& [k, v] : client.probes) {
+        std::cout << "probe: " << k << "=" << v << std::endl;
+    }
 
     return 0;
 }
