@@ -114,13 +114,12 @@ namespace app {
                 Str msg = "error parsing config file: ";
                 spdlog::error(msg);
                 throw app::ParseException(msg);
-
             }
 
             spdlog::info("created {} client nodes", nodes.size());
             for (const auto& client : nodes) {
-                spdlog::info("Client: {}, {}:{}, active: {}", 
-                    client.location, client.ip, client.port, client.active);
+                spdlog::info("Client: {}, {}:{}, active: {}", client.location, client.ip,
+                             client.port, client.active);
             }
 
             return nodes;
@@ -134,6 +133,15 @@ namespace app {
             client.ip = jclient["ip"];
             client.port = jclient["port"].template get<int>();
             client.active = jclient["active"].template get<bool>();
+
+            for (const auto& sensor : jclient["sensors"]) {
+                if (sensor["type"] != "temperature") continue;
+
+                for (const auto& probe : sensor["probes"]) {
+                    int sensor = probe["sensor"].template get<int>();
+                    client.probes[sensor] = probe["location"];
+                }
+            }
 
             return client;
         }

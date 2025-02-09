@@ -208,8 +208,16 @@ Results test_config() {
 
         Str vers = cfg["version"];
         r.equals(vers.starts_with("0.6"), "cfg version");
-        // spdlog::info("cfg {}", cfg.dump(2));
+
         r.equals(cfg["clients"].size() == 3, "number of clients in cfg");
+
+        for (const auto& jclient : cfg["clients"]) {
+            const auto node = app::client::parse_client_node(jclient);
+            r.equals(node.port == 2030, "the client node port is always 2030");
+            r.equals(node.probes.size() == 2, "verify client node temp probe count");
+            r.equals(node.probes.find(0) != node.probes.end(), "probe 0 should always exist");
+            r.equals(node.probes.find(1) != node.probes.end(), "probe 0 should always exist");
+        }
 
     } catch (const std::exception& e) {
         std::cerr << "JSON ERROR: an error occurred: " << e.what() << std::endl;

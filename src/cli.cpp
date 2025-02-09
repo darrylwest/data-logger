@@ -3,10 +3,10 @@
 //
 
 #include <spdlog/spdlog.h>
-#include <fstream>
 
 #include <app/cli.hpp>
 #include <app/version.hpp>
+#include <fstream>
 #include <nlohmann/json.hpp>
 #include <vendor/cxxopts.hpp>
 
@@ -15,9 +15,7 @@ namespace app {
         using json = nlohmann::json;
 
         // locate the config file and return the name
-        Str find_config_filename() {
-            return "./config/config.json";
-        }
+        Str find_config_filename() { return "./config/config.json"; }
 
         // parse and return the config file
         auto parse_config() {

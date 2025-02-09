@@ -14,7 +14,7 @@ namespace app {
 
         bool is_active(const Str& location) {
             const auto& cfg = app::config::parse_config();
-            
+
             for (const auto& jclient : cfg["clients"]) {
                 if (jclient["location"] == location) {
                     bool active = jclient["active"].template get<bool>();

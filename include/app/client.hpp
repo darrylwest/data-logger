@@ -5,10 +5,11 @@
 
 #pragma once
 
-#include <nlohmann/json.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
 #include <iostream>
+#include <map>
+#include <nlohmann/json.hpp>
 #include <sstream>
 
 namespace app {
@@ -45,11 +46,13 @@ namespace app {
             int port;
             bool active;
             int last_access;
+            std::map<int, Str> probes;
             ClientStatus status;
 
             friend std::ostream& operator<<(std::ostream& os, const ClientNode v) {
+                Str active = v.active ? "true" : "false";
                 os << "location: " << v.location << ", ip: " << v.ip << ", port: " << v.port
-                   << ", active: " << v.active  // ? "yes" : "no"
+                   << ", active: " << active << ", probes: " << v.probes.size()
                    << ", last_access: " << v.last_access << ", status: " << v.status;
 
                 return os;
