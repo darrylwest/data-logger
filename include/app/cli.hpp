@@ -11,12 +11,13 @@
 namespace app {
     namespace config {
 
+        // TODO move this defaults to config.json
         struct Config {
-            Str host = "0.0.0.0";
-            int port = 9999;
-            Str www = "./html";
-            Str cert_file = ".ssh/cert.pem";
-            Str key_file = ".ssh/key.pem";
+            Str host;
+            int port;
+            Str www;
+            Str cert_file;
+            Str key_file;
             bool verbose = false;
 
             friend std::ostream& operator<<(std::ostream& os, const Config v) {
@@ -46,5 +47,8 @@ namespace app {
 
         // locate and return the config filename
         Str find_config_filename();
+
+        // use config.json to set webservice defaults
+        Config init_webservice_defaults(const auto& json_cfg);
     }  // namespace config
 }  // namespace app

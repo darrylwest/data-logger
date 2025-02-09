@@ -10,6 +10,7 @@
 #include <app/database.hpp>
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/service.hpp>
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
@@ -85,7 +86,7 @@ Results test_taskrunner() {
 
 // put this in unit tests
 const auto createSampleReading() {
-    Str text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
+    const Str text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
                 {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
@@ -124,8 +125,8 @@ Results test_temperature() {
     return r;
 }
 
-app::client::ClientNode create_test_client() {
-    auto node = app::client::ClientNode{
+const app::client::ClientNode create_test_client() {
+    const auto node = app::client::ClientNode{
         .location = "test",
         .ip = "10.0.1.115",
         .port = 2030,
@@ -139,7 +140,7 @@ app::client::ClientNode create_test_client() {
 void test_parse_client_status(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
-    Str json_text
+    const Str json_text
         = R"({"status":{"version":"0.5.26-135","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
 
     app::client::ClientStatus status = app::client::parse_status(json_text);
@@ -195,23 +196,45 @@ Results test_client() {
     return r;
 }
 
+void test_init_webservice_defaults(Results& r, const auto& cfg) {
+    // spdlog::set_level(spdlog::level::info);
+
+    using namespace app::jsonkeys;
+
+    r.equals(cfg[HOST] == "0.0.0.0", "webservice host");
+    r.equals(cfg[SCHEME] == "http", "webservice host scheme");
+
+    const auto config = app::config::init_webservice_defaults(cfg);
+    r.equals(config.host == "0.0.0.0", "config webservice host");
+    r.equals(config.port == 9090, "config webservice port");
+    r.equals(config.www == "html", "config webservice www folder");
+    r.equals(config.cert_file == ".ssh/cert.pem", "config webservice tls cert");
+    r.equals(config.key_file == ".ssh/key.pem", "config webservice tls key file");
+    r.equals(config.verbose == false, "config verbose");
+
+    spdlog::set_level(spdlog::level::off);
+}
+
 Results test_config() {
     Results r = {.name = "Config Tests"};
     using json = nlohmann::json;
 
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
     try {
-        // parse the config file
+        // TODO get the filename from cli:: parse the config file
         std::ifstream fin("./config/config.json");
         json cfg = json::parse(fin);
 
-        Str vers = cfg["version"];
+        Str vers = cfg[app::jsonkeys::VERSION];
         r.equals(vers.starts_with("0.6"), "cfg version");
 
-        r.equals(cfg["clients"].size() == 3, "number of clients in cfg");
+        // TODO test the webservice settings
+        test_init_webservice_defaults(r, cfg[app::jsonkeys::WEBSERVICE]);
 
-        for (const auto& jclient : cfg["clients"]) {
+        r.equals(cfg[app::jsonkeys::CLIENTS].size() == 3, "number of clients in cfg");
+
+        for (const auto& jclient : cfg[app::jsonkeys::CLIENTS]) {
             const auto node = app::client::parse_client_node(jclient);
             r.equals(node.port == 2030, "the client node port is always 2030");
             r.equals(node.probes.size() == 2, "verify client node temp probe count");
@@ -454,8 +477,8 @@ Results test_service() {
 
     spdlog::set_level(spdlog::level::off);
 
-    Str end_date = "2025-02-06";
-    Vec<Str> labels
+    const Str end_date = "2025-02-06";
+    const Vec<Str> labels
         = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
            "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
            "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
@@ -465,9 +488,9 @@ Results test_service() {
 
     spdlog::info("json: {}", json_text);
 
-    Str ed = response["end_date"];
-    Vec<Str> lbls = response["labels"];
-    Vec<json> datasets = response["datasets"];
+    const Str ed = response[app::jsonkeys::END_DATE];
+    const Vec<Str> lbls = response[app::jsonkeys::LABELS];
+    const Vec<json> datasets = response[app::jsonkeys::DATASETS];
 
     r.equals(ed == end_date, "validate end date");
     r.equals(lbls == labels, "validate labels");

@@ -7,6 +7,7 @@
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
@@ -57,7 +58,7 @@ namespace app {
 
             // TODO : create a function to generate these based on end date and interval.
             // this is set to 30 minutes; there are always 25 labels; move this to temperature?
-            Vec<Str> labels
+            const Vec<Str> labels
                 = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
                    "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
                    "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
@@ -68,6 +69,8 @@ namespace app {
 
             res.set_content(json_text, "application/json");
         });
+
+        // TODO add a status endpoint to report on the client nodes, probes, etc...
 
         // Shutdown hook
         svr.Delete("/shutdown", [&](const Request &, Response &res) {
@@ -119,11 +122,13 @@ namespace app {
     Str create_temps_response(const Vec<Str> &labels, const Str end_date) {
         json j;
 
+        using namespace app::jsonkeys;
+
         // Add labels
-        j["labels"] = labels;
+        j[LABELS] = labels;
 
         // Sensor 1 data
-        json sensor1
+        const json sensor1
             = {{"sensor_id", "sensor_1"},
                {"label", "cottage-south"},
                {"data", {49.5781,  50.2531,  50.8156,  50.7406,  51.5281,  51.8094,  51.9688,
@@ -134,7 +139,7 @@ namespace app {
                {"fill", false}};
 
         // Sensor 2 data
-        json sensor2 = {
+        const json sensor2 = {
             {"sensor_id", "sensor_2"},
             {"label", "shed-west"},
             {"data", {49.32900,  49.521116, 50.02136,  51.18444,  52.293116, 51.43887,  52.48388,
@@ -149,26 +154,9 @@ namespace app {
         data.push_back(sensor2);
 
         // Add datasets and end_date
-        j["datasets"] = data;
-        j["end_date"] = end_date;
+        j[DATASETS] = data;
+        j[END_DATE] = end_date;
 
         return j.dump();
     };
-
-    /*
-    // Function to run the server
-    bool run_service(const Config &config) {
-        SSLServer svr(config.cert_file.c_str(), config.key_file.c_str());
-
-        // Set up the server
-        if (!app::setup_service(svr, config)) {
-            return false;
-        }
-
-        spdlog::info("Server starting at https://{}:{}", config.host, config.port);
-
-        // Start the server
-        return svr.listen(config.host, config.port);
-    }
-    */
 }  // namespace app

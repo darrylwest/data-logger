@@ -16,10 +16,8 @@
         "host": "0.0.0.0",
         "port": 9090,
         "www": "html",
-        "tls": [
-            { "cert": ".ssh/cert.pem" },
-            { "key": ".ssh/key.pem" }
-        ],
+        "tls_cert_file": ".ssh/cert.pem",
+        "tls_key_file": ".ssh/key.pem",
         "headers": [ ]
     },
     "clients": [

@@ -5,8 +5,8 @@
 #include <app/client.hpp>
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
-#include <app/temperature.hpp>
 #include <app/jsonkeys.hpp>
+#include <app/temperature.hpp>
 
 namespace app {
     namespace client {
@@ -27,16 +27,18 @@ namespace app {
         ClientStatus parse_status(const Str& json_text) {
             json jsn = json::parse(json_text);
 
-            auto j = jsn["status"];
-            Str version = j["version"];
+            using namespace app::jsonkeys;
+
+            auto j = jsn[STATUS];
+            Str version = j[VERSION];
 
             ClientStatus status = {
-                .version = j["version"],
-                .timestamp = j["ts"],
-                .started = j["started"],
-                .uptime = j["uptime"],
-                .access_count = j["access"],
-                .errors = j["errors"],
+                .version = j[VERSION],
+                .timestamp = j[TS],
+                .started = j[STARTED],
+                .uptime = j[UPTIME],
+                .access_count = j[ACCESS],
+                .errors = j[ERRORS],
             };
 
             // TODO error handling
@@ -103,6 +105,8 @@ namespace app {
         // create and return the client nodes; (should read from config.toml)
         Vec<ClientNode> create_nodes() {
             Vec<ClientNode> nodes;
+
+            using namespace app::jsonkeys;
 
             try {
                 json cfg = app::config::parse_config();

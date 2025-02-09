@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/version.hpp>
 #include <fstream>
 #include <nlohmann/json.hpp>
@@ -20,15 +21,32 @@ namespace app {
         // parse and return the config file
         auto parse_config() {
             const auto filename = find_config_filename();
+            spdlog::info("reading/parsing config from file: {}", filename);
             std::ifstream fin(filename);
             return json::parse(fin);
+        }
+
+        // initialize config with json file
+        Config init_webservice_defaults(const auto& jcfg) {
+            using namespace app::jsonkeys;
+
+            spdlog::info("cfg: {}", jcfg.dump());
+            return Config{
+                .host = jcfg[HOST],
+                .port = jcfg[PORT],
+                .www = jcfg[WWW],
+                .cert_file = jcfg[TLS_CERT_FILE],
+                .key_file = jcfg[TLS_KEY_FILE],
+            };
         }
 
         /*
          * parse the command line
          */
         Config parse_cli(const int argc, char** argv) {
-            auto config = Config();
+            // parse config/config.json and set defaults
+            auto cfg = parse_config();
+            auto config = init_webservice_defaults(cfg[jsonkeys::WEBSERVICE]);
 
             try {
                 // first, read the standard config file
