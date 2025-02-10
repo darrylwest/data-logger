@@ -74,14 +74,14 @@ add_definitions(
 
 # Mock-service source files
 set(MOCK_SERVICE_SOURCES
-    mock-service/client-fetch.cpp
-    mock-service/json-config.cpp
-    mock-service/mock_service.cpp
-    mock-service/retry-service.cpp
-    mock-service/struct-enum.cpp
-    mock-service/succeed-fail.cpp
-    mock-service/task-runner.cpp
-    mock-service/truncate-minutes.cpp
+    client-fetch.cpp
+    json-config.cpp
+    mock_service.cpp
+    retry-service.cpp
+    struct-enum.cpp
+    succeed-fail.cpp
+    task-runner.cpp
+    truncate-minutes.cpp
 )
 
 # Create executables for each mock service file
