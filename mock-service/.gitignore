@@ -6,3 +6,4 @@ task-runner
 struct-enum
 truncate-minutes
 json-config
+build
