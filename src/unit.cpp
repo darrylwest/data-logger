@@ -143,6 +143,7 @@ void test_parse_client_status(Results& r) {
     const Str json_text
         = R"({"status":{"version":"0.5.26-135","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
 
+    spdlog::info("parse client status from {}", json_text);
     app::client::ClientStatus status = app::client::parse_status(json_text);
     spdlog::info("status: {}", status.to_string());
 
@@ -179,6 +180,8 @@ void test_fetch_temps(Results& r) {
 
 Results test_client() {
     Results r = {.name = "Client Tests"};
+
+    // spdlog::set_level(spdlog::level::info);
 
     test_parse_client_status(r);
 

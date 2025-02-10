@@ -14,7 +14,7 @@ namespace app {
         constexpr StrView TLS_CERT_FILE = "tls_cert_file";
         constexpr StrView TLS_KEY_FILE = "tls_key_file";
         constexpr StrView SCHEME = "scheme";
-        constexpr StrView STATUS = "status";
+        constexpr StrView CLIENT_STATUS = "status";
         constexpr StrView VERSION = "version";
         constexpr StrView TS = "ts";
         constexpr StrView STARTED = "started";

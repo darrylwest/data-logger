@@ -2,6 +2,8 @@
 // 2025-02-01 dpw
 //
 
+#include <spdlog/spdlog.h>
+
 #include <app/client.hpp>
 #include <app/datetimelib.hpp>
 #include <app/exceptions.hpp>
@@ -29,7 +31,7 @@ namespace app {
 
             using namespace app::jsonkeys;
 
-            auto j = jsn[STATUS];
+            auto j = jsn[CLIENT_STATUS];
             Str version = j[VERSION];
 
             ClientStatus status = {
