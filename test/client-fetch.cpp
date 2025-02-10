@@ -13,7 +13,7 @@ static std::atomic_flag halt_threads;
 void fetch_data() {
     while (!halt_threads.test()) {
         // Create a client pointing to the host and port
-        std::string url = "http://10.0.1.199:2030";
+        std::string url = "http://10.0.1.197:2030";
         httplib::Client client(url);
 
         auto timeout = std::chrono::milliseconds{2000};

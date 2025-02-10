@@ -23,12 +23,14 @@ struct Client {
 
 std::string get_web_url(json ws) {
     int port = ws["port"].template get<int>();
-    return fmt::format("{}://{}:{}", ws["scheme"], ws["host"], port);
+    return fmt::format("{}://{}:{}", ws["scheme"].get<std::string>(), ws["host"].get<std::string>(), port);
+
 }
 
 std::string get_client_url(json client) {
     int port = client["port"].template get<int>();
-    return fmt::format("http://{}:{}", client["ip"], port);
+    return fmt::format("http://{}:{}", client["ip"].get<std::string>(), port);
+
 }
 
 Client parse_client(json cfg, std::string location) {
