@@ -43,7 +43,7 @@ namespace app {
                     Str at = datetimelib::truncate_to_minutes(data.reading_at);
                     spdlog::info("ts {}, temps: {}, at: {}", ts, data.to_string(), at);
 
-                    for (const auto probe : data.probes) {
+                    for (const auto& probe : data.probes) {
                         // db.(key, data);
                         auto key = app::database::create_key(at, probe.location);
 

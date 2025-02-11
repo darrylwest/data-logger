@@ -64,7 +64,7 @@ void run_server(std::atomic<bool>& running, const Config& config) {
 
 // use cxxopts to parse host and port
 // if the service is not local (localhost or 127.0.0.1), then skip the startup
-int main(int argc, char* argv[]) {
+int main() {
     std::atomic<bool> server_running(false);
     auto config = Config();
 

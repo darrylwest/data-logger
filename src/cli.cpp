@@ -74,7 +74,7 @@ namespace app {
                 }
 
                 if (result.count("help")) {
-                    std::cout << "Version: " << app::Version() << std::endl;
+                    std::cout << "Version: " << version << std::endl;
                     std::cout << options.help() << std::endl;
                     exit(0);
                 }

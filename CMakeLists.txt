@@ -135,6 +135,12 @@ add_executable(unit
 
 add_executable(integration ${SRC_DIR}/integration.cpp)
 
+# treat all compile warnings as errors
+target_compile_options(data-logger PRIVATE -Wall -Wextra -Werror)
+target_compile_options(data-tasks PRIVATE -Wall -Wextra -Werror)
+target_compile_options(unit PRIVATE -Wall -Wextra -Werror)
+target_compile_options(integration PRIVATE -Wall -Wextra -Werror)
+
 
 target_link_libraries(data-logger PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(data-tasks PRIVATE ${DEPENDENT_LIBRARIES})

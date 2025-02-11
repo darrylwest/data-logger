@@ -18,13 +18,13 @@ namespace app {
     namespace database {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
-        const DbKey create_key(const Str datetime, const Str location) {
+        DbKey create_key(const Str& datetime, const Str& location) {
             auto dt = datetimelib::parse_datetime_to_minutes(datetime);
             return DbKey{.datetime = dt, .location = location};
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written
-        const void append_key_value(const Str& filename, const DbKey& key, const Str& value) {
+        void append_key_value(const Str& filename, const DbKey& key, const Str& value) {
             std::ofstream file(filename, std::ios::app);
 
             if (!file.is_open()) {

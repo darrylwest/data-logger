@@ -59,6 +59,9 @@ namespace rcstestlib {
         void pass(std::string comment = "") {
             tests++;
             passed++;
+            if (comment != "") {
+                std::cerr << green << comment << reset << std::endl;
+            }
         }
 
         // fail this test; useful in try/catch tests

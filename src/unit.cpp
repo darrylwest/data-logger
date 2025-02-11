@@ -49,7 +49,7 @@ Results test_taskrunner() {
     int period = 15;  // in seconds
     auto task = app::taskrunner::createTask("test-task", period, worker);
 
-    int ts_in_the_past = 1738353093;
+    unsigned int ts_in_the_past = 1738353093;
     r.equals(Str(task.name) == "test-task", "name should match");
     r.equals(task.started_at > ts_in_the_past, "name should match");
     r.equals(task.run_count == 0, "never run");
@@ -76,7 +76,7 @@ Results test_taskrunner() {
         r.fail("task should not get this far");
     } catch (std::exception& e) {
         spdlog::info("ex: {}", e.what());
-        r.pass("task should catch here");
+        r.pass();
     }
 
     spdlog::set_level(spdlog::level::off);
@@ -85,7 +85,7 @@ Results test_taskrunner() {
 }
 
 // put this in unit tests
-const auto createSampleReading() {
+auto createSampleReading() {
     const Str text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
@@ -285,11 +285,11 @@ Results test_exceptions() {
     // spdlog::set_level(spdlog::level::info);
 
     try {
-        bool ok = bad_http_get("http://bad_network.com");
+        bad_http_get("http://bad_network.com");
         r.fail("should not get here from a bad http get");
     } catch (const std::exception& e) {
         spdlog::info("exception: {}", e.what());
-        r.pass("exception throw ok");
+        r.pass();
     }
 
     try {
@@ -359,6 +359,8 @@ void populate_database(app::database::Database& db, int size = 500) {
     float t3 = 9.04;
     float t4 = 9.06;
 
+    spdlog::debug("values: {} {} {} {}", t1, t2, t3, t4);
+
     for (int i = 0; i < size; ++i) {
         Str key, value;
 
@@ -403,7 +405,7 @@ void test_database_data(Results& r) {
     r.equals(db.size() == 0, "db empty size");
 
     // 1 days of data
-    int size = (60 * 24);
+    size_t size = (60 * 24);
     populate_database(db, size);
 
     r.equals(db.size() == size, "db size");
@@ -563,7 +565,7 @@ Results test_datetimelib() {
     return r;
 }
 
-int main(int argc, const char* argv[]) {
+int main() {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
     spdlog::set_level(spdlog::level::off);

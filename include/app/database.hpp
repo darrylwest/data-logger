@@ -68,10 +68,10 @@ namespace app {
         };
 
         // create the db key from iso8601 datetime string and the probe location
-        const DbKey create_key(const Str datetime, const Str location);
+        DbKey create_key(const Str& datetime, const Str& location);
 
         // append the key/value to the file; throws FileException on error
-        const void append_key_value(const Str& filename, const DbKey& key, const Str& value);
+        void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
         struct Database {
           private:
