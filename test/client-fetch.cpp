@@ -4,19 +4,25 @@
 
 #include <httplib.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 #include <iostream>
 #include <thread>
 #include <chrono>
+#include <app/types.hpp>
 
 static std::atomic_flag halt_threads;
 
 void fetch_data() {
+    const Str ip = "10.0.1.197";
+    const int port = 2030;
+    const int timeout_millis = 2000;
+
     while (!halt_threads.test()) {
         // Create a client pointing to the host and port
-        std::string url = "http://10.0.1.197:2030";
+        const Str url = fmt::format("http://{}:{}", ip, port);
         httplib::Client client(url);
 
-        auto timeout = std::chrono::milliseconds{2000};
+        auto timeout = std::chrono::milliseconds{timeout_millis};
         client.set_connection_timeout(timeout);
 
         auto path = "/temps";
