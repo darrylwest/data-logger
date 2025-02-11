@@ -89,11 +89,11 @@ namespace app {
     }
 
     // Function to run the server
-    bool run_service(const config::Config& config) {
+    bool run_service(const config::Config &config) {
         Server svr;
 
         // Add CORS headers to every response
-        svr.set_pre_routing_handler([](const httplib::Request &, httplib::Response& res) {
+        svr.set_pre_routing_handler([](const httplib::Request &, httplib::Response &res) {
             res.set_header("Access-Control-Allow-Origin", "*");
             res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
             res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
