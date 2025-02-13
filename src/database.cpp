@@ -38,6 +38,17 @@ namespace app {
             file.close();
         }
 
+        bool read_current_data(Database& db) {
+            Str location = "deck-west";
+            Str filename = "data/temperature/current." + location + ".db";
+
+            spdlog::info("read current data from {}", filename);
+            db.read(filename, false);
+            spdlog::info("db size: {}", db.size());
+
+            return true;
+        }
+
         bool Database::set(const Str& key, const Str& value) {
             std::lock_guard<std::mutex> lock(mtx);
             data[key] = value;

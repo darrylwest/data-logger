@@ -20,10 +20,13 @@ namespace app {
     using namespace httplib;
     using json = nlohmann::json;
 
-    auto db = database::Database();
-
     // Function to set up the server and apply configurations
     bool setup_service(Server &svr, const config::Config &config) {
+
+        // open the server's database; read all current data
+        auto db = database::Database();
+        database::read_current_data(db);
+
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
             return false;
@@ -71,6 +74,8 @@ namespace app {
         });
 
         // TODO add a status endpoint to report on the client nodes, probes, etc...
+
+        // TODO add a Post endpoint /api/temp to insert new temp reading
 
         // Shutdown hook
         svr.Delete("/shutdown", [&](const Request &, Response &res) {
