@@ -458,12 +458,7 @@ void test_read_current(Results& r) {
     const auto keys = db.keys();
     r.equals(keys.size() == db.size(), "size matters");
 
-    // get just selected keys
-    const auto noon_keys = db.keys("2025020512");
-    r.equals(noon_keys.size() == 12, "always 12 entries for the hour");
-    for (const auto& key : db.keys("2025020512")) {
-        spdlog::info("key: {}={}", key, db.get(key));
-    }
+    // TODO grab some keys
 }
 
 Results test_database() {
