@@ -18,9 +18,8 @@ namespace app {
     namespace database {
         // define reading key YYYY-MM-DDTHH:MM.TP.location.probe-location
         // define reading key YYYY-MM-DDTHH:MM.ST.location
-        DbKey create_key(const Str& datetime, const Str& location) {
-            auto dt = datetimelib::parse_datetime_to_minutes(datetime);
-            return DbKey{.datetime = dt, .location = location};
+        DbKey create_key(const time_t& timestamp, const Str& location) {
+            return DbKey{.timestamp = timestamp, .location = location};
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written

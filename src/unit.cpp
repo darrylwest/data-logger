@@ -28,8 +28,8 @@ Results test_version() {
 
     auto vers = app::Version();
     r.equals(vers.major == 0);
-    r.equals(vers.minor == 3);
-    r.equals(vers.patch == 7);
+    r.equals(vers.minor == 4);
+    r.equals(vers.patch == 8);
     r.equals(vers.build >= 161);
 
     return r;
@@ -86,7 +86,7 @@ Results test_taskrunner() {
 
 // put this in unit tests
 auto createSampleReading() {
-    const Str text = R"({"reading_at":{"time":"2025-01-31T14:27:46","ts":1738362466},
+    const Str text = R"({"reading_at": 1738362466,
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
                 {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
@@ -99,13 +99,13 @@ auto createSampleReading() {
 Results test_temperature() {
     Results r = {.name = "Temperature Reading Tests"};
 
-    // spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::debug);
 
     const auto reading = createSampleReading();
+    spdlog::info("reading: {}", reading);
     app::TemperatureData data = app::temperature::parse_reading(reading);
 
-    r.equals(data.reading_at == "2025-01-31T14:27:46", "reading date should be set");
-    r.equals(data.timestamp == 1738362466, "timestamp should match");
+    r.equals(data.reading_at == 1738362466, "timestamp should match");
     r.equals(data.probes.size() == 2, "should be two probes");
     // now test the probe data; sensor, location, tempC, tempF
     auto probe0 = data.probes.at(0);
@@ -338,10 +338,10 @@ Results test_exceptions() {
 void test_create_key(Results& r) {
     using namespace app::database;
 
-    Str datetime = "2025-02-04T11:40:23";
-    DbKey key = create_key(datetime, "cottage-south");
+    time_t timestamp = 1739563051;
+    DbKey key = create_key(timestamp, "cottage-south");
 
-    r.equals(key.datetime == "202502041140", "create key");
+    r.equals(key.timestamp == timestamp, "create key");
     // r.equals(key.type == ReadingType::Value::Temperature, "reading type");
     // r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
     // r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
@@ -349,7 +349,7 @@ void test_create_key(Results& r) {
     r.equals(key.location == "cottage-south", "probe location");
 
     spdlog::info("key: {}", key.to_string());
-    r.equals(key.to_string() == "202502041140.cottage-south", "date/probe key");
+    r.equals(key.to_string() == "1739563051.cottage-south", "date/probe key");
 }
 
 // Unit test method to populate with random data
@@ -427,7 +427,7 @@ void test_append_key_value(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
     const auto filename = "/tmp/append.db";
-    const auto key = app::database::create_key("2025-02-36T07:36", "test-location");
+    const auto key = app::database::create_key(1739563051, "test-location");
     const auto value = "7.553";
     app::database::append_key_value(filename, key, value);
 

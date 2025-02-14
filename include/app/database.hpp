@@ -50,11 +50,11 @@ namespace app {
         };
 
         struct DbKey {
-            Str datetime;
+            time_t timestamp;
             Str location;
 
             friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
-                os << v.datetime << "." << v.location;
+                os << v.timestamp << "." << v.location;
 
                 return os;
             }
@@ -67,8 +67,8 @@ namespace app {
             }
         };
 
-        // create the db key from iso8601 datetime string and the probe location
-        DbKey create_key(const Str& datetime, const Str& location);
+        // create the db key from unix timestamp and the probe location
+        DbKey create_key(const time_t& timestamp, const Str& location);
 
         // append the key/value to the file; throws FileException on error
         void append_key_value(const Str& filename, const DbKey& key, const Str& value);

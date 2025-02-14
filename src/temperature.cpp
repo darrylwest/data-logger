@@ -19,9 +19,8 @@ namespace app {
             try {
                 json j = json::parse(json_text);
 
-                auto read_at = j["reading_at"];
-                data.reading_at = read_at["time"];
-                data.timestamp = read_at["ts"];
+                time_t read_at = j["reading_at"].template get<int>();
+                data.reading_at = read_at;
                 auto probes = j["probes"];
                 for (const auto& probe : probes) {
                     TemperatureProbe p;

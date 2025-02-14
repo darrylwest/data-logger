@@ -40,12 +40,11 @@ namespace app {
                     auto data = app::client::fetch_temps(node);
                     int ts = datetimelib::timestamp_seconds();
 
-                    Str at = datetimelib::truncate_to_minutes(data.reading_at);
-                    spdlog::info("ts {}, temps: {}, at: {}", ts, data.to_string(), at);
+                    spdlog::info("ts: {}, temps: {}, at: {}", ts, data.to_string(), data.reading_at);
 
                     for (const auto& probe : data.probes) {
                         // db.(key, data);
-                        auto key = app::database::create_key(at, probe.location);
+                        auto key = app::database::create_key(data.reading_at, probe.location);
 
                         // TODO create a method for this? pull data folder from config...
                         const auto filename = "data/temperature/current." + probe.location + ".db";
@@ -90,7 +89,7 @@ namespace app {
                     spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp,
                                  status.uptime, status.access_count, status.errors);
 
-                    auto key = app::database::create_key(isodate, node.location);
+                    auto key = app::database::create_key(status.timestamp, node.location);
                     const auto filename = "data/status/current." + node.location + ".db";
                     spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(),
                                  status.to_string());

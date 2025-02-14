@@ -18,12 +18,11 @@ namespace app {
     };
 
     struct TemperatureData {
-        Str reading_at;
-        int timestamp;
+        time_t reading_at;
         Vec<TemperatureProbe> probes;
 
         friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
-            os << "reading_at: " << v.reading_at << ", ts: " << v.timestamp;
+            os << "reading_at: " << v.reading_at;
 
             for (const auto& probe : v.probes)
                 os << ", sensor: " << probe.sensor << ", location: " << probe.location
