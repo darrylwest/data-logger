@@ -87,6 +87,7 @@ namespace app {
                 if (res->status == 200) {
                     auto t1 = datetimelib::timestamp_millis();
                     spdlog::info("data fetched in {} millis", t1 - t0);
+                    // spdlog::info("body: {}", res->body);
                     return app::temperature::parse_reading(res->body);
                 } else {
                     error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path,

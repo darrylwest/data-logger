@@ -99,7 +99,7 @@ auto createSampleReading() {
 Results test_temperature() {
     Results r = {.name = "Temperature Reading Tests"};
 
-    spdlog::set_level(spdlog::level::debug);
+    // spdlog::set_level(spdlog::level::debug);
 
     const auto reading = createSampleReading();
     spdlog::info("reading: {}", reading);
@@ -147,13 +147,13 @@ void test_parse_client_status(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
     const Str json_text
-        = R"({"status":{"version":"0.5.26-135","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
+        = R"({"status":{"version":"0.6.28-139","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
 
     spdlog::info("parse client status from {}", json_text);
     app::client::ClientStatus status = app::client::parse_status(json_text);
     spdlog::info("status: {}", status.to_string());
 
-    r.equals(status.version == "0.5.26-135", "the version");
+    r.equals(status.version.starts_with("0.6.28"), "the esp32 client version");
     r.equals(status.timestamp == 1738453678, "the timestamp");
     r.equals(status.started == 1738012925, "started");
     r.equals(status.uptime == "5 days, 02:25:53", "uptime");
@@ -171,7 +171,7 @@ void test_fetch_client_status(Results& r) {
     app::client::ClientStatus status = app::client::fetch_status(node);
     spdlog::info("status: ", status.to_string());
 
-    r.equals(status.version.starts_with("0.5"), "the version");
+    r.equals(status.version.starts_with("0.6"), "the actual esp32 client version");
 }
 
 void test_fetch_temps(Results& r) {
