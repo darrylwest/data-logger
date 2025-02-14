@@ -21,12 +21,9 @@ namespace app {
     using json = nlohmann::json;
 
     // Function to set up the server and apply configurations
-    bool setup_service(Server &svr, const config::Config &config) {
+    bool setup_service(Server &svr, const config::Config &config, database::Database &db) {
 
         // open the server's database; read all current data
-        auto db = database::Database();
-        database::read_current_data(db);
-
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
             return false;
@@ -75,7 +72,40 @@ namespace app {
 
         // TODO add a status endpoint to report on the client nodes, probes, etc...
 
-        // TODO add a Post endpoint /api/temp to insert new temp reading
+        // TODO add a PUT endpoint /api/temp to insert new temp reading
+        svr.Put("/temperature", [&](const Request &req, Response &res) mutable {
+            try {
+                auto json_body = json::parse(req.body);
+                spdlog::info("json parsed: {}", json_body.dump());
+                if (json_body.contains("key") && json_body.contains("value")) {
+                    Str key = json_body["key"].get<Str>();
+                    float value = json_body["value"].get<float>();
+                    spdlog::info("values parsed key: {} value: {}", key, value);
+
+                    // insert into db
+                    Str sval = std::to_string(value);
+                    spdlog::info("insert: {}={}, dbsize: {}", key, sval, db.size());
+
+                    if (db.set(key, sval)) {
+                        spdlog::info("inserted: {}={}, dbsize: {}", key, value, db.size());
+                        res.set_content("ok", "text/plain");
+                    } else {
+                        spdlog::error("database error inserting k/v: {}={}", key, value);
+                        res.status = 500;
+                        res.set_content("database insert error", "text/plain");
+                    }
+                } else {
+                    spdlog::warn("missing key or value from request: {}", req.body);
+                    res.status = 400;
+                    res.set_content("missing key or value from request body", "text/plain");
+                }
+
+            } catch (const std::exception &e) {
+                spdlog::warn("bad put json: {}: {}", req.body, e.what());
+                res.status = 400;
+                res.set_content("Invalid JSON format", "text/plain");
+            }
+        });
 
         // Shutdown hook
         svr.Delete("/shutdown", [&](const Request &, Response &res) {
@@ -113,8 +143,11 @@ namespace app {
             res.status = 204;  // No Content
         });
 
+        auto db = database::Database();
+        database::read_current_data(db);
+
         // Set up the server
-        if (!app::setup_service(svr, config)) {
+        if (!app::setup_service(svr, config, db)) {
             return false;
         }
 

@@ -30,7 +30,7 @@ Results test_version() {
     r.equals(vers.major == 0);
     r.equals(vers.minor == 3);
     r.equals(vers.patch == 7);
-    r.equals(vers.build >= 160);
+    r.equals(vers.build >= 161);
 
     return r;
 }
