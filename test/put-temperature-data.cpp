@@ -1,35 +1,36 @@
 #include <httplib.h>
-#include <iostream>
-#include <string>
-#include <cstdio>
-#include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
+#include <nlohmann/json.hpp>
+#include <iostream>
+#include <chrono>
+
+unsigned int unix_ts() {
+    using namespace std::chrono;
+    auto now = system_clock::now();
+    return duration_cast<seconds>(now.time_since_epoch()).count();
+}
 
 int main() {
-    httplib::Server svr;
+    httplib::Client cli("http://localhost:9090");
 
-    svr.Put("/temperature", [&](const httplib::Request &req, httplib::Response &res) {
-        try {
-            auto json_body = nlohmann::json::parse(req.body);
-            if (json_body.contains("key") && json_body.contains("value")) {
-                std::string key = json_body["key"].get<std::string>();
-                float value = json_body["value"].get<float>();
+    auto key = fmt::format("{}.test-location", unix_ts());
+    nlohmann::json json_data = {
+        {"key", key },
+        {"value", 10.1234}  // No need to convert manually
+    };
 
-                spdlog::info("put key: {}, value: {}", key, value);
+    std::string body = json_data.dump();  // Convert JSON to string
+    spdlog::info("put data: {}", body);
 
-                res.set_content("ok", "text/plain");
-            } else {
-                res.status = 400;
-                res.set_content("Missing key or value", "text/plain");
-            }
-        } catch (const std::exception &e) {
-            res.status = 400;
-            res.set_content("Invalid JSON format", "text/plain");
-        }
-    });
+    auto res = cli.Put("/temperature", body, "application/json");
 
-    std::cout << "Server running on port 8888..." << std::endl;
-    svr.listen("0.0.0.0", 8888);
+    if (res) {
+        spdlog::info("response: {}, {}", res->status, res->body);
+    } else {
+        auto err = httplib::to_string(res.error());
+        spdlog::error("request failed: {}", err);
+    }
 
     return 0;
 }

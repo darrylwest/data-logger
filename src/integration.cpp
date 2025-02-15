@@ -8,8 +8,12 @@
 #include <unistd.h>
 
 #include <app/version.hpp>
+#include <nlohmann/json.hpp>
+// #include <app/datetimelib.hpp>
+#include <app/types.hpp>
 #include <atomic>
 #include <cassert>
+#include <chrono>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
@@ -83,8 +87,36 @@ void test_index_page_endpoint(Results& r, httplib::Client& cli) {
     }
 }
 
-// void test_temperature_put_endpoint(Results& r, httplib::Client& cli) {
-// }
+unsigned int unix_ts() {
+    using namespace std::chrono;
+    auto now = system_clock::now();
+    return duration_cast<seconds>(now.time_since_epoch()).count();
+}
+
+void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
+    auto now = unix_ts();
+    Str key = fmt::format("{}.test-location", now);
+    float value = 10.1234;
+
+    nlohmann::json jdata = {{"key", key}, {"value", value}};
+    auto body = jdata.dump();
+
+    if (auto res = cli.Put("/temperature", body, "application/json")) {
+        if (res->status == 200) {
+            r.equals(res->status == 200, "put data should return 200");
+            fmt::println("\t{}Test passed: Put temperature data.{}", green, reset);
+        } else {
+            r.fail("put data failed: " + body);
+            fmt::println("\t{}Test failed: Unable to put temperature data. {} {}", red, body,
+                         reset);
+            fmt::println("{}body: {}{}", yellow, res->body, reset);
+        }
+    } else {
+        auto err = httplib::to_string(res.error());
+        r.fail("failed: " + err + ", body: " + body);
+        fmt::println("\t{}Test failed: Unable to put temperature data: {}{}", err, red, reset);
+    }
+}
 
 void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
     if (auto res = cli.Delete("/shutdown")) {
@@ -130,7 +162,7 @@ int main() {
     //
     test_version_endpoint(r, cli);
     test_index_page_endpoint(r, cli);
-    // text_temperature_put_endpoint(r, cli);
+    test_put_temperature_endpoint(r, cli);
     test_shutdown_endpoint(r, cli);
 
     // Wait for the server thread to stop
