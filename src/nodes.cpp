@@ -40,10 +40,10 @@ namespace app {
                     auto data = app::client::fetch_temps(node);
                     int ts = datetimelib::timestamp_seconds();
 
-                    spdlog::info("ts: {}, temps: {}, at: {}", ts, data.to_string(), data.reading_at);
+                    spdlog::info("ts: {}, temps: {}, at: {}", ts, data.to_string(),
+                                 data.reading_at);
 
                     for (const auto& probe : data.probes) {
-                        // db.(key, data);
                         auto key = app::database::create_key(data.reading_at, probe.location);
 
                         // TODO create a method for this? pull data folder from config...
@@ -53,6 +53,9 @@ namespace app {
 
                         app::database::append_key_value(filename, key, std::to_string(probe.tempC));
                     }
+
+                    // TODO push new-data event to enable posting direct to data-logger
+                    // send(data)
 
                     node.last_access = ts;
                 } catch (std::exception& e) {

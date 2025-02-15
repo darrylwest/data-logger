@@ -22,7 +22,6 @@ namespace app {
 
     // Function to set up the server and apply configurations
     bool setup_service(Server &svr, const config::Config &config, database::Database &db) {
-
         // open the server's database; read all current data
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");

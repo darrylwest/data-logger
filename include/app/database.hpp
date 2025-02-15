@@ -73,14 +73,12 @@ namespace app {
         // append the key/value to the file; throws FileException on error
         void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
-
         struct Database {
           private:
             std::map<Str, Str> data;
             mutable std::mutex mtx;  // mutable to allow locking in const methods
 
           public:
-
             // Thread-safe set method
             bool set(const Str& key, const Str& value);
 

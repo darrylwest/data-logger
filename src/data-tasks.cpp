@@ -43,6 +43,7 @@ int main(int argc, char* argv[]) {
     // add all tasks to nodes
     app::nodes::append_temps_tasks(nodes, tasks);
     app::nodes::append_status_tasks(nodes, tasks);
+    // TODO add a post to server task to post readings directly to data-logger
 
     // used for graceful shutdown
     halt_threads.clear();
