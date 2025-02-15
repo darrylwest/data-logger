@@ -133,7 +133,10 @@ add_executable(unit
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/unit.cpp)
 
-add_executable(integration ${SRC_DIR}/integration.cpp)
+add_executable(integration 
+    ${SRC_DIR}/database.cpp
+    ${SRC_DIR}/datetimelib.cpp
+    ${SRC_DIR}/integration.cpp)
 
 # treat all compile warnings as errors
 target_compile_options(data-logger PRIVATE -Wall -Wextra -Werror)

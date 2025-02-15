@@ -1,3 +1,6 @@
+//
+// NOTES:  don't like the batch thing; I need one at a time as a fire and forget...
+//
 
 #include <iostream>
 #include <thread>

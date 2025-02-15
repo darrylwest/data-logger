@@ -9,7 +9,8 @@
 
 #include <app/version.hpp>
 #include <nlohmann/json.hpp>
-// #include <app/datetimelib.hpp>
+#include <app/datetimelib.hpp>
+#include <app/database.hpp>
 #include <app/types.hpp>
 #include <atomic>
 #include <cassert>
@@ -87,14 +88,8 @@ void test_index_page_endpoint(Results& r, httplib::Client& cli) {
     }
 }
 
-unsigned int unix_ts() {
-    using namespace std::chrono;
-    auto now = system_clock::now();
-    return duration_cast<seconds>(now.time_since_epoch()).count();
-}
-
 void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
-    auto now = unix_ts();
+    auto now = datetimelib::timestamp_seconds();
     Str key = fmt::format("{}.test-location", now);
     float value = 10.1234;
 
@@ -129,10 +124,22 @@ void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
     }
 }
 
+void test_database(Results& r, app::database::Database& db) {
+    app::database::read_current_data(db);
+
+    r.equals(db.size() >= 0, "database size");
+    fmt::println("\t{}Test passed: database size: {}{}", green, db.size(), reset);
+
+    r.equals(db.keys().size() == db.size(), "database size matches key size");
+    fmt::println("\t{}Test passed: database keys size: {}{}", green, db.size(), reset);
+}
+
 // the main test suite
 int main() {
     std::atomic<bool> server_running(false);
     auto config = Config();
+
+    app::database::Database db;
 
     Str msg = "DataLogger Integration Tests, Version: ";
     fmt::println("\n{}{}{}{}{}", cyan, msg, yellow, app::Version().to_string(), reset);
@@ -160,6 +167,7 @@ int main() {
     //
     // Run the Tests
     //
+    test_database(r, db);
     test_version_endpoint(r, cli);
     test_index_page_endpoint(r, cli);
     test_put_temperature_endpoint(r, cli);
