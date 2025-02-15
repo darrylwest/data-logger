@@ -12,13 +12,14 @@
 
 namespace app {
     namespace client {
+        constexpr time_t TIMEOUT_MILLIS = 3000;
         using json = nlohmann::json;
 
         httplib::Client create_http_client(const Str url) {
             httplib::Client client(url);
 
             // set the timeouts
-            auto timeout = std::chrono::milliseconds{3000};
+            const auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
             client.set_connection_timeout(timeout);
             client.set_read_timeout(timeout);
             client.set_write_timeout(timeout);

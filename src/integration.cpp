@@ -18,7 +18,7 @@
 #include <vendor/testlib.hpp>
 
 using namespace colors;
-// namespace app;
+using namespace rcstestlib;
 
 struct Config {
     Str scheme = "http://";
@@ -62,18 +62,50 @@ void run_server(std::atomic<bool>& running, const Config& config) {
     std::this_thread::sleep_for(std::chrono::milliseconds(800));
 }
 
-// use cxxopts to parse host and port
-// if the service is not local (localhost or 127.0.0.1), then skip the startup
+void test_version_endpoint(Results& r, httplib::Client& cli) {
+    if (auto res = cli.Get("/version")) {
+        r.equals(res->status == 200, "version endpoint status should be 200");
+        fmt::println("\t{}Test passed: Version endpoint returned correct response{}", green, reset);
+    } else {
+        r.fail("version endpoint status should not 200");
+        fmt::println("\t{}Test failed: Unable to reach version endpoint.{}", red, reset);
+    }
+}
+
+void test_index_page_endpoint(Results& r, httplib::Client& cli) {
+    if (auto res = cli.Get("/")) {
+        r.equals(res->status == 200);
+        r.equals(res->body.find("<title>") != Str::npos, "the plain home page should exist.");
+        fmt::println("\t{}Test passed: Index page contains a title.", green, reset);
+    } else {
+        r.fail("index page failed");
+        fmt::println("\t{}Test failed: Unable to reach index page.{}", red, reset);
+    }
+}
+
+// void test_temperature_put_endpoint(Results& r, httplib::Client& cli) {
+// }
+
+void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
+    if (auto res = cli.Delete("/shutdown")) {
+        r.equals(res->status == 200, "return status should be 200");
+        r.equals(res->body.find("down") != Str::npos, "the response should say down");
+        fmt::println("\t{}Test passed: Shutdown endpoint had correct response.{}", green, reset);
+    } else {
+        r.fail("server did not shutdown");
+        fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.", red, reset);
+    }
+}
+
+// the main test suite
 int main() {
     std::atomic<bool> server_running(false);
     auto config = Config();
 
-    // TODO parse the cli to reconfig...
-
     Str msg = "DataLogger Integration Tests, Version: ";
     fmt::println("\n{}{}{}{}{}", cyan, msg, yellow, app::Version().to_string(), reset);
 
-    rcstestlib::Results r = {.name = "Integration Test Summary"};
+    Results r = {.name = "Integration Test Summary"};
 
     // start the server thread
     std::thread server_thread(run_server, std::ref(server_running), config);
@@ -93,31 +125,13 @@ int main() {
     httplib::Client cli(config.get_url());
     cli.enable_server_certificate_verification(false);
 
-    // Test 1: Verify version endpoint
-    if (auto res = cli.Get("/version")) {
-        r.equals(res->status == 200, "the status should be 200");
-        fmt::println("\t{}Test passed: Version endpoint returned correct response{}", green, reset);
-    } else {
-        fmt::println("\t{}Test failed: Unable to reach version endpoint.{}", red, reset);
-    }
-
-    // Verify index page title
-    if (auto res = cli.Get("/")) {
-        r.equals(res->status == 200);
-        r.equals(res->body.find("<title>") != Str::npos, "the plain home page should exist.");
-        fmt::println("\t{}Test passed: Index page contains a title.", green, reset);
-    } else {
-        fmt::println("\t{}Test failed: Unable to reach index page.{}", red, reset);
-    }
-
-    // Shut down the server
-    if (auto res = cli.Delete("/shutdown")) {
-        r.equals(res->status == 200, "return status should be 200");
-        r.equals(res->body.find("down") != Str::npos, "the response should say down");
-        fmt::println("\t{}Test passed: Shutdown endpoint had correct response.{}", green, reset);
-    } else {
-        fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.", red, reset);
-    }
+    //
+    // Run the Tests
+    //
+    test_version_endpoint(r, cli);
+    test_index_page_endpoint(r, cli);
+    // text_temperature_put_endpoint(r, cli);
+    test_shutdown_endpoint(r, cli);
 
     // Wait for the server thread to stop
     server_thread.join();
@@ -128,7 +142,7 @@ int main() {
     // Verify server has stopped
     // try to Shut down the server
     if (auto res = cli.Delete("/shutdown")) {
-        r.equals(res->status != 200, "should be shutdown");
+        r.fail("server should be shutdown here");
         fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.{}", red, reset);
     } else {
         r.equals(true, "shutdown ok");

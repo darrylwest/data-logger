@@ -69,7 +69,7 @@ namespace app {
             res.set_content(json_text, "application/json");
         });
 
-        // TODO add a status endpoint to report on the client nodes, probes, etc...
+        // TODO add a status GET endpoint to report on the client nodes, probes, etc...
 
         // TODO add a PUT endpoint /api/temp to insert new temp reading
         svr.Put("/temperature", [&](const Request &req, Response &res) mutable {
