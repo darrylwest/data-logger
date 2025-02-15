@@ -7,17 +7,17 @@
 #include <spdlog/spdlog.h>
 #include <unistd.h>
 
-#include <app/version.hpp>
-#include <nlohmann/json.hpp>
-#include <app/datetimelib.hpp>
 #include <app/database.hpp>
+#include <app/datetimelib.hpp>
 #include <app/types.hpp>
+#include <app/version.hpp>
 #include <atomic>
 #include <cassert>
 #include <chrono>
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
+#include <nlohmann/json.hpp>
 #include <thread>
 #include <vendor/ansi_colors.hpp>
 #include <vendor/testlib.hpp>
@@ -127,7 +127,7 @@ void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
 void test_database(Results& r, app::database::Database& db) {
     app::database::read_current_data(db);
 
-    r.equals(db.size() >= 0, "database size");
+    r.equals(db.size() > 0, "database size");
     fmt::println("\t{}Test passed: database size: {}{}", green, db.size(), reset);
 
     r.equals(db.keys().size() == db.size(), "database size matches key size");
