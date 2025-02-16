@@ -29,7 +29,7 @@ namespace app {
         }
 
         Task create_temps_task(ClientNode& node, int period) {
-            int error_count = 0;
+            unsigned long error_count = 0;
 
             auto worker = [&]() mutable {
                 try {

@@ -12,7 +12,7 @@
 
 namespace app {
     namespace client {
-        constexpr time_t TIMEOUT_MILLIS = 3000;
+        constexpr time_t TIMEOUT_MILLIS = 6000;
         using json = nlohmann::json;
 
         httplib::Client create_http_client(const Str url) {
