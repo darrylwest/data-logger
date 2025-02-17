@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::println("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}", colors::cyan,
+    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", colors::cyan,
                  vers.to_string(), logfile, pid, colors::reset);
 
     configure_logging(logfile);
