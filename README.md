@@ -32,6 +32,8 @@ Starter uses...
 * testlib.hpp for unit testing
 * nlohmann/json (needs to be brew'd or compiled on linux)
 
+* brew install fmt spdlog nlohmann-json openssl brotli
+* sudo apt install libfmt-dev libspdlog-dev nlohmann-json3-dev libssl-dev libbrotli-dev -y
 
 ## Temperature Wiring Diagram
 
