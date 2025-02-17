@@ -25,11 +25,19 @@ set(BIN_DIR "build")
 # Add custom module path for FindDatetimelib
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+# Setup datetimelib dependency
+include(FetchContent)
+FetchContent_Declare(
+    datetimelib
+    GIT_REPOSITORY https://github.com/darrylwest/datetimelib.git
+    GIT_TAG main  # or specify a specific tag/commit
+)
+FetchContent_MakeAvailable(datetimelib)
+
 # Dependencies
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
-find_package(datetimelib REQUIRED)
 
 # Brotli setup
 if(APPLE AND EXISTS "/opt/homebrew")
