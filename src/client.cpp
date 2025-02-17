@@ -5,7 +5,7 @@
 #include <spdlog/spdlog.h>
 
 #include <app/client.hpp>
-#include <app/datetimelib.hpp>
+#include <datetimelib/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/temperature.hpp>
