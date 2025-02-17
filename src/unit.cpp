@@ -15,6 +15,7 @@
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
+#include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <random>
