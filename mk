@@ -18,7 +18,7 @@ do
         init)
             /bin/rm -fr build/
             [ -d dep-cache ] || mkdir dep-cache
-            (mkdir build && cd build && cmake -DCPM_SOURCE_CACHE=../dep-cache ..)
+            (mkdir build && cd build && cmake ..)
 
             shift
         ;;
