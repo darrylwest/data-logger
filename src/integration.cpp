@@ -12,7 +12,6 @@
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <atomic>
-#include <cassert>
 #include <chrono>
 #include <csignal>
 #include <cstdio>
