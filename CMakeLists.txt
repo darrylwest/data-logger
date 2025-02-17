@@ -30,6 +30,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR})
 # Include directories
 include_directories(${INCLUDE_DIR})
 
+# Add custom module path
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
+# Find datetimelib package
+find_package(datetimelib REQUIRED)
 # ----------- json
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -87,6 +92,7 @@ set(DEPENDENT_LIBRARIES
     toml11::toml11 
     nlohmann_json::nlohmann_json
     pthread
+    datetimelib::datetimelib
 )
 
 # Compiler definitions
@@ -102,7 +108,7 @@ add_executable(data-logger
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetimelib.cpp
+    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
@@ -114,7 +120,7 @@ add_executable(data-tasks
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetimelib.cpp
+    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
@@ -126,7 +132,7 @@ add_executable(unit
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetimelib.cpp
+    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
@@ -135,7 +141,7 @@ add_executable(unit
 
 add_executable(integration 
     ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/datetimelib.cpp
+    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/integration.cpp)
 
 # treat all compile warnings as errors
