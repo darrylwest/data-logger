@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include <chrono>
 #include <app/types.hpp>
+#include <chrono>
 
 namespace datetimelib {
     // unix timestamp

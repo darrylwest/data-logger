@@ -2,9 +2,9 @@
 // 2025-02-07 15:47:16 dpw
 //
 
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/sinks/rotating_file_sink.h>
+#include <spdlog/spdlog.h>
 #include <unistd.h>
 
 #include <app/cli.hpp>
@@ -12,31 +12,37 @@
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
+#include <vendor/ansi_colors.hpp>
 
 // special
 #include <app/client.hpp>
 #include <app/nodes.hpp>
 #include <iostream>
 #include <thread>
-#include <iostream>
 
 using namespace app::taskrunner;
 constexpr int MAX_LOG_SIZE = 5000000;
-constexpr int MAX_LOG_SAVE = 5; // days
+constexpr int MAX_LOG_SAVE = 5;  // days
 
 void configure_logging(const Str& logfile) {
-    auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, MAX_LOG_SIZE, MAX_LOG_SAVE);
+    auto logger
+        = spdlog::rotating_logger_mt("rotating_logger", logfile, MAX_LOG_SIZE, MAX_LOG_SAVE);
     spdlog::set_default_logger(logger);
     spdlog::set_level(spdlog::level::info);
     spdlog::flush_on(spdlog::level::info);
 }
 
 int main(int argc, char* argv[]) {
+    // get the pid; write to data-tasks.pid
+    int pid = getpid();
+
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::println("Starting data-tasks, Version: {}, logging at {}", vers.to_string(), logfile);
+    fmt::println("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}", colors::cyan,
+                 vers.to_string(), logfile, pid, colors::reset);
 
     configure_logging(logfile);
+    spdlog::info("Started DataTasks, PID: {}", pid);
 
     auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataTasks Version: {}", vers.to_string());
