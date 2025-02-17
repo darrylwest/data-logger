@@ -1,0 +1,5 @@
+I have a c++20 process that needs to run every 5 minutes.  
+It needs to run where the currnet minute equals 00, 05, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55. 
+If I start the program at 03:25 then I want to wait until 05:00 before I begin the main process.
+So I would need to delay my start by (60*5) - (60*3) - (25) seconds, or 300 - 180 - 25 = 95 second.
+Is that calculation correct?  Can you write a short c++20 function to do that?

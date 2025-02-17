@@ -43,7 +43,7 @@ void fetch_data() {
             spdlog::error("2: failed here");
         }
 
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(30));
     }
 }
 
