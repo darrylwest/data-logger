@@ -19,7 +19,6 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 #include <random>
-#include <toml.hpp>
 #include <vendor/testlib.hpp>
 
 using namespace rcstestlib;

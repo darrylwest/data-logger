@@ -161,7 +161,7 @@ int main() {
 
     // Create a client for testing
     httplib::Client cli(config.get_url());
-    cli.enable_server_certificate_verification(false);
+    // cli.enable_server_certificate_verification(false);
 
     //
     // Run the Tests
