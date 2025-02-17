@@ -21,12 +21,11 @@
 #include <thread>
 
 using namespace app::taskrunner;
-constexpr int MAX_LOG_SIZE = 5000000;
-constexpr int MAX_LOG_SAVE = 5;  // days
+constexpr int LOG_SIZE = 1'000'000;
+constexpr int LOG_SAVE = 5;  // days
 
 void configure_logging(const Str& logfile) {
-    auto logger
-        = spdlog::rotating_logger_mt("rotating_logger", logfile, MAX_LOG_SIZE, MAX_LOG_SAVE);
+    auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
     spdlog::set_default_logger(logger);
     spdlog::set_level(spdlog::level::info);
     spdlog::flush_on(spdlog::level::info);
@@ -48,9 +47,7 @@ int main(int argc, char* argv[]) {
     spdlog::info("DataTasks Version: {}", vers.to_string());
 
     // define and start the ticker + jobs
-    // auto tasks = getTasks();
-    // start_tasks(tasks);
-    // list: fetch_temp_readings, fetch_other_readings, fetch_client_status
+    // list: fetch_temp_readings, fetch_other_readings, fetch_client_status, etc
     auto nodes = app::client::create_nodes();
     spdlog::info("configured nodes, count: {}", nodes.size());
     Vec<Task> tasks;
