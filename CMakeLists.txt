@@ -35,6 +35,23 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Find datetimelib package
 find_package(datetimelib REQUIRED)
+
+# Add after the find_package(datetimelib) call
+if(TARGET datetimelib_static)
+    target_include_directories(data-logger PRIVATE 
+        ${datetimelib_SOURCE_DIR}/include
+    )
+    target_include_directories(data-tasks PRIVATE 
+        ${datetimelib_SOURCE_DIR}/include
+    )
+    target_include_directories(datalogger-unit PRIVATE 
+        ${datetimelib_SOURCE_DIR}/include
+    )
+    target_include_directories(datalogger-integration PRIVATE 
+        ${datetimelib_SOURCE_DIR}/include
+    )
+endif()
+
 # ----------- json
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -92,8 +109,13 @@ set(DEPENDENT_LIBRARIES
     toml11::toml11 
     nlohmann_json::nlohmann_json
     pthread
-    datetimelib::datetimelib
 )
+
+# Add separate target_link_libraries commands for datetimelib
+foreach(target data-logger data-tasks datalogger-unit datalogger-integration)
+    target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
+    target_link_libraries(${target} PRIVATE datetimelib_static)
+endforeach()
 
 # Compiler definitions
 add_definitions(
