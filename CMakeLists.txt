@@ -108,7 +108,6 @@ add_executable(data-logger
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
@@ -120,46 +119,43 @@ add_executable(data-tasks
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/data-tasks.cpp)
 
-add_executable(unit 
+add_executable(datalogger-unit 
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
-    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/nodes.cpp
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/unit.cpp)
 
-add_executable(integration 
+add_executable(datalogger-integration 
     ${SRC_DIR}/database.cpp
-    // ${SRC_DIR}/datetimelib.cpp
     ${SRC_DIR}/integration.cpp)
 
 # treat all compile warnings as errors
 target_compile_options(data-logger PRIVATE -Wall -Wextra -Werror)
 target_compile_options(data-tasks PRIVATE -Wall -Wextra -Werror)
-target_compile_options(unit PRIVATE -Wall -Wextra -Werror)
-target_compile_options(integration PRIVATE -Wall -Wextra -Werror)
+target_compile_options(datalogger-unit PRIVATE -Wall -Wextra -Werror)
+target_compile_options(datalogger-integration PRIVATE -Wall -Wextra -Werror)
 
 
 target_link_libraries(data-logger PRIVATE ${DEPENDENT_LIBRARIES})
 target_link_libraries(data-tasks PRIVATE ${DEPENDENT_LIBRARIES})
-target_link_libraries(unit PRIVATE ${DEPENDENT_LIBRARIES})
-target_link_libraries(integration PRIVATE ${DEPENDENT_LIBRARIES})
+target_link_libraries(datalogger-unit PRIVATE ${DEPENDENT_LIBRARIES})
+target_link_libraries(datalogger-integration PRIVATE ${DEPENDENT_LIBRARIES})
 
 set_target_properties(data-logger PROPERTIES UNITY_BUILD ON)
 set_target_properties(data-tasks PROPERTIES UNITY_BUILD ON)
-set_target_properties(unit PROPERTIES UNITY_BUILD ON)
-set_target_properties(integration PROPERTIES UNITY_BUILD ON)
+set_target_properties(datalogger-unit PROPERTIES UNITY_BUILD ON)
+set_target_properties(datalogger-integration PROPERTIES UNITY_BUILD ON)
 
 # Consider limiting the number of files per unity build
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4) # Example
