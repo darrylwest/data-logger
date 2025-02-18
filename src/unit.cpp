@@ -2,7 +2,7 @@
 // 2024-12-24 12:51:24 dpw
 //
 
-#include <spdlog/fmt/fmt.h>
+#include <fmt/core.h>
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
@@ -28,8 +28,8 @@ Results test_version() {
 
     auto vers = app::Version();
     r.equals(vers.major == 0);
-    r.equals(vers.minor == 4);
-    r.equals(vers.patch == 8);
+    r.equals(vers.minor == 5);
+    r.equals(vers.patch == 1);
     r.equals(vers.build >= 161);
 
     return r;
@@ -572,14 +572,14 @@ int main() {
     spdlog::set_level(spdlog::level::off);
 
     const auto vers = app::Version().to_string();
-    fmt::println("\nExample Unit Tests, Version: {}{}{}\n", cyan, vers, reset);
+    fmt::print("\nExample Unit Tests, Version: {}{}{}\n\n", cyan, vers, reset);
 
     Results summary = Results{.name = "Unit Test Summary"};
 
     // lambda to run a test and add its result to the summary
     auto run_test = [&summary](auto test_func) {
         auto result = test_func();
-        fmt::println("{}", result.to_string());
+        fmt::print("{}\n", result.to_string());
         summary.add(result);
     };
 
@@ -593,9 +593,9 @@ int main() {
     run_test(test_service);
     run_test(test_datetimelib);
 
-    fmt::println("\n{}", summary.to_string());
+    fmt::print("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
-    fmt::println("\nUnit Test Results: {}{}{}", cyan, msg, reset);
+    fmt::print("\nUnit Test Results: {}{}{}\n", cyan, msg, reset);
 
     return 0;
 }
