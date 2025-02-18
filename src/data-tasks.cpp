@@ -59,10 +59,10 @@ int main(int argc, char* argv[]) {
     // TODO add a post to server task to post readings directly to data-logger
 
     // // wait for the mark
-    // auto mp = datetimelib::MarkProvider();
-    // fmt::print("{}waiting for mark: {}, {}\n", colors::yellow, mp.minutes_past, colors::reset);
-    // datetimelib::wait_for_next_mark(mp);
-    // fmt::print("{}ok, ready now: {}{}\n", colors::green, mp.minutes_past, colors::reset);
+    fmt::print("{}datetimelib version: {}{}\n", colors::yellow, datetimelib::VERSION, colors::reset);
+    auto mp = datetimelib::MarkProvider();
+    datetimelib::wait_for_next_mark(mp, true);
+    fmt::print("{}ok, ready to start now...{}\n", colors::green, colors::reset);
 
 
     // used for graceful shutdown
