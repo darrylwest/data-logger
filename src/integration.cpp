@@ -3,9 +3,8 @@
 //
 
 #include <httplib.h>
-#include <fmt/core.h>
-#include <fmt/chrono.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 #include <unistd.h>
 
 #include <app/database.hpp>

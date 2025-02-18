@@ -2,8 +2,8 @@
 // 2024-12-24 12:51:24 dpw
 //
 
-#include <fmt/core.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <app/cli.hpp>
 #include <app/client.hpp>

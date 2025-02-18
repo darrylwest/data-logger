@@ -16,7 +16,6 @@ set(INCLUDE_DIR "include")
 set(BIN_DIR "build")
 
 # Find required packages
-find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL REQUIRED)
@@ -50,7 +49,6 @@ set(DEPENDENT_LIBRARIES
     ${BROTLI_ENC_LIBRARY}
     ${BROTLI_DEC_LIBRARY}
     spdlog::spdlog
-    fmt::fmt
     nlohmann_json::nlohmann_json
     pthread
     datetimelib_static
