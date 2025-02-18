@@ -1,5 +1,4 @@
-#include <fmt/core.h>     // for basic formatting
-#include <fmt/chrono.h>   // for time formatting (optional)
+#include <spdlog/fmt/fmt.h>     // for basic formatting
 // #include <vector>
 
 int main() {

@@ -12,7 +12,6 @@ include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/../include/vendor)
 
 # Dependencies
 find_package(nlohmann_json REQUIRED)
-find_package(fmt REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
@@ -46,7 +45,7 @@ get_property(dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message(STATUS "!!!! Include directories: ${dirs}")
 
 
-# ----------- spdlog + fmt
+# ----------- spdlog 
 CPMAddPackage(
     NAME spdlog
     GITHUB_REPOSITORY gabime/spdlog
@@ -69,7 +68,6 @@ set(DEPENDENT_LIBRARIES
     ${BROTLI_ENC_LIBRARY}
     ${BROTLI_DEC_LIBRARY}
     spdlog::spdlog
-    fmt::fmt
     toml11::toml11
     nlohmann_json::nlohmann_json
     pthread
