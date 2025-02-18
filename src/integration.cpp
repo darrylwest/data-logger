@@ -3,12 +3,12 @@
 //
 
 #include <httplib.h>
-#include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 #include <unistd.h>
 
 #include <app/database.hpp>
-#include <app/datetimelib.hpp>
+#include <datetimelib/datetimelib.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <atomic>
@@ -41,11 +41,11 @@ void run_server(std::atomic<bool>& running, const Config& config) {
     Str cmd = fmt::format("./build/data-logger --host {} --port {} > {} 2>&1 & echo $!",
                           config.host, config.port, config.logfile);
 
-    fmt::println("{}Server Start Command: {}{}{}", cyan, yellow, cmd, reset);
+    fmt::print("{}Server Start Command: {}{}{}\n", cyan, yellow, cmd, reset);
 
     FILE* pipe = popen(cmd.c_str(), "r");
     if (!pipe) {
-        fmt::println("{}File to start service.{}", red, reset);
+        fmt::print("{}File to start service.{}\n", red, reset);
         running = false;
         return;
     }
@@ -54,9 +54,9 @@ void run_server(std::atomic<bool>& running, const Config& config) {
     char buffer[128];
     if (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         pid_t pid = std::stoi(buffer);
-        fmt::println("{}Service started with PID: {}{}", cyan, yellow, pid, reset);
+        fmt::print("{}Service started with PID: {}{}\n", cyan, yellow, pid, reset);
     } else {
-        fmt::println("\t{}Failed to retrieve service PID!", red, reset);
+        fmt::print("\t{}Failed to retrieve service PID!\n", red, reset);
         running = false;
     }
 
@@ -69,10 +69,10 @@ void run_server(std::atomic<bool>& running, const Config& config) {
 void test_version_endpoint(Results& r, httplib::Client& cli) {
     if (auto res = cli.Get("/version")) {
         r.equals(res->status == 200, "version endpoint status should be 200");
-        fmt::println("\t{}Test passed: Version endpoint returned correct response{}", green, reset);
+        fmt::print("\t{}Test passed: Version endpoint returned correct response{}\n", green, reset);
     } else {
         r.fail("version endpoint status should not 200");
-        fmt::println("\t{}Test failed: Unable to reach version endpoint.{}", red, reset);
+        fmt::print("\t{}Test failed: Unable to reach version endpoint.{}\n", red, reset);
     }
 }
 
@@ -80,10 +80,10 @@ void test_index_page_endpoint(Results& r, httplib::Client& cli) {
     if (auto res = cli.Get("/")) {
         r.equals(res->status == 200);
         r.equals(res->body.find("<title>") != Str::npos, "the plain home page should exist.");
-        fmt::println("\t{}Test passed: Index page contains a title.", green, reset);
+        fmt::print("\t{}Test passed: Index page contains a title.{}\n", green, reset);
     } else {
         r.fail("index page failed");
-        fmt::println("\t{}Test failed: Unable to reach index page.{}", red, reset);
+        fmt::print("\t{}Test failed: Unable to reach index page.{}\n", red, reset);
     }
 }
 
@@ -98,17 +98,17 @@ void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
     if (auto res = cli.Put("/temperature", body, "application/json")) {
         if (res->status == 200) {
             r.equals(res->status == 200, "put data should return 200");
-            fmt::println("\t{}Test passed: Put temperature data.{}", green, reset);
+            fmt::print("\t{}Test passed: Put temperature data.{}\n", green, reset);
         } else {
             r.fail("put data failed: " + body);
-            fmt::println("\t{}Test failed: Unable to put temperature data. {} {}", red, body,
+            fmt::print("\t{}Test failed: Unable to put temperature data. {} {}\n", red, body,
                          reset);
-            fmt::println("{}body: {}{}", yellow, res->body, reset);
+            fmt::print("{}body: {}{}\n", yellow, res->body, reset);
         }
     } else {
         auto err = httplib::to_string(res.error());
         r.fail("failed: " + err + ", body: " + body);
-        fmt::println("\t{}Test failed: Unable to put temperature data: {}{}", err, red, reset);
+        fmt::print("\t{}Test failed: Unable to put temperature data: {}{}\n", err, red, reset);
     }
 }
 
@@ -116,10 +116,10 @@ void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
     if (auto res = cli.Delete("/shutdown")) {
         r.equals(res->status == 200, "return status should be 200");
         r.equals(res->body.find("down") != Str::npos, "the response should say down");
-        fmt::println("\t{}Test passed: Shutdown endpoint had correct response.{}", green, reset);
+        fmt::print("\t{}Test passed: Shutdown endpoint had correct response.{}\n", green, reset);
     } else {
         r.fail("server did not shutdown");
-        fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.", red, reset);
+        fmt::print("\t{}Test failed: Unable to reach shutdown endpoint.{}\n", red, reset);
     }
 }
 
@@ -127,10 +127,10 @@ void test_database(Results& r, app::database::Database& db) {
     app::database::read_current_data(db);
 
     r.equals(db.size() > 0, "database size");
-    fmt::println("\t{}Test passed: database size: {}{}", green, db.size(), reset);
+    fmt::print("\t{}Test passed: database size: {}{}\n", green, db.size(), reset);
 
     r.equals(db.keys().size() == db.size(), "database size matches key size");
-    fmt::println("\t{}Test passed: database keys size: {}{}", green, db.size(), reset);
+    fmt::print("\t{}Test passed: database keys size: {}{}\n", green, db.size(), reset);
 }
 
 // the main test suite
@@ -141,7 +141,7 @@ int main() {
     app::database::Database db;
 
     Str msg = "DataLogger Integration Tests, Version: ";
-    fmt::println("\n{}{}{}{}{}", cyan, msg, yellow, app::Version().to_string(), reset);
+    fmt::print("\n{}{}{}{}{}\n", cyan, msg, yellow, app::Version().to_string(), reset);
 
     Results r = {.name = "Integration Test Summary"};
 
@@ -157,11 +157,11 @@ int main() {
 
     r.equals(server_running, "should be running in background thread now");
 
-    fmt::println("");
+    fmt::print("\n");
 
     // Create a client for testing
     httplib::Client cli(config.get_url());
-    cli.enable_server_certificate_verification(false);
+    // cli.enable_server_certificate_verification(false);
 
     //
     // Run the Tests
@@ -182,19 +182,19 @@ int main() {
     // try to Shut down the server
     if (auto res = cli.Delete("/shutdown")) {
         r.fail("server should be shutdown here");
-        fmt::println("\t{}Test failed: Unable to reach shutdown endpoint.{}", red, reset);
+        fmt::print("\t{}Test failed: Unable to reach shutdown endpoint.{}\n", red, reset);
     } else {
         r.equals(true, "shutdown ok");
-        fmt::println("\t{}Test passed: the server is down.{}", green, reset);
+        fmt::print("\t{}Test passed: the server is down.{}\n", green, reset);
         server_running = false;
     }
 
     r.equals(!server_running, "server should NOT be running.");
 
-    fmt::println("\n{}{}{}", cyan, r.to_string(), reset);
+    fmt::print("\n{}{}{}\n", cyan, r.to_string(), reset);
     msg = (r.failed == 0) ? green + "All Tests Passed, Ok" : "\n" + red + "Tests failed!";
 
-    fmt::println("\n{}Integration Test Results: {}{}", cyan, msg, reset);
+    fmt::print("\n{}Integration Test Results: {}{}\n", cyan, msg, reset);
 
     return 0;
 }

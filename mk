@@ -35,13 +35,13 @@ do
         ;;
         unit)
             (cd build && make -j4)
-            $root/build/unit
+            $root/build/datalogger-unit
 
             shift
         ;;
         test)
             (cd build && make -j4)
-            $root/build/integration
+            $root/build/datalogger-integration
 
             shift
         ;;
@@ -64,7 +64,7 @@ do
             shift
         ;;
         clean)
-            (cd build && make clean && /bin/rm -f unit)
+            (cd build && make clean && /bin/rm -f datalogger-unit)
         
             shift
         ;;

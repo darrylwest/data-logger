@@ -45,7 +45,7 @@ get_property(dirs DIRECTORY PROPERTY INCLUDE_DIRECTORIES)
 message(STATUS "!!!! Include directories: ${dirs}")
 
 
-# ----------- spdlog + fmt
+# ----------- spdlog 
 CPMAddPackage(
     NAME spdlog
     GITHUB_REPOSITORY gabime/spdlog

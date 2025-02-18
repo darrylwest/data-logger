@@ -9,6 +9,7 @@
 
 #include <app/cli.hpp>
 #include <app/types.hpp>
+#include <app/database.hpp>
 
 namespace app {
 

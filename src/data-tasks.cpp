@@ -13,6 +13,7 @@
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <vendor/ansi_colors.hpp>
+#include <datetimelib/datetimelib.hpp>
 
 // special
 #include <app/client.hpp>
@@ -37,7 +38,7 @@ int main(int argc, char* argv[]) {
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::println("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}", colors::cyan,
+    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", colors::cyan,
                  vers.to_string(), logfile, pid, colors::reset);
 
     configure_logging(logfile);
@@ -56,6 +57,13 @@ int main(int argc, char* argv[]) {
     app::nodes::append_temps_tasks(nodes, tasks);
     app::nodes::append_status_tasks(nodes, tasks);
     // TODO add a post to server task to post readings directly to data-logger
+
+    // // wait for the mark
+    fmt::print("{}datetimelib version: {}{}\n", colors::yellow, datetimelib::VERSION, colors::reset);
+    auto mp = datetimelib::MarkProvider();
+    datetimelib::wait_for_next_mark(mp, true);
+    fmt::print("{}ok, ready to start now...{}\n", colors::green, colors::reset);
+
 
     // used for graceful shutdown
     halt_threads.clear();

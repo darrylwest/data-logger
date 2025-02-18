@@ -4,7 +4,7 @@
 #include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
-#include <app/datetimelib.hpp>
+#include <datetimelib/datetimelib.hpp>
 #include <app/nodes.hpp>
 
 namespace app {
