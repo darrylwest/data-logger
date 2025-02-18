@@ -14,9 +14,9 @@ The *Data Logger* project is...
 
 1. an arduino/esp32 micro-controller application, 
 2. a data collection service (c++) and,
-3. a web-app (vue3).
+3. a web-app (c++ and Vue3).
 
-It initially gathers temperatures from various locations to be displayed graphically in the associated Data Logger Web Application.
+It gathers temperatures from various locations to be displayed graphically in the associated Data Logger Web Application.
 Eventually it will gather and store other readings including light intensity, moisture, humidity, proximity events, etc.
 
 ## From the develop branch
@@ -51,5 +51,5 @@ _copy here with tests_
 
 ![Home Page](webapp/docs/datalogger-home.png)
 
-###### 2025.02.17 | dpw
+###### 2025.02.18 | dpw
 
