@@ -54,6 +54,8 @@ namespace app {
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
                     for (const auto& probe : data.probes) {
+                        if (!probe.enabled) continue;
+
                         auto key = app::database::create_key(data.reading_at, probe.location);
 
                         // TODO create a method for this? pull data folder from config...
