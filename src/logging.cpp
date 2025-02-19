@@ -1,6 +1,6 @@
 //
 // 2024-12-10 15:45:20 dpw
-// 
+//
 // NOTE: This logging config is for httplib
 //
 

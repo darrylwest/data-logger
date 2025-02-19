@@ -8,8 +8,8 @@
 #include <vendor/httplib.h>
 
 #include <app/cli.hpp>
-#include <app/types.hpp>
 #include <app/database.hpp>
+#include <app/types.hpp>
 
 namespace app {
 

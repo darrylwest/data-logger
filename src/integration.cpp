@@ -3,12 +3,11 @@
 //
 
 #include <httplib.h>
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 #include <unistd.h>
 
 #include <app/database.hpp>
-#include <datetimelib/datetimelib.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <atomic>
@@ -16,6 +15,7 @@
 #include <csignal>
 #include <cstdio>
 #include <cstdlib>
+#include <datetimelib/datetimelib.hpp>
 #include <nlohmann/json.hpp>
 #include <thread>
 #include <vendor/ansi_colors.hpp>
@@ -102,7 +102,7 @@ void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
         } else {
             r.fail("put data failed: " + body);
             fmt::print("\t{}Test failed: Unable to put temperature data. {} {}\n", red, body,
-                         reset);
+                       reset);
             fmt::print("{}body: {}{}\n", yellow, res->body, reset);
         }
     } else {

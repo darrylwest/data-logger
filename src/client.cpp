@@ -8,18 +8,18 @@
 
 #include <app/client.hpp>
 #include <app/database.hpp>
-#include <datetimelib/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
+#include <datetimelib/datetimelib.hpp>
 
 namespace app {
     namespace client {
         constexpr time_t TIMEOUT_MILLIS = 6000;
         using json = nlohmann::json;
 
-        httplib::Client create_http_client(const Str url) {
+        httplib::Client create_http_client(const Str& url) {
             httplib::Client client(url);
 
             // set the timeouts
@@ -113,8 +113,28 @@ namespace app {
         }
 
         // send/put client node reading to web server (if server is available) else return false
-        bool put_temps(const StrView& url, const app::database::DbKey& key, const TemperatureProbe& probe) {
-            spdlog::info("put temps data: to {}, {}/{}C/{}F", url, key.to_string(), probe.tempC, probe.tempF);
+        bool put_temps(const Str& url, const app::database::DbKey& key,
+                       const TemperatureProbe& probe) {
+            spdlog::info("put temps data: to {}, {}/{}C/{}F", url, key.to_string(), probe.tempC,
+                         probe.tempF);
+            auto client = create_http_client(url);
+            const auto path = "/temperature";
+
+            json jdata = {{"key", key.to_string()}, {"value", probe.tempC}};
+            const auto body = jdata.dump();
+
+            auto res = client.Put(path, body, "application/json");
+            if (res) {
+                if (res->status == 200) {
+                    spdlog::info("put data to {}{}", url, path);
+                    return true;
+                } else {
+                    spdlog::error("put data to {}{} failed, status: {}", url, path, res->status);
+                }
+            } else {
+                spdlog::warn("put data to {}{} failed, status: {}", url, path, res->status);
+            }
+
             return false;
         }
 

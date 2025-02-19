@@ -1,13 +1,13 @@
 //
 // nodes.cpp
 //
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
-#include <datetimelib/datetimelib.hpp>
 #include <app/nodes.hpp>
+#include <datetimelib/datetimelib.hpp>
 
 namespace app {
     namespace nodes {

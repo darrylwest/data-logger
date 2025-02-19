@@ -2,21 +2,21 @@
 // 2024-12-24 12:51:24 dpw
 //
 
-#include <spdlog/spdlog.h>
 #include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 
 #include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
-#include <datetimelib/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/service.hpp>
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
-#include <iostream>
+#include <datetimelib/datetimelib.hpp>
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <vendor/testlib.hpp>
@@ -185,7 +185,7 @@ void test_fetch_temps(Results& r) {
 }
 
 void test_put_temps(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
     // TODO : use mock node and data for this
     auto url = "http://badhost:9090";
@@ -218,7 +218,6 @@ Results test_client() {
         r.skip(true);
         r.skip(true);
     }
-
 
     spdlog::set_level(spdlog::level::off);
 

@@ -23,10 +23,15 @@ int main() {
     std::string body = json_data.dump();  // Convert JSON to string
     spdlog::info("put data: {}", body);
 
-    auto res = cli.Put("/temperature", body, "application/json");
+    auto path = "/temperature";
+    auto res = cli.Put(path, body, "application/json");
 
-    if (res) {
-        spdlog::info("response: {}, {}", res->status, res->body);
+    if (res) { 
+        if (res->status == 200) {
+            spdlog::info("good response: {}, {}", res->status, res->body);
+        } else {
+            spdlog::error("bad response: {} {}", res->status, res->body);
+        }
     } else {
         auto err = httplib::to_string(res.error());
         spdlog::error("request failed: {}", err);
