@@ -6,6 +6,7 @@
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/nodes.hpp>
 #include <datetimelib/datetimelib.hpp>
 
@@ -14,12 +15,12 @@ namespace app {
         using namespace app::taskrunner;
         using namespace app::client;
 
-        bool is_active(const Str& location) {
-            const auto& cfg = app::config::parse_config();
-
-            for (const auto& jclient : cfg["clients"]) {
-                if (jclient["location"] == location) {
-                    bool active = jclient["active"].template get<bool>();
+        // return true if this node is active based on current config
+        bool is_node_active(const Str& location, const auto& jcfg) {
+            using namespace app::jsonkeys;
+            for (const auto& jclient : jcfg[CLIENTS]) {
+                if (jclient[LOCATION] == location) {
+                    bool active = jclient[ACTIVE].template get<bool>();
                     spdlog::info("client node: {} active: {}", location, active);
                     return active;
                 }
@@ -30,43 +31,41 @@ namespace app {
             return false;
         }
 
+        // create the temps worker task
         Task create_temps_task(ClientNode& node, int period) {
             unsigned long error_count = 0;
 
             auto worker = [&]() mutable {
                 try {
                     // read from config on each iteration
-                    if (!is_active(node.location)) return;
+                    const auto jcfg = app::config::parse_config();
+                    if (!is_node_active(node.location, jcfg)) {
+                        spdlog::info("skipping node {}; currently inactive...", node.location);
+                        return;
+                    }
 
                     // read config for this node
                     auto data = app::client::fetch_temps(node);
-                    int ts = datetimelib::timestamp_seconds();
 
-                    spdlog::info("ts: {}, temps: {}, at: {}", ts, data.to_string(),
-                                 data.reading_at);
+                    spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
+                    // TODO get port from jcfg
+                    const auto url = fmt::format("http://{}:{}", "localhost", 9090);
                     for (const auto& probe : data.probes) {
                         auto key = app::database::create_key(data.reading_at, probe.location);
 
                         // TODO create a method for this? pull data folder from config...
                         const auto filename = "data/temperature/current." + probe.location + ".db";
-                        spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(),
-                                     probe.tempC);
+                        spdlog::info("file: {}, {}={}", filename, key.to_string(), probe.tempC);
 
                         app::database::append_key_value(filename, key, std::to_string(probe.tempC));
-                    }
 
-                    // TODO get url from cfg.webservice
-                    const auto url = fmt::format("{}://{}:{}", "http", "localhost", 9090);
-                    for (const auto& probe : data.probes) {
-                        auto key = app::database::create_key(data.reading_at, probe.location);
                         if (!app::client::put_temps(url, key, probe)) {
-                            spdlog::warn("service down at: {}", url);
-                            break;
+                            spdlog::warn("web service down at: {}", url);
                         }
                     }
 
-                    node.last_access = ts;
+                    node.last_access = datetimelib::timestamp_seconds();
                 } catch (std::exception& e) {
                     error_count++;
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());

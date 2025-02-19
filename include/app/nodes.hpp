@@ -10,6 +10,9 @@ namespace app {
         using namespace app::taskrunner;
         using namespace app::client;
 
+        // read the json config file to determine if the node is active
+        bool is_node_active(const Str& location, const auto& jcfg);
+
         // create the task with a default of 5 minute period
         Task create_temps_task(ClientNode& node, int period = 300);
         void append_temps_tasks(Vec<ClientNode>& nodes, Vec<Task>& tasks);
