@@ -187,6 +187,7 @@ void test_fetch_temps(Results& r) {
 void test_put_temps(Results& r) {
     spdlog::set_level(spdlog::level::info);
 
+    // TODO : use mock node and data for this
     auto url = "http://badhost:9090";
     auto node = create_test_client();
     auto data = app::client::fetch_temps(node);
@@ -207,16 +208,17 @@ Results test_client() {
 
     test_parse_client_status(r);
 
+    // TODO : create mock node and data for this
     // skip these two if client node is dead...
     if (true) {
         test_fetch_temps(r);
         test_fetch_client_status(r);
+        test_put_temps(r);
     } else {
         r.skip(true);
         r.skip(true);
     }
 
-    test_put_temps(r);
 
     spdlog::set_level(spdlog::level::off);
 
