@@ -18,16 +18,20 @@ namespace app {
             TemperatureData data;
             try {
                 json j = json::parse(json_text);
+                using namespace app::jsonkeys;
 
-                time_t read_at = j["reading_at"].template get<int>();
+                time_t read_at = j[READING_AT].template get<int>();
                 data.reading_at = read_at;
-                auto probes = j["probes"];
+                auto probes = j[PROBES];
                 for (const auto& probe : probes) {
                     TemperatureProbe p;
-                    p.sensor = probe["sensor"];
-                    p.location = probe["location"];
-                    p.tempC = probe["tempC"];
-                    p.tempF = probe["tempF"];
+                    p.sensor = probe[SENSOR];
+                    p.location = probe[LOCATION];
+                    // p.enabled = probe[ENABLED];
+                    p.tempC = probe[TEMP_C];
+                    p.tempF = probe[TEMP_F];
+
+                    p.enabled = (p.tempC < -140) ? false : true;
 
                     data.probes.push_back(p);
                 }

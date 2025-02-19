@@ -88,8 +88,8 @@ Results test_taskrunner() {
 auto create_mock_reading() {
     const Str text = R"({"reading_at": 1738362466,
             "probes":[
-                {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
-                {"sensor":1,"location":"cottage-east","millis":349548023,"tempC":10.92542,"tempF":51.66576}
+                {"sensor":0,"location":"cottage-south","enabled":true,"millis":349548023,"tempC":10.88542,"tempF":51.59375},
+                {"sensor":1,"location":"cottage-east","enabled":false,"millis":349548023,"tempC":-150.92542,"tempF":51.66576}
             ]}
         )";
 
@@ -111,14 +111,16 @@ Results test_temperature() {
     auto probe0 = data.probes.at(0);
     r.equals(probe0.sensor == 0, "sensor id 0");
     r.equals(probe0.location == "cottage-south", "probe0 location");
+    r.equals(probe0.enabled, "probe 0 should be enabled");
     r.equals(std::abs(probe0.tempC - 10.88542) < EPSILON, "probe0 tempC");
     r.equals(std::abs(probe0.tempF - 51.59375) < EPSILON, "probe0 tempC");
 
     auto probe1 = data.probes.at(1);
     r.equals(probe1.sensor == 1, "sensor id 1");
     r.equals(probe1.location == "cottage-east", "probe1 location");
-    r.equals(std::abs(probe1.tempC - 10.92542) < EPSILON, "probe0 tempC");
-    r.equals(std::abs(probe1.tempF - 51.66576) < EPSILON, "probe0 tempC");
+    r.equals(probe1.enabled == false, "probe 1 should be disabled");
+    r.equals(probe1.tempC < 140.0, "probe1 tempC");
+    r.equals(std::abs(probe1.tempF - 51.66576) < EPSILON, "probe1 tempC");
 
     spdlog::set_level(spdlog::level::off);
 

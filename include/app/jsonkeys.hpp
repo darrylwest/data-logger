@@ -34,5 +34,9 @@ namespace app {
         constexpr StrView END_DATE = "end_date";
         constexpr StrView LABELS = "labels";
         constexpr StrView DATASETS = "datasets";
+        constexpr StrView READING_AT = "reading_at";
+        constexpr StrView ENABLED = "enabled";
+        constexpr StrView TEMP_C = "tempC";
+        constexpr StrView TEMP_F = "tempF";
     }  // namespace jsonkeys
 }  // namespace app

@@ -13,6 +13,7 @@ namespace app {
     struct TemperatureProbe {
         int sensor;
         Str location;
+        bool enabled;
         float tempC;
         float tempF;
     };
@@ -26,7 +27,8 @@ namespace app {
 
             for (const auto& probe : v.probes)
                 os << ", sensor: " << probe.sensor << ", location: " << probe.location
-                   << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
+                   << ", enabled: " << probe.enabled << ", tempC: " << probe.tempC
+                   << ", tempF: " << probe.tempF;
 
             return os;
         }

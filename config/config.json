@@ -31,8 +31,8 @@
                     "type": "temperature",
                     "path": "/temps",
                     "probes": [
-                        { "sensor": 0, "location": "cottage-south" },
-                        { "sensor": 1, "location": "cottage-east" }
+                        { "sensor": 0, "location": "cottage-south", "enabled": true },
+                        { "sensor": 1, "location": "cottage-east", "enabled": false}
                     ]
                 }
             ]
@@ -47,8 +47,8 @@
                     "type": "temperature",
                     "path": "/temps",
                     "probes": [
-                        { "sensor": 0, "location": "deck-west" },
-                        { "sensor": 1, "location": "deck-east" }
+                        { "sensor": 0, "location": "deck-west", "enabled": true },
+                        { "sensor": 1, "location": "deck-east", "enabled": true }
                     ]
                 }
             ]
@@ -63,8 +63,8 @@
                     "type": "temperature",
                     "path": "/temps",
                     "probes": [
-                        { "sensor": 0, "location": "shed-inside" },
-                        { "sensor": 1, "location": "shed-west" }
+                        { "sensor": 0, "location": "shed-inside", "enabled": true },
+                        { "sensor": 1, "location": "shed-west", "enabled": true }
                     ]
                 }
             ]
