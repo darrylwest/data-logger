@@ -7,10 +7,12 @@
 #include <spdlog/spdlog.h>
 
 #include <app/client.hpp>
+#include <app/database.hpp>
 #include <datetimelib/datetimelib.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/temperature.hpp>
+#include <app/types.hpp>
 
 namespace app {
     namespace client {
@@ -50,6 +52,7 @@ namespace app {
             return status;
         }
 
+        // fetch status data from the node client
         ClientStatus fetch_status(ClientNode& node) {
             const auto url = fmt::format("http://{}:{}", node.ip, node.port);
             auto client = create_http_client(url);
@@ -77,6 +80,7 @@ namespace app {
             throw app::ServiceException(error_message);
         }
 
+        // fetch temperature data from the node client
         app::TemperatureData fetch_temps(ClientNode& node) {
             const auto url = fmt::format("http://{}:{}", node.ip, node.port);
             auto client = create_http_client(url);
@@ -106,6 +110,12 @@ namespace app {
             spdlog::info("data fetch failed after {} millis", t1 - t0);
 
             throw app::ServiceException(error_message);
+        }
+
+        // send/put client node reading to web server (if server is available) else return false
+        bool put_temps(const StrView& url, const app::database::DbKey& key, const TemperatureProbe& probe) {
+            spdlog::info("put temps data: to {}, {}/{}C/{}F", url, key.to_string(), probe.tempC, probe.tempF);
+            return false;
         }
 
         // create and return the client nodes; (should read from config.toml)

@@ -2,8 +2,10 @@
 // nodes.cpp
 //
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 
 #include <app/cli.hpp>
+#include <app/database.hpp>
 #include <datetimelib/datetimelib.hpp>
 #include <app/nodes.hpp>
 
@@ -54,8 +56,15 @@ namespace app {
                         app::database::append_key_value(filename, key, std::to_string(probe.tempC));
                     }
 
-                    // TODO push new-data event to enable posting direct to data-logger
-                    // send(data)
+                    // TODO get url from cfg.webservice
+                    const auto url = fmt::format("{}://{}:{}", "http", "localhost", 9090);
+                    for (const auto& probe : data.probes) {
+                        auto key = app::database::create_key(data.reading_at, probe.location);
+                        if (!app::client::put_temps(url, key, probe)) {
+                            spdlog::warn("service down at: {}", url);
+                            break;
+                        }
+                    }
 
                     node.last_access = ts;
                 } catch (std::exception& e) {

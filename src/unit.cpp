@@ -85,7 +85,7 @@ Results test_taskrunner() {
 }
 
 // put this in unit tests
-auto createSampleReading() {
+auto create_mock_reading() {
     const Str text = R"({"reading_at": 1738362466,
             "probes":[
                 {"sensor":0,"location":"cottage-south","millis":349548023,"tempC":10.88542,"tempF":51.59375},
@@ -101,7 +101,7 @@ Results test_temperature() {
 
     // spdlog::set_level(spdlog::level::debug);
 
-    const auto reading = createSampleReading();
+    const auto reading = create_mock_reading();
     spdlog::info("reading: {}", reading);
     app::TemperatureData data = app::temperature::parse_reading(reading);
 
@@ -184,6 +184,22 @@ void test_fetch_temps(Results& r) {
     r.equals(data.probes.size() > 0, "probe count");
 }
 
+void test_put_temps(Results& r) {
+    spdlog::set_level(spdlog::level::info);
+
+    auto url = "http://badhost:9090";
+    auto node = create_test_client();
+    auto data = app::client::fetch_temps(node);
+    time_t timestamp = 1739563051;
+    auto key = app::database::create_key(timestamp, "test-location");
+    spdlog::info("temps: {}", data.to_string());
+
+    r.equals(data.probes.size() > 0, "probe count");
+    auto probe = data.probes.at(0);
+    bool ok = app::client::put_temps(url, key, probe);
+    r.equals(!ok, "should fail to put data");
+}
+
 Results test_client() {
     Results r = {.name = "Client Tests"};
 
@@ -199,6 +215,8 @@ Results test_client() {
         r.skip(true);
         r.skip(true);
     }
+
+    test_put_temps(r);
 
     spdlog::set_level(spdlog::level::off);
 

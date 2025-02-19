@@ -5,6 +5,7 @@
 
 #pragma once
 
+#include <app/database.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
 #include <iostream>
@@ -74,6 +75,9 @@ namespace app {
 
         // fetch temperatures from the client's probes
         TemperatureData fetch_temps(ClientNode& node);
+
+        // send client node reading to web server, if server is available, else return false
+        bool put_temps(const StrView& url, const app::database::DbKey& key, const TemperatureProbe& probe);
 
         // create the client node list as read from config.json
         Vec<ClientNode> create_nodes();
