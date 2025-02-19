@@ -232,7 +232,8 @@ void test_init_webservice_defaults(Results& r, const auto& cfg) {
     r.equals(cfg[HOST] == "0.0.0.0", "webservice host");
     r.equals(cfg[SCHEME] == "http", "webservice host scheme");
 
-    const auto config = app::config::init_webservice_defaults(cfg);
+    const auto config = app::config::webservice_from_json(cfg);
+    r.equals(config.scheme == "http", "config webservice host");
     r.equals(config.host == "0.0.0.0", "config webservice host");
     r.equals(config.port == 9090, "config webservice port");
     r.equals(config.www == "html", "config webservice www folder");

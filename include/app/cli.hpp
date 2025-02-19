@@ -13,6 +13,7 @@ namespace app {
 
         // TODO move this defaults to config.json
         struct Config {
+            Str scheme;
             Str host;
             int port;
             Str www;
@@ -22,7 +23,8 @@ namespace app {
 
             friend std::ostream& operator<<(std::ostream& os, const Config v) {
                 // better to use <format> but it breaks on linux and fmt broken on darwin
-                os << "host: " << v.host << ", "
+                os << "sheme: " << v.scheme << ", "
+                   << "host: " << v.host << ", "
                    << "port: " << v.port << ", "
                    << "www : " << v.www << ", "
                    << "cert: " << v.cert_file << ", "
@@ -49,6 +51,6 @@ namespace app {
         Str find_config_filename();
 
         // use config.json to set webservice defaults
-        Config init_webservice_defaults(const auto& json_cfg);
+        Config webservice_from_json(const auto& json_cfg);
     }  // namespace config
 }  // namespace app

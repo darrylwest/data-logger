@@ -27,11 +27,12 @@ namespace app {
         }
 
         // initialize config with json file
-        Config init_webservice_defaults(const auto& jcfg) {
+        Config webservice_from_json(const auto& jcfg) {
             using namespace app::jsonkeys;
 
             spdlog::info("cfg: {}", jcfg.dump());
             return Config{
+                .scheme = jcfg[SCHEME],
                 .host = jcfg[HOST],
                 .port = jcfg[PORT],
                 .www = jcfg[WWW],
@@ -46,7 +47,7 @@ namespace app {
         Config parse_cli(const int argc, char** argv) {
             // parse config/config.json and set defaults
             auto cfg = parse_config();
-            auto config = init_webservice_defaults(cfg[jsonkeys::WEBSERVICE]);
+            auto config = webservice_from_json(cfg[jsonkeys::WEBSERVICE]);
 
             try {
                 // first, read the standard config file

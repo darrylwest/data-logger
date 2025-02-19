@@ -50,7 +50,9 @@ namespace app {
                     spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
                     // TODO get port from jcfg
-                    const auto url = fmt::format("http://{}:{}", "localhost", 9090);
+                    const auto cfg = app::config::webservice_from_json(jcfg);
+                    const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
+                    const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
                     for (const auto& probe : data.probes) {
                         auto key = app::database::create_key(data.reading_at, probe.location);
 
