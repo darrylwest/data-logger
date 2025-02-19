@@ -1,6 +1,11 @@
 //
 // 2025-02-07 15:47:16 dpw
 //
+// Main data collection application
+//   - mutli-threaded tasks
+//   - logging includes thread id for filtering
+//   - logs to rolling file
+//
 
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/sinks/rotating_file_sink.h>
@@ -26,6 +31,7 @@ constexpr int LOG_SIZE = 1'000'000;
 constexpr int LOG_SAVE = 5;  // days
 
 void configure_logging(const Str& logfile) {
+    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
     auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
     spdlog::set_default_logger(logger);
     spdlog::set_level(spdlog::level::info);

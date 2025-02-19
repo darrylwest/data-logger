@@ -1,6 +1,8 @@
 //
 // 2025-02-01 dpw
 //
+// Data collection node client (fetch) and data relay client (put)
+//
 
 #include <spdlog/spdlog.h>
 
@@ -156,6 +158,5 @@ namespace app {
 
             return client;
         }
-
     }  // namespace client
 }  // namespace app
