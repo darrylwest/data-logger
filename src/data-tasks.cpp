@@ -31,12 +31,11 @@ using namespace app::taskrunner;
 using namespace colors;
 constexpr int LOG_SIZE = 1'000'000;
 constexpr int LOG_SAVE = 5;  // days
-bool testing = false;
 
 
-void configure_logging(const Str& logfile) {
+void configure_logging(const Str& logfile, const bool rolling) {
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
-    if (!testing) {
+    if (rolling) {
         auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
         spdlog::set_default_logger(logger);
     }
@@ -47,15 +46,16 @@ void configure_logging(const Str& logfile) {
 int main(int argc, char* argv[]) {
     // get the pid; write to data-tasks.pid
     int pid = getpid();
+
     const char* env_value = std::getenv("TESTING");
-    testing = (env_value) ? true : false;
+    bool testing = (env_value) ? true : false;
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
     fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan,
                vers.to_string(), logfile, pid, reset);
 
-    configure_logging(logfile);
+    configure_logging(logfile, !testing);
     spdlog::info("Started DataTasks, PID: {}", pid);
 
     auto config = app::config::parse_cli(argc, argv);

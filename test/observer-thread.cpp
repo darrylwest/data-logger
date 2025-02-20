@@ -9,17 +9,20 @@
 #include <condition_variable>
 #include <chrono>
 #include <vector>
-#include <nlohmann/json.hpp>  // JSON library (https://github.com/nlohmann/json)
-#include <httplib.h>          // Simple HTTP client (https://github.com/yhirose/cpp-httplib)
+#include <nlohmann/json.hpp>
+#include <httplib.h>
+#include <spdlog/spdlog.h>
 
 class DataBroadcaster {
 public:
     DataBroadcaster() : stop_worker(false) {
         worker_thread = std::thread(&DataBroadcaster::process_data, this);
+        spdlog::info("constructor: start the worker thread");
     }
 
     ~DataBroadcaster() {
         {
+            spdlog::info("destructor: stop the worker thread");
             std::lock_guard<std::mutex> lock(queue_mutex);
             stop_worker = true;
         }
@@ -29,10 +32,12 @@ public:
 
     // Adds a new key/value pair to the queue
     void add_data(const std::string& key, const std::string& value) {
+        spdlog::info("add data: {} {}", key, value);
         {
             std::lock_guard<std::mutex> lock(queue_mutex);
             data_queue.emplace(key, value);
         }
+        spdlog::info("queue size: {}", data_queue.size());
         queue_cv.notify_one();
     }
 
@@ -50,14 +55,18 @@ private:
             std::vector<std::pair<std::string, std::string>> batch;
             
             {
+                spdlog::info("wait for lock");
                 std::unique_lock<std::mutex> lock(queue_mutex);
                 queue_cv.wait_for(lock, std::chrono::minutes(5), [this] { return !data_queue.empty() || stop_worker; });
 
                 if (stop_worker && data_queue.empty()) break;
 
                 while (!data_queue.empty()) {
+                    spdlog::info("queue size: {}", data_queue.size());
                     batch.push_back(data_queue.front());
+                    spdlog::info("batch size: {}", batch.size());
                     data_queue.pop();
+                    spdlog::info("queue size: {}", data_queue.size());
                 }
             }
 
@@ -68,8 +77,11 @@ private:
                     json_payload[key] = value;
                 }
 
+                const auto body = json_payload.dump();
+                spdlog::info("send data: {}", body);
+
                 // Send batch request
-                auto res = client.Post("/api/data", json_payload.dump(), "application/json");
+                auto res = client.Post("/api/data", body, "application/json");
                 if (res && res->status == 200) {
                     std::cout << "Batch successfully sent.\n";
                 } else {
