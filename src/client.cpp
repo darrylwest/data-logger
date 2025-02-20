@@ -81,7 +81,7 @@ namespace app {
         }
 
         // fetch temperature data from the node client
-        app::TemperatureData fetch_temps(ClientNode& node) {
+        temperature::TemperatureData fetch_temps(ClientNode& node) {
             const auto url = fmt::format("http://{}:{}", node.ip, node.port);
             auto client = create_http_client(url);
             const auto path = "/temps";
@@ -114,7 +114,7 @@ namespace app {
 
         // send/put client node reading to web server (if server is available) else return false
         bool put_temps(const Str& url, const app::database::DbKey& key,
-                       const TemperatureProbe& probe) {
+                       const temperature::Probe& probe) {
             spdlog::info("put temps data: to {}, {}/{}C/{}F", url, key.to_string(), probe.tempC,
                          probe.tempF);
             auto client = create_http_client(url);

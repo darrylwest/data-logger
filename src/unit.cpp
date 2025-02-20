@@ -145,7 +145,7 @@ Results test_temperature() {
 
     const auto reading = create_mock_reading();
     spdlog::info("reading: {}", reading);
-    app::TemperatureData data = app::temperature::parse_reading(reading);
+    app::temperature::TemperatureData data = app::temperature::parse_reading(reading);
 
     r.equals(data.reading_at == 1738362466, "timestamp should match");
     r.equals(data.probes.size() == 2, "should be two probes");

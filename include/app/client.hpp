@@ -74,11 +74,11 @@ namespace app {
         ClientStatus fetch_status(ClientNode& node);
 
         // fetch temperatures from the client's probes
-        TemperatureData fetch_temps(ClientNode& node);
+        temperature::TemperatureData fetch_temps(ClientNode& node);
 
         // send client node reading to web server, if server is available, else return false
         bool put_temps(const Str& url, const app::database::DbKey& key,
-                       const TemperatureProbe& probe);
+                       const temperature::Probe& probe);
 
         // create the client node list as read from config.json
         Vec<ClientNode> create_nodes();

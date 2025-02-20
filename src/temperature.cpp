@@ -24,7 +24,7 @@ namespace app {
                 data.reading_at = read_at;
                 auto probes = j[PROBES];
                 for (const auto& probe : probes) {
-                    TemperatureProbe p;
+                    Probe p;
                     p.sensor = probe[SENSOR];
                     p.location = probe[LOCATION];
                     p.tempC = probe[TEMP_C];
@@ -50,7 +50,7 @@ namespace app {
         }
 
         // parse the config for probe locations and enabled
-        Optional<TemperatureProbe> parse_probe(const json& data, const Str& location) {
+        Optional<Probe> parse_probe(const json& data, const Str& location) {
             using namespace app::jsonkeys;
 
             if (!data.contains(SENSORS) && data[SENSORS].is_array()) return std::nullopt;
@@ -60,7 +60,7 @@ namespace app {
                 if (sensor_data.contains(PROBES) && sensor_data[PROBES].is_array()) {
                     for (const auto& jprobe : sensor_data[PROBES]) {
                         if (jprobe.is_object() && jprobe[LOCATION] == location) {
-                            TemperatureProbe probe;
+                            Probe probe;
                             probe.sensor = jprobe.value(SENSOR, -1);
                             probe.location = jprobe[LOCATION];
                             probe.enabled = jprobe.value(ENABLED, false);

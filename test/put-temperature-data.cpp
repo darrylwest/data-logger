@@ -14,7 +14,7 @@ unsigned int unix_ts() {
 int main() {
     httplib::Client cli("http://localhost:9090");
 
-    auto key = fmt::format("{}.test-location", unix_ts());
+    auto key = fmt::format("{}.tmp.0", unix_ts());
     nlohmann::json json_data = {
         {"key", key },
         {"value", 10.1234}  // No need to convert manually
