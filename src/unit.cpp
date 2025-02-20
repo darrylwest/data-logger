@@ -118,20 +118,23 @@ auto create_mock_client_config() {
 }
 
 void test_find_probe(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
-    /*
     auto text = create_mock_client_config();
-    auto jcfg = nlohmann::json.parse(text);
-    auto probe = app::temperature::parse_probe(jcfg, "cottage-south");
+    auto jcfg = nlohmann::json::parse(text);
+    auto location = "cottage-south";
+    auto probe = app::temperature::parse_probe(jcfg, location);
     if (probe.has_value()) {
         r.pass();
+        r.equals(probe->location == location, "probe locations should match");
+        r.equals(probe->sensor == 0, "should be sensor 0");
+        r.equals(probe->enabled, "should be enabled");
     } else {
         r.fail("cant find a damn probe");
     }
-    */
-    // r.fail("cant find a damn probe");
-    r.pass();
+
+    // now read the config file and parse it...
+
     spdlog::set_level(spdlog::level::off);
 }
 
