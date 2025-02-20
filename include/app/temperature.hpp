@@ -7,9 +7,12 @@
 
 #include <app/types.hpp>
 #include <iostream>
+#include <nlohmann/json.hpp>
 #include <sstream>
 
 namespace app {
+    using json = nlohmann::json;
+
     struct TemperatureProbe {
         int sensor;
         Str location;
@@ -42,6 +45,9 @@ namespace app {
     };
 
     namespace temperature {
+        // parse the probe node of json config
+        Optional<TemperatureProbe> parse_probe(const json& data, const Str& location);
+
         // parse the json reading response
         TemperatureData parse_reading(const Str& json_text);
 

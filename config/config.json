@@ -41,14 +41,14 @@
             "location": "deck",
             "ip": "10.0.1.177",
             "port": 2030,
-            "active": false,
+            "active": true,
             "sensors": [
                 {
                     "type": "temperature",
                     "path": "/temps",
                     "probes": [
                         { "sensor": 0, "location": "deck-west", "enabled": true },
-                        { "sensor": 1, "location": "deck-east", "enabled": true }
+                        { "sensor": 1, "location": "deck-east", "enabled": false }
                     ]
                 }
             ]
@@ -57,14 +57,14 @@
             "location": "shed",
             "ip": "10.0.1.115",
             "port": 2030,
-            "active": false,
+            "active": true,
             "sensors": [
                 {
                     "type": "temperature",
                     "path": "/temps",
                     "probes": [
                         { "sensor": 0, "location": "shed-inside", "enabled": true },
-                        { "sensor": 1, "location": "shed-west", "enabled": true }
+                        { "sensor": 1, "location": "shed-west", "enabled": false }
                     ]
                 }
             ]

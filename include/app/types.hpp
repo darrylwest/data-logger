@@ -18,3 +18,5 @@ template <typename T> using Vec = std::vector<T>;
 template <typename T> using Func = std::function<T>;
 
 template <typename K, typename V> using HashMap = std::unordered_map<K, V>;
+
+template <typename T> using Optional = std::optional<T>;

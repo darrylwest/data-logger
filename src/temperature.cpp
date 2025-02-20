@@ -27,11 +27,14 @@ namespace app {
                     TemperatureProbe p;
                     p.sensor = probe[SENSOR];
                     p.location = probe[LOCATION];
-                    // p.enabled = probe[ENABLED];
                     p.tempC = probe[TEMP_C];
                     p.tempF = probe[TEMP_F];
 
-                    p.enabled = (p.tempC < -140) ? false : true;
+                    if (probe.contains(ENABLED)) {
+                        p.enabled = probe[ENABLED];
+                    } else {
+                        p.enabled = (p.tempC < -100) ? false : true;
+                    }
 
                     data.probes.push_back(p);
                 }
@@ -46,7 +49,30 @@ namespace app {
             return data;
         }
 
-        // TODO : generate json output for webapp/UI
+        // parse the config for probe locations and enabled
+        std::optional<TemperatureProbe> parse_probe(const json& data, const Str& location) {
+            using namespace app::jsonkeys;
+
+            if (!data.contains(SENSORS) && data[SENSORS].is_array()) return std::nullopt;
+
+            for (const auto& sensor_data : data[SENSORS]) {
+                spdlog::info("j sensor {}", sensor_data.dump());
+                if (sensor_data.contains(PROBES) && sensor_data[PROBES].is_array()) {
+                    for (const auto& jprobe : sensor_data[PROBES]) {
+                        if (jprobe.is_object() && jprobe[LOCATION] == location) {
+                            TemperatureProbe probe;
+                            probe.sensor = jprobe.value(SENSOR, -1);
+                            probe.location = jprobe[LOCATION];
+                            probe.enabled = jprobe.value(ENABLED, false);
+
+                            return probe;
+                        }
+                    }
+                }
+            }
+
+            return std::nullopt;
+        }
 
     }  // namespace temperature
 }  // namespace app
