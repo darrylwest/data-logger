@@ -20,7 +20,7 @@ namespace app {
 
         // parse and return the config file
         json parse_config(const Str filename) {
-            spdlog::info("reading/parsing config from file: {}", filename);
+            spdlog::info("reading/parsing config from: {}", filename);
             std::ifstream fin(filename);
             return json::parse(fin);
         }
@@ -29,7 +29,7 @@ namespace app {
         Config webservice_from_json(const auto& wscfg) {
             using namespace app::jsonkeys;
 
-            spdlog::info("wscfg: {}", wscfg.dump());
+            spdlog::debug("wscfg: {}", wscfg.dump());
             return Config{
                 .scheme = wscfg[SCHEME],
                 .host = wscfg[HOST],
@@ -41,15 +41,14 @@ namespace app {
         }
 
         /*
-         * parse the command line
+         * parse config and the command line;
          */
         Config parse_cli(const int argc, char** argv) {
-            // parse config/config.json and set defaults
-            const auto filename = find_config_filename();
-            auto cfg = parse_config(filename);
-            auto config = webservice_from_json(cfg[jsonkeys::WEBSERVICE]);
-
             try {
+                const auto filename = find_config_filename();
+                auto cfg = parse_config(filename);
+                auto config = webservice_from_json(cfg[jsonkeys::WEBSERVICE]);
+
                 // first, read the standard config file
 
                 cxxopts::Options options("DataLogger", "Log some readings.");
@@ -100,12 +99,11 @@ namespace app {
                     config.key_file = result["key"].as<Str>();
                 }
 
+                return config;
             } catch (const std::exception& exp) {
                 spdlog::error("error parsing cli options: {}", exp.what());
                 exit(1);
             }
-
-            return config;
         }
 
     }  // namespace config
