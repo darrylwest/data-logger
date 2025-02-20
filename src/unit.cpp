@@ -270,8 +270,8 @@ Results test_client() {
     return r;
 }
 
-void test_init_webservice_defaults(Results& r, const auto& cfg) {
-    // spdlog::set_level(spdlog::level::info);
+void test_web_service_from_json(Results& r, const auto& cfg) {
+    spdlog::set_level(spdlog::level::info);
 
     using namespace app::jsonkeys;
 
@@ -298,18 +298,20 @@ Results test_config() {
 
     try {
         // TODO get the filename from cli:: parse the config file
-        std::ifstream fin("./config/config.json");
-        json cfg = json::parse(fin);
+        const Str filename = app::config::find_config_filename();
+        r.equals(filename == "./config/config.json");
 
-        Str vers = cfg[app::jsonkeys::VERSION];
+        const json jcfg = app::config::parse_config(filename);
+
+        Str vers = jcfg[app::jsonkeys::VERSION];
         r.equals(vers.starts_with("0.6"), "cfg version");
 
         // TODO test the webservice settings
-        test_init_webservice_defaults(r, cfg[app::jsonkeys::WEBSERVICE]);
+        test_web_service_from_json(r, jcfg[app::jsonkeys::WEBSERVICE]);
 
-        r.equals(cfg[app::jsonkeys::CLIENTS].size() == 3, "number of clients in cfg");
+        r.equals(jcfg[app::jsonkeys::CLIENTS].size() == 3, "number of clients in cfg");
 
-        for (const auto& jclient : cfg[app::jsonkeys::CLIENTS]) {
+        for (const auto& jclient : jcfg[app::jsonkeys::CLIENTS]) {
             const auto node = app::client::parse_client_node(jclient);
             r.equals(node.port == 2030, "the client node port is always 2030");
             r.equals(node.probes.size() == 2, "verify client node temp probe count");

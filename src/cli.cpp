@@ -19,25 +19,24 @@ namespace app {
         Str find_config_filename() { return "./config/config.json"; }
 
         // parse and return the config file
-        auto parse_config() {
-            const auto filename = find_config_filename();
+        json parse_config(const Str filename) {
             spdlog::info("reading/parsing config from file: {}", filename);
             std::ifstream fin(filename);
             return json::parse(fin);
         }
 
         // initialize config with json file
-        Config webservice_from_json(const auto& jcfg) {
+        Config webservice_from_json(const auto& wscfg) {
             using namespace app::jsonkeys;
 
-            spdlog::info("cfg: {}", jcfg.dump());
+            spdlog::info("wscfg: {}", wscfg.dump());
             return Config{
-                .scheme = jcfg[SCHEME],
-                .host = jcfg[HOST],
-                .port = jcfg[PORT],
-                .www = jcfg[WWW],
-                .cert_file = jcfg[TLS_CERT_FILE],
-                .key_file = jcfg[TLS_KEY_FILE],
+                .scheme = wscfg[SCHEME],
+                .host = wscfg[HOST],
+                .port = wscfg[PORT],
+                .www = wscfg[WWW],
+                .cert_file = wscfg[TLS_CERT_FILE],
+                .key_file = wscfg[TLS_KEY_FILE],
             };
         }
 
@@ -46,7 +45,8 @@ namespace app {
          */
         Config parse_cli(const int argc, char** argv) {
             // parse config/config.json and set defaults
-            auto cfg = parse_config();
+            const auto filename = find_config_filename();
+            auto cfg = parse_config(filename);
             auto config = webservice_from_json(cfg[jsonkeys::WEBSERVICE]);
 
             try {

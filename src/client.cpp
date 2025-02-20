@@ -146,7 +146,8 @@ namespace app {
             using namespace app::jsonkeys;
 
             try {
-                json cfg = app::config::parse_config();
+                const auto filename = app::config::find_config_filename();
+                json cfg = app::config::parse_config(filename);
                 json jclients = cfg[CLIENTS];
 
                 for (const auto& jclient : jclients) {

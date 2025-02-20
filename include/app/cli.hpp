@@ -7,9 +7,11 @@
 #include <app/types.hpp>
 #include <iostream>
 #include <sstream>
+#include <nlohmann/json.hpp>
 
 namespace app {
     namespace config {
+        using json = nlohmann::json;
 
         // TODO move this defaults to config.json
         struct Config {
@@ -45,12 +47,12 @@ namespace app {
         Config parse_cli(const int argc, char* argv[]);
 
         // parse and return the config file from filename
-        auto parse_config(const Str filename);
+        json parse_config(const Str filename);
 
         // locate and return the config filename
         Str find_config_filename();
 
         // use config.json to set webservice defaults
-        Config webservice_from_json(const auto& json_cfg);
+        Config webservice_from_json(const auto& wscfg);
     }  // namespace config
 }  // namespace app

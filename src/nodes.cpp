@@ -36,7 +36,8 @@ namespace app {
             auto worker = [&]() mutable {
                 try {
                     // read from config on each iteration
-                    const auto jcfg = app::config::parse_config();
+                    const auto jfile = app::config::find_config_filename();
+                    const auto jcfg = app::config::parse_config(jfile);
                     if (!is_node_active(node.location, jcfg)) {
                         spdlog::info("skipping node {}; currently inactive...", node.location);
                         return;
@@ -48,17 +49,19 @@ namespace app {
                     spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
                     // TODO get port from jcfg
-                    // const auto cfg = app::config::webservice_from_json(jcfg);
-                    // const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
-                    // const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
-                    const Str url = "http://localhost:9090";
+                    const auto cfg = app::config::webservice_from_json(jcfg[app::jsonkeys::WEBSERVICE]);
+                    const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
+                    const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
 
                     // TODO get filename from config; use the client location, not the probe
                     const auto filename = "data/temperature/current." + node.location + ".db";
 
                     for (const auto& probe : data.probes) {
                         // can be disabled by the remote client
-                        if (!probe.enabled) continue;
+                        if (!probe.enabled) {
+                            spdlog::warn("probe disabled: {} {}", probe.sensor, probe.location);
+                            continue;
+                        }
 
                         // can be disabled by through configuration
                         // TODO - find the probe from jcfg to get enabled
@@ -77,9 +80,7 @@ namespace app {
 
                     node.last_access = datetimelib::timestamp_seconds();
                 } catch (std::exception& e) {
-                    // error_count++;
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());
-                    // spdlog::warn("temps worker error count: {}", error_count);
                 }
             };
 
@@ -117,8 +118,6 @@ namespace app {
                     app::database::append_key_value(filename, key, status.to_string());
                 } catch (const std::exception& e) {
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());
-                    // error_count++;
-                    // spdlog::warn("status worker error count: {}", error_count);
                 }
             };
 
