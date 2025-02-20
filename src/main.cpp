@@ -23,18 +23,9 @@ int main(int argc, char* argv[]) {
     auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataLogger Version: {}", vers.to_string());
 
-    // define and start the non-data ticker + jobs
-    // start_tasks(tasks);
-
-    // used for graceful shutdown
-    // halt_threads.clear();
-
     // now start the web/http listener
     auto ok = app::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
-
-    // shut down the ticker tasks
-    // halt_threads.test_and_set();
 
     return 0;
 }

@@ -38,7 +38,8 @@ namespace app {
         }
 
         bool read_current_data(Database& db) {
-            Str location = "deck-west";
+            // TODO read from configuration, all database files
+            Str location = "cottage";
             Str filename = "data/temperature/current." + location + ".db";
 
             spdlog::info("read current data from {}", filename);
