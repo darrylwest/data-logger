@@ -114,9 +114,9 @@ namespace app {
 
         // send/put client node reading to web server (if server is available) else return false
         bool put_temps(const Str& url, const app::database::DbKey& key,
-                       const temperature::Probe& probe) {
-            spdlog::info("put temps data: to {}, {}/{}C/{}F", url, key.to_string(), probe.tempC,
-                         probe.tempF);
+                       const app::temperature::Probe& probe) {
+
+            spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC, probe.tempF);
             auto client = create_http_client(url);
             const auto path = "/temperature";
 
@@ -132,7 +132,8 @@ namespace app {
                     spdlog::error("put data to {}{} failed, status: {}", url, path, res->status);
                 }
             } else {
-                spdlog::warn("put data to {}{} failed, status: {}", url, path, res->status);
+                auto err = httplib::to_string(res.error());
+                spdlog::warn("put data to {}{} failed, status: {}", url, path, err);
             }
 
             return false;

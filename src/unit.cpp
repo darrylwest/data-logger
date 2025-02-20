@@ -436,7 +436,7 @@ void populate_database(app::database::Database& db, int size = 500) {
     for (int i = 0; i < size; ++i) {
         Str key, value;
 
-        key = fmt::format("202502{:02d}{:02d}{:02d}{}", day, hour, minute, ".cottage-south");
+        key = fmt::format("202502{:02d}{:02d}{:02d}{}", day, hour, minute, ".tmp.0");
 
         minute++;
         if (minute > 59) {

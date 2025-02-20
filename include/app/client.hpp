@@ -78,7 +78,7 @@ namespace app {
 
         // send client node reading to web server, if server is available, else return false
         bool put_temps(const Str& url, const app::database::DbKey& key,
-                       const temperature::Probe& probe);
+                       const app::temperature::Probe& probe);
 
         // create the client node list as read from config.json
         Vec<ClientNode> create_nodes();

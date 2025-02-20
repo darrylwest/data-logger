@@ -11,6 +11,7 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/spdlog.h>
 #include <unistd.h>
+#include <cstdlib>
 
 #include <app/cli.hpp>
 #include <app/logging.hpp>
@@ -27,13 +28,18 @@
 #include <thread>
 
 using namespace app::taskrunner;
+using namespace colors;
 constexpr int LOG_SIZE = 1'000'000;
 constexpr int LOG_SAVE = 5;  // days
+bool testing = false;
+
 
 void configure_logging(const Str& logfile) {
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
-    auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
-    spdlog::set_default_logger(logger);
+    if (!testing) {
+        auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
+        spdlog::set_default_logger(logger);
+    }
     spdlog::set_level(spdlog::level::info);
     spdlog::flush_on(spdlog::level::info);
 }
@@ -41,11 +47,13 @@ void configure_logging(const Str& logfile) {
 int main(int argc, char* argv[]) {
     // get the pid; write to data-tasks.pid
     int pid = getpid();
+    const char* env_value = std::getenv("TESTING");
+    testing = (env_value) ? true : false;
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", colors::cyan,
-               vers.to_string(), logfile, pid, colors::reset);
+    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan,
+               vers.to_string(), logfile, pid, reset);
 
     configure_logging(logfile);
     spdlog::info("Started DataTasks, PID: {}", pid);
@@ -65,11 +73,13 @@ int main(int argc, char* argv[]) {
     // TODO add a post to server task to post readings directly to data-logger
 
     // // wait for the mark
-    fmt::print("{}datetimelib version: {}{}\n", colors::yellow, datetimelib::VERSION,
-               colors::reset);
+    fmt::print("{}datetimelib version: {}{}\n", yellow, datetimelib::VERSION, reset);
     auto mp = datetimelib::MarkProvider();
-    datetimelib::wait_for_next_mark(mp, true);
-    fmt::print("{}ok, ready to start now...{}\n", colors::green, colors::reset);
+    if (!testing) {
+        datetimelib::wait_for_next_mark(mp, true);
+    }
+
+    fmt::print("{}ok, ready to start now...{}\n", green, reset);
 
     // used for graceful shutdown
     halt_threads.clear();

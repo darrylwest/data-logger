@@ -33,8 +33,6 @@ namespace app {
 
         // create the temps worker task
         Task create_temps_task(ClientNode& node, int period) {
-            unsigned long error_count = 0;
-
             auto worker = [&]() mutable {
                 try {
                     // read from config on each iteration
@@ -50,9 +48,10 @@ namespace app {
                     spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
                     // TODO get port from jcfg
-                    const auto cfg = app::config::webservice_from_json(jcfg);
-                    const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
-                    const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
+                    // const auto cfg = app::config::webservice_from_json(jcfg);
+                    // const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
+                    // const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
+                    const Str url = "http://localhost:9090";
 
                     // TODO get filename from config; use the client location, not the probe
                     const auto filename = "data/temperature/current." + node.location + ".db";
@@ -70,6 +69,7 @@ namespace app {
 
                         app::database::append_key_value(filename, key, std::to_string(probe.tempC));
 
+                        spdlog::info("put data to webserver: {}", url);
                         if (!app::client::put_temps(url, key, probe)) {
                             spdlog::warn("web service down at: {}", url);
                         }
@@ -77,9 +77,9 @@ namespace app {
 
                     node.last_access = datetimelib::timestamp_seconds();
                 } catch (std::exception& e) {
-                    error_count++;
+                    // error_count++;
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());
-                    spdlog::warn("temps worker error count: {}", error_count);
+                    // spdlog::warn("temps worker error count: {}", error_count);
                 }
             };
 
@@ -96,7 +96,6 @@ namespace app {
 
         // create a task to query the client status
         Task create_status_task(ClientNode& node, const int period) {
-            int error_count = 0;
             auto worker = [&]() {
                 try {
                     // read config to see if the client is still active
@@ -117,9 +116,9 @@ namespace app {
 
                     app::database::append_key_value(filename, key, status.to_string());
                 } catch (const std::exception& e) {
-                    error_count++;
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());
-                    spdlog::warn("status worker error count: {}", error_count);
+                    // error_count++;
+                    // spdlog::warn("status worker error count: {}", error_count);
                 }
             };
 
