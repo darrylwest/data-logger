@@ -53,13 +53,19 @@ namespace app {
                     const auto cfg = app::config::webservice_from_json(jcfg);
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
+
+                    // TODO get filename from config; use the client location, not the probe
+                    const auto filename = "data/temperature/current." + node.location + ".db";
+
                     for (const auto& probe : data.probes) {
+                        // can be disabled by the remote client
                         if (!probe.enabled) continue;
 
-                        auto key = app::database::create_key(data.reading_at, probe.location);
+                        // can be disabled by through configuration
+                        // TODO - find the probe from jcfg to get enabled
 
-                        // TODO create a method for this? pull data folder from config...
-                        const auto filename = "data/temperature/current." + probe.location + ".db";
+                        auto key = app::database::create_key(data.reading_at, fmt::format("tmp.{}", probe.sensor));
+
                         spdlog::info("file: {}, {}={}", filename, key.to_string(), probe.tempC);
 
                         app::database::append_key_value(filename, key, std::to_string(probe.tempC));

@@ -28,8 +28,8 @@ Results test_version() {
 
     auto vers = app::Version();
     r.equals(vers.major == 0);
-    r.equals(vers.minor == 5);
-    r.equals(vers.patch == 2);
+    r.equals(vers.minor == 6);
+    r.equals(vers.patch == 1);
     r.equals(vers.build >= 161);
 
     return r;
@@ -236,7 +236,7 @@ void test_put_temps(Results& r) {
     auto node = create_test_client();
     auto data = app::client::fetch_temps(node);
     time_t timestamp = 1739563051;
-    auto key = app::database::create_key(timestamp, "test-location");
+    auto key = app::database::create_key(timestamp, "tmp.0");
     spdlog::info("temps: {}", data.to_string());
 
     r.equals(data.probes.size() > 0, "probe count");
@@ -405,17 +405,17 @@ void test_create_key(Results& r) {
     using namespace app::database;
 
     time_t timestamp = 1739563051;
-    DbKey key = create_key(timestamp, "cottage-south");
+    DbKey key = create_key(timestamp, "tmp.0");
 
     r.equals(key.timestamp == timestamp, "create key");
     // r.equals(key.type == ReadingType::Value::Temperature, "reading type");
     // r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
     // r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
 
-    r.equals(key.location == "cottage-south", "probe location");
+    r.equals(key.location == "tmp.0", "probe sensor key");
 
     spdlog::info("key: {}", key.to_string());
-    r.equals(key.to_string() == "1739563051.cottage-south", "date/probe key");
+    r.equals(key.to_string() == "1739563051.tmp.0", "date/probe sensor key");
 }
 
 // Unit test method to populate with random data
@@ -493,7 +493,7 @@ void test_append_key_value(Results& r) {
     // spdlog::set_level(spdlog::level::info);
 
     const auto filename = "/tmp/append.db";
-    const auto key = app::database::create_key(1739563051, "test-location");
+    const auto key = app::database::create_key(1739563051, "tmp.0");
     const auto value = "7.553";
     app::database::append_key_value(filename, key, value);
 
