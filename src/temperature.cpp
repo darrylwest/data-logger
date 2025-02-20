@@ -50,7 +50,7 @@ namespace app {
         }
 
         // parse the config for probe locations and enabled
-        std::optional<TemperatureProbe> parse_probe(const json& data, const Str& location) {
+        Optional<TemperatureProbe> parse_probe(const json& data, const Str& location) {
             using namespace app::jsonkeys;
 
             if (!data.contains(SENSORS) && data[SENSORS].is_array()) return std::nullopt;
