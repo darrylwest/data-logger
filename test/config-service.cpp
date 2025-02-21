@@ -10,28 +10,44 @@
 #include <atomic>
 #include <chrono>
 #include <spdlog/spdlog.h>
+#include <fstream>
+#include <nlohmann/json.hpp>
 
 namespace app {
     namespace cfgsvc {
+        using json = nlohmann::json;
 
         struct ServiceContext {
-            std::string param1 = "default";
-            int param2 = 0;
-            std::chrono::milliseconds sleep_duration{1000}; // Sleep time between work
+            std::string cfg_filename = "../config/config.json";
+            std::chrono::seconds sleep_duration{10}; // Sleep time between work
         };
 
-        class MyService {
+        class ConfigService {
         public:
-            static MyService& instance() {
-                static MyService service;
+            static ConfigService& instance() {
+                static ConfigService service;
                 return service;
             }
 
-            std::string doSomething(const std::string& data) {
-                spdlog::info("do something with this data: {}", data);
+            json web_config() {
+                spdlog::info("return the web config");
                 std::lock_guard<std::mutex> lock(mtx);
+                json j;
 
-                return data + "-> " + std::to_string(ctx.param2);
+                j["webserver"]["host"] = "http://example.com";
+
+                return j;
+            }
+
+            json client_config(const std::string& client_name) {
+                spdlog::info("return the client config");
+                std::lock_guard<std::mutex> lock(mtx);
+                json j;
+
+                j[client_name]["host"] = "http://" + client_name;
+                j[client_name]["port"] = 9090;
+
+                return j;
             }
 
             static void configure(const ServiceContext& ctx) {
@@ -43,20 +59,20 @@ namespace app {
             }
 
             // Destructor ensures clean shutdown
-            ~MyService() {
+            ~ConfigService() {
                 spdlog::info("deconstruct: stop the worker");
                 stop_worker();
             }
 
         private:
-            MyService() = default; // this ensures it's a singleton
-            MyService(const MyService&) = delete; // prevents copying
-            MyService& operator=(const MyService&) = delete; // prevents re-assignment
+            ConfigService() = default; // this ensures it's a singleton
+            ConfigService(const ConfigService&) = delete; // prevents copying
+            ConfigService& operator=(const ConfigService&) = delete; // prevents re-assignment
 
             void start_worker() {
                 spdlog::info("start the worker");
                 running = true;
-                worker = std::thread([this]() { workerLoop(); });
+                worker = std::thread([this]() { worker_loop(); });
             }
 
             void stop_worker() {
@@ -67,16 +83,18 @@ namespace app {
                 }
             }
 
-            void workerLoop() {
+            void worker_loop() {
                 int loops = 0;
                 while (running) {
                     {
                         std::lock_guard<std::mutex> lock(mtx);
                         loops++;
-                        spdlog::info("do the work, loop: {}", loops);
+                        spdlog::info("read the config file: {}", loops);
 
-                        // change something here...
-                        ctx.param2++;
+                        // readd
+                        std::ifstream fin(ctx.cfg_filename);
+                        json data = json::parse(fin);
+                        spdlog::info("{}", data.dump());
                     }
                     
                     std::this_thread::sleep_for(ctx.sleep_duration);
@@ -89,43 +107,45 @@ namespace app {
             std::atomic<bool> running{false};
         };
 
-        template<typename... Args>
-        std::string do_something(Args&&... args) {
-            return MyService::instance().doSomething(std::forward<Args>(args)...);
+        // public interface
+        json web_config() {
+            return ConfigService::instance().web_config();
+        }
+
+        json client_config(const std::string& client_name) {
+            return ConfigService::instance().client_config(client_name);
         }
 
         inline void configure(const ServiceContext& config) {
-            MyService::configure(config);
+            ConfigService::configure(config);
         }
     }
 }
 
 int main() {
     using namespace app;
+    using json = nlohmann::json;
 
     // Configure service with custom sleep duration
-    cfgsvc::ServiceContext config;
-    config.sleep_duration = std::chrono::milliseconds(1500);
-    cfgsvc::configure(config);
+    cfgsvc::ServiceContext ctx;
+    ctx.sleep_duration = std::chrono::seconds(3);
+    cfgsvc::configure(ctx);
 
-    // Service will run in background
-    std::string r = cfgsvc::do_something("hello");
-    spdlog::info("result: {}", r);
+    json j = cfgsvc::web_config();
+    spdlog::info("result: {}", j.dump());
 
-    std::this_thread::sleep_for(std::chrono::seconds(2));
-    r = cfgsvc::do_something("hello again");
-    spdlog::info("result: {}", r);
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    r = cfgsvc::do_something("hello once more");
-    spdlog::info("result: {}", r);
+    j = cfgsvc::client_config("deck.com");
+    spdlog::info("result: {}", j.dump());
 
-    // Your main program continues...
-    std::this_thread::sleep_for(std::chrono::seconds(5));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
+    j = cfgsvc::web_config();
+    spdlog::info("result: {}", j.dump());
 
-    std::this_thread::sleep_for(std::chrono::seconds(3));
-    r = cfgsvc::do_something("over and out");
-    spdlog::info("result: {}", r);
+
+    j = cfgsvc::client_config("cottage.com");
+    spdlog::info("result: {}", j.dump());
+
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
 
