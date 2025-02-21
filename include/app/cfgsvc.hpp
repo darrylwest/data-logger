@@ -4,12 +4,12 @@
 
 #pragma once
 
-#include <string>
-#include <mutex>
-#include <thread>
 #include <atomic>
 #include <chrono>
+#include <mutex>
 #include <nlohmann/json.hpp>
+#include <string>
+#include <thread>
 
 namespace app {
     namespace cfgsvc {
@@ -17,11 +17,11 @@ namespace app {
 
         struct ServiceContext {
             std::string cfg_filename = "config/config.json";
-            std::chrono::seconds sleep_duration{10}; // Sleep time between work
+            std::chrono::seconds sleep_duration{10};  // Sleep time between work
         };
 
         class ConfigService {
-        public:
+          public:
             static ConfigService& instance();
 
             // configure and start (or restart) the service
@@ -35,7 +35,7 @@ namespace app {
 
             ~ConfigService();
 
-        private:
+          private:
             ConfigService();
             ConfigService(const ConfigService&) = delete;
             ConfigService& operator=(const ConfigService&) = delete;
@@ -57,6 +57,5 @@ namespace app {
         json client_config(const std::string& client_name);
         void configure(const ServiceContext& config);
         bool is_running();
-    }
-}
-
+    }  // namespace cfgsvc
+}  // namespace app

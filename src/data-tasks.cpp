@@ -11,13 +11,13 @@
 #include <spdlog/sinks/rotating_file_sink.h>
 #include <spdlog/spdlog.h>
 #include <unistd.h>
-#include <cstdlib>
 
 #include <app/cli.hpp>
 #include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
+#include <cstdlib>
 #include <datetimelib/datetimelib.hpp>
 #include <vendor/ansi_colors.hpp>
 
@@ -31,7 +31,6 @@ using namespace app::taskrunner;
 using namespace colors;
 constexpr int LOG_SIZE = 1'000'000;
 constexpr int LOG_SAVE = 5;  // days
-
 
 void configure_logging(const Str& logfile, const bool rolling) {
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");

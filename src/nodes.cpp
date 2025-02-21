@@ -49,7 +49,8 @@ namespace app {
                     spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
                     // TODO get port from jcfg
-                    const auto cfg = app::config::webservice_from_json(jcfg[app::jsonkeys::WEBSERVICE]);
+                    const auto cfg
+                        = app::config::webservice_from_json(jcfg[app::jsonkeys::WEBSERVICE]);
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
 
@@ -66,7 +67,8 @@ namespace app {
                         // can be disabled by through configuration
                         // TODO - find the probe from jcfg to get enabled
 
-                        auto key = app::database::create_key(data.reading_at, fmt::format("{}.{}", node.location, probe.sensor));
+                        auto key = app::database::create_key(
+                            data.reading_at, fmt::format("{}.{}", node.location, probe.sensor));
 
                         spdlog::info("file: {}, {}={}", filename, key.to_string(), probe.tempC);
 

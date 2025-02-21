@@ -115,8 +115,8 @@ namespace app {
         // send/put client node reading to web server (if server is available) else return false
         bool put_temps(const Str& url, const app::database::DbKey& key,
                        const app::temperature::Probe& probe) {
-
-            spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC, probe.tempF);
+            spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC,
+                         probe.tempF);
             auto client = create_http_client(url);
             const auto path = "/temperature";
 

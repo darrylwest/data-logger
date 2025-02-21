@@ -6,8 +6,8 @@
 
 #include <app/types.hpp>
 #include <iostream>
-#include <sstream>
 #include <nlohmann/json.hpp>
+#include <sstream>
 
 namespace app {
     namespace config {

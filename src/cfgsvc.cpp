@@ -1,14 +1,14 @@
 //
 // 2025-02-21 02:51:00 dpw
 //
-//
+
+#include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 
 #include <app/cfgsvc.hpp>
-#include <fstream>
-#include <spdlog/spdlog.h>
-#include <spdlog/fmt/fmt.h>
-#include <app/jsonkeys.hpp>
 #include <app/exceptions.hpp>
+#include <app/jsonkeys.hpp>
+#include <fstream>
 
 namespace app {
     namespace cfgsvc {
@@ -25,7 +25,7 @@ namespace app {
 
             json j = instance().app_config[WEBSERVICE];
             spdlog::info("return the web config: {}", j.dump());
-            
+
             return j;
         }
 
@@ -33,13 +33,11 @@ namespace app {
             spdlog::info("return the client config for {}", client_name);
             std::lock_guard<std::mutex> lock(mtx);
             json j = instance().app_config[CLIENTS][0];
-            
+
             return j;
         }
 
-        bool ConfigService::is_running() {
-            return instance().running.load();
-        }
+        bool ConfigService::is_running() { return instance().running.load(); }
 
         void ConfigService::configure(const ServiceContext& ctx) {
             spdlog::info("configure and start the config service");
@@ -82,16 +80,17 @@ namespace app {
             if (!fin) {
                 throw app::FileException("Failed to open config file: " + ctx.cfg_filename);
             }
-        
+
             json data;
             try {
                 data = json::parse(fin);
             } catch (const json::parse_error& e) {
-                Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
+                Str msg
+                    = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
                 spdlog::error(msg);
                 throw app::ParseException(msg);
             }
-        
+
             std::lock_guard<std::mutex> lock(mtx);
             app_config = std::move(data);  // Update app_config
             spdlog::info("updated app_config: {}", app_config.dump());
@@ -104,7 +103,8 @@ namespace app {
                     spdlog::info("read the config file: {}", ctx.cfg_filename);
                     load_config();
                 } catch (const std::exception& e) {
-                    spdlog::error("config loop has been stopped: {} {}", ctx.cfg_filename, e.what());
+                    spdlog::error("config loop has been stopped: {} {}", ctx.cfg_filename,
+                                  e.what());
                 }
             }
 
@@ -112,20 +112,14 @@ namespace app {
         }
 
         // Public interface implementations
-        json web_config() {
-            return ConfigService::instance().web_config();
-        }
+        json web_config() { return ConfigService::instance().web_config(); }
 
         json client_config(const std::string& client_name) {
             return ConfigService::instance().client_config(client_name);
         }
 
-        void configure(const ServiceContext& config) {
-            ConfigService::configure(config);
-        }
+        void configure(const ServiceContext& config) { ConfigService::configure(config); }
 
-        bool is_running() {
-            return ConfigService::instance().is_running();
-        }
-    }
-}
+        bool is_running() { return ConfigService::instance().is_running(); }
+    }  // namespace cfgsvc
+}  // namespace app

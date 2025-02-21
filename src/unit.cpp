@@ -647,7 +647,7 @@ Results test_cfgsvc() {
     r.equals(running == false, "should not be running until configured");
 
     cfgsvc::ServiceContext ctx;
-    ctx.sleep_duration = std::chrono::seconds(1); // force to read only once
+    ctx.sleep_duration = std::chrono::seconds(1);  // force to read only once
 
     // TODO need to test this in isolation when unit is broken into multiple runables
     // try {
