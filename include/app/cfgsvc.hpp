@@ -16,7 +16,7 @@ namespace app {
         using json = nlohmann::json;
 
         struct ServiceContext {
-            std::string cfg_filename = "../config/config.json";
+            std::string cfg_filename = "config/config.json";
             std::chrono::seconds sleep_duration{10}; // Sleep time between work
         };
 
@@ -24,9 +24,14 @@ namespace app {
         public:
             static ConfigService& instance();
 
+            // configure and start (or restart) the service
+            static void configure(const ServiceContext& ctx);
+
+            // return true if the service is running, else false
+            static bool is_running();
+
             json web_config();
             json client_config(const std::string& client_name);
-            static void configure(const ServiceContext& ctx);
 
             ~ConfigService();
 
@@ -39,6 +44,7 @@ namespace app {
             void stop_worker();
             void worker_loop();
 
+            json app_config;
             ServiceContext ctx;
             std::mutex mtx;
             std::thread worker;
@@ -49,6 +55,7 @@ namespace app {
         json web_config();
         json client_config(const std::string& client_name);
         void configure(const ServiceContext& config);
+        bool is_running();
     }
 }
 

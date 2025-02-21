@@ -5,6 +5,7 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
@@ -29,7 +30,7 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 6);
-    r.equals(vers.patch == 2);
+    r.equals(vers.patch == 3);
     r.equals(vers.build >= 180);
 
     return r;
@@ -634,6 +635,41 @@ Results test_datetimelib() {
     return r;
 }
 
+Results test_cfgsvc() {
+    Results r = {.name = "Config Service (cfgsvc) Tests"};
+    using namespace app;
+    using namespace app::jsonkeys;
+    using json = nlohmann::json;
+
+    spdlog::set_level(spdlog::level::info);
+
+    bool running = cfgsvc::is_running();
+    r.equals(running == false, "should not be running until configured");
+
+    cfgsvc::ServiceContext ctx;
+    ctx.sleep_duration = std::chrono::seconds(1); // force to read only once
+
+    // try/catch a bad file
+    // ctx.cfg_filename = "bad-file.json";
+    // r.skip("test a bad config filename");
+
+    cfgsvc::configure(ctx);
+
+    running = cfgsvc::is_running();
+    r.equals(running, "should running now configured");
+
+    json jweb = cfgsvc::web_config();
+    spdlog::info("jweb: {}", jweb.dump());
+    r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");
+
+    json jclient = cfgsvc::client_config("cottage");
+    spdlog::info("jclient: {}", jclient.dump());
+    r.equals(jclient[PORT] == 2030, "the configured client port");
+
+    // spdlog::set_level(spdlog::level::off);
+
+    return r;
+}
 int main() {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
@@ -656,6 +692,7 @@ int main() {
     run_test(test_temperature);
     run_test(test_client);
     run_test(test_config);
+    run_test(test_cfgsvc);
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_service);
