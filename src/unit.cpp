@@ -661,7 +661,7 @@ Results test_cfgsvc() {
     running = cfgsvc::is_running();
     r.equals(running == false, "should not be running after bad config file");
 
-    // now fix the file
+    // // now fix the file
     ctx.cfg_filename = "./config/config.json";
     cfgsvc::configure(ctx);
 
@@ -680,6 +680,7 @@ Results test_cfgsvc() {
 
     return r;
 }
+
 int main() {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off

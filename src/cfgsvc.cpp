@@ -104,10 +104,11 @@ namespace app {
                     spdlog::info("read the config file: {}", ctx.cfg_filename);
                     load_config();
                 } catch (const std::exception& e) {
-                    running = false;
-                    spdlog::error("config loop: {} {}", ctx.cfg_filename, e.what());
+                    spdlog::error("config loop has been stopped: {} {}", ctx.cfg_filename, e.what());
                 }
             }
+
+            spdlog::warn("worker thread is exiting, running = {}", running.load());
         }
 
         // Public interface implementations
