@@ -57,6 +57,7 @@ set(DEPENDENT_LIBRARIES
 # Create executables
 add_executable(data-logger
     ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/cfgsvc.cpp
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
@@ -68,6 +69,7 @@ add_executable(data-logger
 
 add_executable(data-tasks
     ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/cfgsvc.cpp
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
@@ -79,6 +81,7 @@ add_executable(data-tasks
 
 add_executable(datalogger-unit 
     ${SRC_DIR}/cli.cpp
+    ${SRC_DIR}/cfgsvc.cpp
     ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
