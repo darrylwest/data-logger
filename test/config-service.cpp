@@ -12,9 +12,9 @@
 #include <spdlog/spdlog.h>
 
 namespace app {
-    namespace config {
+    namespace cfgsvc {
 
-        struct ServiceConfig {
+        struct ServiceContext {
             std::string param1 = "default";
             int param2 = 0;
             std::chrono::milliseconds sleep_duration{1000}; // Sleep time between work
@@ -29,23 +29,23 @@ namespace app {
 
             std::string doSomething(const std::string& data) {
                 spdlog::info("do something with this data: {}", data);
-                std::lock_guard<std::mutex> lock(mutex_);
+                std::lock_guard<std::mutex> lock(mtx);
 
-                return data + "-> " + std::to_string(config_.param2);
+                return data + "-> " + std::to_string(ctx.param2);
             }
 
-            static void configure(const ServiceConfig& config) {
+            static void configure(const ServiceContext& ctx) {
                 spdlog::info("reconfigure the instance");
                 auto& service = instance();
-                std::lock_guard<std::mutex> lock(service.mutex_);
-                service.config_ = config;
-                service.startWorker();
+                std::lock_guard<std::mutex> lock(service.mtx);
+                service.ctx = ctx;
+                service.start_worker();
             }
 
             // Destructor ensures clean shutdown
             ~MyService() {
                 spdlog::info("deconstruct: stop the worker");
-                stopWorker();
+                stop_worker();
             }
 
         private:
@@ -53,40 +53,40 @@ namespace app {
             MyService(const MyService&) = delete; // prevents copying
             MyService& operator=(const MyService&) = delete; // prevents re-assignment
 
-            void startWorker() {
+            void start_worker() {
                 spdlog::info("start the worker");
-                running_ = true;
-                worker_ = std::thread([this]() { workerLoop(); });
+                running = true;
+                worker = std::thread([this]() { workerLoop(); });
             }
 
-            void stopWorker() {
+            void stop_worker() {
                 spdlog::info("stop the worker");
-                running_ = false;
-                if (worker_.joinable()) {
-                    worker_.join();
+                running = false;
+                if (worker.joinable()) {
+                    worker.join();
                 }
             }
 
             void workerLoop() {
                 int loops = 0;
-                while (running_) {
+                while (running) {
                     {
-                        std::lock_guard<std::mutex> lock(mutex_);
+                        std::lock_guard<std::mutex> lock(mtx);
                         loops++;
                         spdlog::info("do the work, loop: {}", loops);
 
                         // change something here...
-                        config_.param2++;
+                        ctx.param2++;
                     }
                     
-                    std::this_thread::sleep_for(config_.sleep_duration);
+                    std::this_thread::sleep_for(ctx.sleep_duration);
                 }
             }
 
-            ServiceConfig config_;
-            std::mutex mutex_;
-            std::thread worker_;
-            std::atomic<bool> running_{false};
+            ServiceContext ctx;
+            std::mutex mtx;
+            std::thread worker;
+            std::atomic<bool> running{false};
         };
 
         template<typename... Args>
@@ -94,7 +94,7 @@ namespace app {
             return MyService::instance().doSomething(std::forward<Args>(args)...);
         }
 
-        inline void configure(const ServiceConfig& config) {
+        inline void configure(const ServiceContext& config) {
             MyService::configure(config);
         }
     }
@@ -104,27 +104,27 @@ int main() {
     using namespace app;
 
     // Configure service with custom sleep duration
-    config::ServiceConfig config;
+    cfgsvc::ServiceContext config;
     config.sleep_duration = std::chrono::milliseconds(1500);
-    config::configure(config);
+    cfgsvc::configure(config);
 
     // Service will run in background
-    std::string r = config::do_something("hello");
+    std::string r = cfgsvc::do_something("hello");
     spdlog::info("result: {}", r);
 
     std::this_thread::sleep_for(std::chrono::seconds(2));
-    r = config::do_something("hello again");
+    r = cfgsvc::do_something("hello again");
     spdlog::info("result: {}", r);
 
     std::this_thread::sleep_for(std::chrono::seconds(3));
-    r = config::do_something("hello once more");
+    r = cfgsvc::do_something("hello once more");
     spdlog::info("result: {}", r);
 
     // Your main program continues...
     std::this_thread::sleep_for(std::chrono::seconds(5));
 
     std::this_thread::sleep_for(std::chrono::seconds(3));
-    r = config::do_something("over and out");
+    r = cfgsvc::do_something("over and out");
     spdlog::info("result: {}", r);
 
     std::this_thread::sleep_for(std::chrono::seconds(1));
