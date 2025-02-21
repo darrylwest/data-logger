@@ -1,1 +1,0 @@
-I have a c++20 project that needs lightweight support for events published from one thread to another as a fire-and-forget pub/sub.  Can you help me build that?
