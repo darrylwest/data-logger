@@ -641,7 +641,7 @@ Results test_cfgsvc() {
     using namespace app::jsonkeys;
     using json = nlohmann::json;
 
-    spdlog::set_level(spdlog::level::info);
+    // spdlog::set_level(spdlog::level::info);
 
     bool running = cfgsvc::is_running();
     r.equals(running == false, "should not be running until configured");
@@ -649,10 +649,20 @@ Results test_cfgsvc() {
     cfgsvc::ServiceContext ctx;
     ctx.sleep_duration = std::chrono::seconds(1); // force to read only once
 
-    // try/catch a bad file
-    // ctx.cfg_filename = "bad-file.json";
-    // r.skip("test a bad config filename");
+    // TODO need to test this in isolation when unit is broken into multiple runables
+    // try {
+    //     ctx.cfg_filename = "bad-file.json";
+    //     cfgsvc::configure(ctx);
+    // } catch (const std::exception& e) {
+    //     spdlog::info("bad file {}, {}", ctx.cfg_filename, e.what());
+    //     r.pass();
+    // }
 
+    running = cfgsvc::is_running();
+    r.equals(running == false, "should not be running after bad config file");
+
+    // now fix the file
+    ctx.cfg_filename = "./config/config.json";
     cfgsvc::configure(ctx);
 
     running = cfgsvc::is_running();
@@ -666,7 +676,7 @@ Results test_cfgsvc() {
     spdlog::info("jclient: {}", jclient.dump());
     r.equals(jclient[PORT] == 2030, "the configured client port");
 
-    // spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::off);
 
     return r;
 }

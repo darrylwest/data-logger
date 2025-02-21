@@ -28,7 +28,7 @@ namespace app {
             static void configure(const ServiceContext& ctx);
 
             // return true if the service is running, else false
-            static bool is_running();
+            bool is_running();
 
             json web_config();
             json client_config(const std::string& client_name);
@@ -43,6 +43,7 @@ namespace app {
             void start_worker();
             void stop_worker();
             void worker_loop();
+            void load_config();
 
             json app_config;
             ServiceContext ctx;

@@ -6,7 +6,9 @@
 #include <app/cfgsvc.hpp>
 #include <fstream>
 #include <spdlog/spdlog.h>
+#include <spdlog/fmt/fmt.h>
 #include <app/jsonkeys.hpp>
+#include <app/exceptions.hpp>
 
 namespace app {
     namespace cfgsvc {
@@ -42,18 +44,12 @@ namespace app {
         void ConfigService::configure(const ServiceContext& ctx) {
             spdlog::info("configure and start the config service");
             auto& service = instance();
-            std::lock_guard<std::mutex> lock(service.mtx);
 
-            // test that the cfg_filename is an existing file and can be parsed
-            // throw on error
             try {
-                std::ifstream fin(ctx.cfg_filename);
-                json data = json::parse(fin);
-                spdlog::debug("{}", data.dump());
-                service.app_config = data;
+                service.load_config();
             } catch (const std::exception& e) {
                 spdlog::error("error reading config file: {} {}", ctx.cfg_filename, e.what());
-                throw(e);
+                throw e;
             }
 
             service.ctx = ctx;
@@ -81,21 +77,35 @@ namespace app {
             }
         }
 
+        void ConfigService::load_config() {
+            std::ifstream fin(ctx.cfg_filename);
+            if (!fin) {
+                throw app::FileException("Failed to open config file: " + ctx.cfg_filename);
+            }
+        
+            json data;
+            try {
+                data = json::parse(fin);
+            } catch (const json::parse_error& e) {
+                Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
+                spdlog::error(msg);
+                throw app::ParseException(msg);
+            }
+        
+            std::lock_guard<std::mutex> lock(mtx);
+            app_config = std::move(data);  // Update app_config
+            spdlog::info("updated app_config: {}", app_config.dump());
+        }
+
         void ConfigService::worker_loop() {
             while (running) {
                 std::this_thread::sleep_for(ctx.sleep_duration);
                 try {
-                    std::lock_guard<std::mutex> lock(mtx);
                     spdlog::info("read the config file: {}", ctx.cfg_filename);
-
-                    std::ifstream fin(ctx.cfg_filename);
-                    json data = json::parse(fin);
-                    spdlog::debug("{}", data.dump());
-                    app_config = data;
-
+                    load_config();
                 } catch (const std::exception& e) {
                     running = false;
-                    spdlog::error("error reading config file: {} {}", ctx.cfg_filename, e.what());
+                    spdlog::error("config loop: {} {}", ctx.cfg_filename, e.what());
                 }
             }
         }
@@ -114,7 +124,7 @@ namespace app {
         }
 
         bool is_running() {
-            return ConfigService::is_running();
+            return ConfigService::instance().is_running();
         }
     }
 }
