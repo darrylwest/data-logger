@@ -11,11 +11,11 @@
 #include <app/version.hpp>
 
 // special
+#include <app/cfgsvc.hpp>
 #include <app/client.hpp>
+#include <app/exceptions.hpp>
 #include <app/nodes.hpp>
 #include <thread>
-#include <app/exceptions.hpp>
-#include <app/cfgsvc.hpp>
 
 using namespace app::taskrunner;
 

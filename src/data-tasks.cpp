@@ -24,11 +24,11 @@
 // special
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>
+#include <app/exceptions.hpp>
 #include <app/nodes.hpp>
+#include <app/types.hpp>
 #include <iostream>
 #include <thread>
-#include <app/exceptions.hpp>
-#include <app/types.hpp>
 
 using namespace app::taskrunner;
 using namespace colors;
@@ -77,8 +77,8 @@ int main(int argc, char* argv[]) {
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan,
-               vers.to_string(), logfile, pid, reset);
+    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan, vers.to_string(), logfile, pid,
+               reset);
 
     configure_logging(logfile, !testing);
     spdlog::info("Started DataCollectionTasks, PID: {}", pid);

@@ -26,9 +26,8 @@ namespace app {
             int errors;
 
             friend std::ostream& operator<<(std::ostream& os, const ClientStatus v) {
-                os << "version: " << v.version << ", ts: " << v.timestamp
-                   << ", started: " << v.started << ", uptime: " << v.uptime
-                   << ", accessed: " << v.access_count << ", errors: " << v.errors;
+                os << "version: " << v.version << ", ts: " << v.timestamp << ", started: " << v.started
+                   << ", uptime: " << v.uptime << ", accessed: " << v.access_count << ", errors: " << v.errors;
 
                 return os;
             }
@@ -52,9 +51,8 @@ namespace app {
 
             friend std::ostream& operator<<(std::ostream& os, const ClientNode v) {
                 Str active = v.active ? "true" : "false";
-                os << "location: " << v.location << ", ip: " << v.ip << ", port: " << v.port
-                   << ", active: " << active << ", probes: " << v.probes.size()
-                   << ", last_access: " << v.last_access << ", status: " << v.status;
+                os << "location: " << v.location << ", ip: " << v.ip << ", port: " << v.port << ", active: " << active
+                   << ", probes: " << v.probes.size() << ", last_access: " << v.last_access << ", status: " << v.status;
 
                 return os;
             }
@@ -77,8 +75,7 @@ namespace app {
         temperature::TemperatureData fetch_temps(ClientNode& node);
 
         // send client node reading to web server, if server is available, else return false
-        bool put_temps(const Str& url, const app::database::DbKey& key,
-                       const app::temperature::Probe& probe);
+        bool put_temps(const Str& url, const app::database::DbKey& key, const app::temperature::Probe& probe);
 
         // create the client node list as read from config.json
         Vec<ClientNode> create_nodes();

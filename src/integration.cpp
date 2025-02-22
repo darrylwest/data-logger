@@ -38,8 +38,8 @@ struct Config {
 void run_server(std::atomic<bool>& running, const Config& config) {
     running = true;
 
-    Str cmd = fmt::format("./build/data-logger --host {} --port {} > {} 2>&1 & echo $!",
-                          config.host, config.port, config.logfile);
+    Str cmd = fmt::format("./build/data-logger --host {} --port {} > {} 2>&1 & echo $!", config.host, config.port,
+                          config.logfile);
 
     fmt::print("{}Server Start Command: {}{}{}\n", cyan, yellow, cmd, reset);
 
@@ -101,8 +101,7 @@ void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
             fmt::print("\t{}Test passed: Put temperature data.{}\n", green, reset);
         } else {
             r.fail("put data failed: " + body);
-            fmt::print("\t{}Test failed: Unable to put temperature data. {} {}\n", red, body,
-                       reset);
+            fmt::print("\t{}Test failed: Unable to put temperature data. {} {}\n", red, body, reset);
             fmt::print("{}body: {}{}\n", yellow, res->body, reset);
         }
     } else {

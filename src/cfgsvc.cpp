@@ -55,7 +55,6 @@ namespace app {
             return j;
         }
 
-
         bool ConfigService::is_running() { return instance().running.load(); }
 
         void ConfigService::configure(const ServiceContext& new_ctx) {
@@ -107,8 +106,7 @@ namespace app {
             try {
                 data = json::parse(fin);
             } catch (const json::parse_error& e) {
-                Str msg
-                    = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
+                Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
                 spdlog::error(msg);
                 throw app::ParseException(msg);
             }
@@ -164,13 +162,9 @@ namespace app {
 
         json webservice() { return ConfigService::instance().webservice(); }
 
-        json clients() {
-            return ConfigService::instance().clients();
-        }
+        json clients() { return ConfigService::instance().clients(); }
 
-        json client(const std::string& client_name) {
-            return ConfigService::instance().client(client_name);
-        }
+        json client(const std::string& client_name) { return ConfigService::instance().client(client_name); }
 
         void configure(const ServiceContext& config) { ConfigService::configure(config); }
 

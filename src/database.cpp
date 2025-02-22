@@ -27,8 +27,7 @@ namespace app {
             std::ofstream file(filename, std::ios::app);
 
             if (!file.is_open()) {
-                const auto msg
-                    = "Error in database::append_key_value(); can't open file: " + filename;
+                const auto msg = "Error in database::append_key_value(); can't open file: " + filename;
                 spdlog::error(msg);
                 throw app::FileException(msg);
             }

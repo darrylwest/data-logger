@@ -55,8 +55,7 @@ namespace app {
                         task.run_count++;
 
                         if (task.run_count > 1 && std::abs(delta - period) > 1) {
-                            spdlog::warn("DELTA ERROR! task: {}, delta: {}", task.to_string(),
-                                         delta);
+                            spdlog::warn("DELTA ERROR! task: {}, delta: {}", task.to_string(), delta);
                         } else {
                             spdlog::info("task: {}, delta: {}", task.to_string(), delta);
                         }
