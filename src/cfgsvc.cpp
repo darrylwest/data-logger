@@ -51,18 +51,20 @@ namespace app {
 
         bool ConfigService::is_running() { return instance().running.load(); }
 
-        void ConfigService::configure(const ServiceContext& ctx) {
-            spdlog::info("configure and start the config service");
+        void ConfigService::configure(const ServiceContext& new_ctx) {
+            spdlog::info("configure, validate, and start the config service");
             auto& service = instance();
-
+        
             try {
                 service.load_config();
             } catch (const std::exception& e) {
-                spdlog::error("error reading config file: {} {}", ctx.cfg_filename, e.what());
-                throw e;
+                spdlog::error("Error reading config file: {}", new_ctx.cfg_filename);
+                throw; // re-throw the original exception
             }
-
-            service.ctx = ctx;
+        
+            std::lock_guard<std::mutex> lock(service.mtx);
+            service.ctx = new_ctx;  // Only assign if validation passed
+        
             service.start_worker();
         }
 
@@ -87,6 +89,7 @@ namespace app {
             }
         }
 
+        // read in, parse and validate the json config
         void ConfigService::load_config() {
             std::ifstream fin(ctx.cfg_filename);
             if (!fin) {
@@ -103,10 +106,22 @@ namespace app {
                 throw app::ParseException(msg);
             }
 
+            // Run validation on `app_config`
+            Vec<Str> errors = ctx.validate(data);
+            if (!errors.empty()) {
+                for (const auto& err : errors) {
+                    spdlog::error("Validation error: {}", err);
+                }
+                const auto msg = fmt::format("config not valid for file: {}", ctx.cfg_filename);
+                spdlog::error(msg);
+                throw ValidationException(msg);
+            }
+        
             std::lock_guard<std::mutex> lock(mtx);
             app_config = std::move(data);  // Update app_config
             spdlog::info("updated app_config: {}", app_config.dump());
         }
+
 
         void ConfigService::worker_loop() {
             while (running) {

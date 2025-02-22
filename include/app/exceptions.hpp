@@ -43,4 +43,10 @@ namespace app {
         using ServiceException::ServiceException;
     };
 
+    class ValidationException : public ServiceException {
+      public:
+        using ServiceException::ServiceException;
+    };
+
+
 }  // namespace app

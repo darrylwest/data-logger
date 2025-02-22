@@ -19,6 +19,8 @@ namespace app {
         struct ServiceContext {
             Str cfg_filename = "config/config.json";
             std::chrono::seconds sleep_duration{10};  // Sleep time between work
+            Func<Vec<Str>(const json&)> validate = [](const json&) { return Vec<Str>(); };
+
         };
 
         class ConfigService {
