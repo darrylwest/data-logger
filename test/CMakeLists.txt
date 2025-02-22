@@ -87,9 +87,6 @@ if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
-# Add stdc++fs to DEPENDENT_LIBRARIES
-list(APPEND DEPENDENT_LIBRARIES stdc++fs)
-
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
 foreach(TEST_FILE ${TEST_SOURCES})

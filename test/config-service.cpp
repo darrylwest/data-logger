@@ -4,7 +4,9 @@
 // this is a pattern for a generic service
 //
 
+#include <iostream>
 #include <string>
+#include <filesystem>
 #include <mutex>
 #include <thread>
 #include <atomic>
@@ -12,12 +14,11 @@
 #include <spdlog/spdlog.h>
 #include <fstream>
 #include <nlohmann/json.hpp>
-#include <filesystem>
 
 namespace app {
     namespace cfgsvc {
         using json = nlohmann::json;
-        using fs = std::filesystem;
+        namespace fs = std::filesystem;
 
         struct ServiceContext {
             std::string cfg_filename = "../config/config.json";
