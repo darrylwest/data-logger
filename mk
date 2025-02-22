@@ -53,6 +53,7 @@ do
         ;;
         run-data)
             (cd build && make -j4)
+            export TESTING=true
             $root/build/data-tasks
 
             shift

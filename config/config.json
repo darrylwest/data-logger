@@ -1,5 +1,5 @@
 {
-    "version": "0.6.0-105",
+    "config-version": "0.6.1-106",
     "home": "{{HOME}}/.data-logger",
     "logging": {
         "level": "info",

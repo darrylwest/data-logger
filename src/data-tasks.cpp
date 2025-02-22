@@ -22,6 +22,7 @@
 #include <vendor/ansi_colors.hpp>
 
 // special
+#include <app/cfgsvc.hpp>
 #include <app/client.hpp>
 #include <app/nodes.hpp>
 #include <iostream>
@@ -31,6 +32,15 @@ using namespace app::taskrunner;
 using namespace colors;
 constexpr int LOG_SIZE = 1'000'000;
 constexpr int LOG_SAVE = 5;  // days
+
+void start_config_service() {
+    using namespace app;
+
+    cfgsvc::ServiceContext ctx;
+    // add validators, funcs etc...
+
+    cfgsvc::configure(ctx);
+}
 
 void configure_logging(const Str& logfile, const bool rolling) {
     spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
@@ -43,6 +53,10 @@ void configure_logging(const Str& logfile, const bool rolling) {
 }
 
 int main(int argc, char* argv[]) {
+    // configuration service
+    start_config_service();
+    // add funcs
+
     // get the pid; write to data-tasks.pid
     int pid = getpid();
 
@@ -55,7 +69,7 @@ int main(int argc, char* argv[]) {
                vers.to_string(), logfile, pid, reset);
 
     configure_logging(logfile, !testing);
-    spdlog::info("Started DataTasks, PID: {}", pid);
+    spdlog::info("Started DataCollectionTasks, PID: {}", pid);
 
     auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataTasks Version: {}", vers.to_string());
