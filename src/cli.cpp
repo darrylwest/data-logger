@@ -4,6 +4,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/version.hpp>
@@ -14,16 +15,6 @@
 namespace app {
     namespace config {
         using json = nlohmann::json;
-
-        // locate the config file and return the name
-        Str find_config_filename() { return "./config/config.json"; }
-
-        // parse and return the config file
-        json parse_config(const Str filename) {
-            spdlog::info("reading/parsing config from: {}", filename);
-            std::ifstream fin(filename);
-            return json::parse(fin);
-        }
 
         // initialize config with json file
         Config webservice_from_json(const auto& wscfg) {
@@ -45,9 +36,8 @@ namespace app {
          */
         Config parse_cli(const int argc, char** argv) {
             try {
-                const auto filename = find_config_filename();
-                auto cfg = parse_config(filename);
-                auto config = webservice_from_json(cfg[jsonkeys::WEBSERVICE]);
+                auto webcfg = cfgsvc::webservice();
+                auto config = webservice_from_json(webcfg);
 
                 // first, read the standard config file
 

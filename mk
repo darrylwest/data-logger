@@ -9,7 +9,7 @@ set -eu
 export root=`pwd`
 
 export project=data-logger
-export port=9999
+export port=9090
 
 # parse the cli
 while [[ $# -gt 0 ]]

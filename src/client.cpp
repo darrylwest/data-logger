@@ -6,6 +6,7 @@
 
 #include <spdlog/spdlog.h>
 
+#include <app/cfgsvc.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
@@ -146,9 +147,7 @@ namespace app {
             using namespace app::jsonkeys;
 
             try {
-                const auto filename = app::config::find_config_filename();
-                json cfg = app::config::parse_config(filename);
-                json jclients = cfg[CLIENTS];
+                json jclients = cfgsvc::clients();
 
                 for (const auto& jclient : jclients) {
                     nodes.push_back(parse_client_node(jclient));

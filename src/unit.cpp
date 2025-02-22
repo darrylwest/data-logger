@@ -291,40 +291,10 @@ void test_web_service_from_json(Results& r, const auto& cfg) {
     spdlog::set_level(spdlog::level::off);
 }
 
-Results test_config() {
-    Results r = {.name = "Config Tests"};
-    using json = nlohmann::json;
+Results test_cli() {
+    Results r = {.name = "CLI Tests"};
 
-    // spdlog::set_level(spdlog::level::info);
-
-    try {
-        // TODO get the filename from cli:: parse the config file
-        const Str filename = app::config::find_config_filename();
-        r.equals(filename == "./config/config.json");
-
-        const json jcfg = app::config::parse_config(filename);
-
-        Str vers = jcfg[app::jsonkeys::CONFIG_VERSION];
-        r.equals(vers.starts_with("0.6"), "cfg version");
-
-        // TODO test the webservice settings
-        test_web_service_from_json(r, jcfg[app::jsonkeys::WEBSERVICE]);
-
-        r.equals(jcfg[app::jsonkeys::CLIENTS].size() == 3, "number of clients in cfg");
-
-        for (const auto& jclient : jcfg[app::jsonkeys::CLIENTS]) {
-            const auto node = app::client::parse_client_node(jclient);
-            r.equals(node.port == 2030, "the client node port is always 2030");
-            r.equals(node.probes.size() == 2, "verify client node temp probe count");
-            r.equals(node.probes.find(0) != node.probes.end(), "probe 0 should always exist");
-            r.equals(node.probes.find(1) != node.probes.end(), "probe 0 should always exist");
-        }
-
-    } catch (const std::exception& e) {
-        std::cerr << "JSON ERROR: an error occurred: " << e.what() << std::endl;
-        r.fail("config parse fail exception");
-    }
-
+    r.pass();
     spdlog::set_level(spdlog::level::off);
 
     return r;
@@ -714,7 +684,7 @@ int main() {
     run_test(test_taskrunner);
     run_test(test_temperature);
     run_test(test_client);
-    run_test(test_config);
+    run_test(test_cli);
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_service);

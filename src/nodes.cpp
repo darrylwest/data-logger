@@ -4,6 +4,7 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/database.hpp>
 #include <app/jsonkeys.hpp>
@@ -36,12 +37,12 @@ namespace app {
             auto worker = [&]() mutable {
                 try {
                     // read from config on each iteration
-                    const auto jfile = app::config::find_config_filename();
-                    const auto jcfg = app::config::parse_config(jfile);
-                    if (!is_node_active(node.location, jcfg)) {
-                        spdlog::info("skipping node {}; currently inactive...", node.location);
-                        return;
-                    }
+                    // const auto jfile = app::config::find_config_filename();
+                    // const auto jcfg = app::config::parse_config(jfile);
+                    // if (!is_node_active(node.location, jcfg)) {
+                    //     spdlog::info("skipping node {}; currently inactive...", node.location);
+                    //     return;
+                    // }
 
                     // read config for this node
                     auto data = app::client::fetch_temps(node);
@@ -49,8 +50,9 @@ namespace app {
                     spdlog::info("temps: {}, at: {}", data.to_string(), data.reading_at);
 
                     // TODO get port from jcfg
-                    const auto cfg
-                        = app::config::webservice_from_json(jcfg[app::jsonkeys::WEBSERVICE]);
+                    const auto wcfg = cfgsvc::webservice();
+                    const auto cfg = app::config::webservice_from_json(wcfg);
+
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
 
