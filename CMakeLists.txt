@@ -95,6 +95,10 @@ add_executable(datalogger-integration
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/integration.cpp)
 
+if(APPLE)
+    link_libraries(c++fs)
+endif()
+
 # Configure all targets
 foreach(target data-logger data-tasks datalogger-unit datalogger-integration)
     target_include_directories(${target} PRIVATE 
@@ -113,6 +117,11 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR})
 if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
+
+# Add stdc++fs to DEPENDENT_LIBRARIES
+list(APPEND DEPENDENT_LIBRARIES stdc++fs)
+
+message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
 # MacOS universal binary setup
 if(APPLE)
