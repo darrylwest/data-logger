@@ -57,8 +57,8 @@ namespace app {
         };
 
         // Public interface functions
-        // template <typename T = json>
-        json get(const Func<json(const json&)>& func);
+        template <typename T = json>
+        T get(const Func<T(const json&)>& func);
 
         json web_config();
         json client_config(const Str& client_name);

@@ -125,7 +125,8 @@ namespace app {
 
         // Public interface implementations
 
-        json get(const Func<json(const json&)>& func) {
+        template <typename T>
+        T get(const Func<T(const json&)>& func) {
              return ConfigService::instance().get<json>(func);
         }
 
