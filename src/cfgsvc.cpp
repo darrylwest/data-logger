@@ -124,29 +124,14 @@ namespace app {
         }
 
         void ConfigService::worker_loop() {
-            using FileSys = std::filesystem;
-            FileSys::file_time_type last_read_time;
 
             while (running) {
                 // sleep first because the file was read/validated on configure
                 std::this_thread::sleep_for(ctx.sleep_duration);
 
                 try {
-                    if (!FileSys::exists(ctx.cfg_filename)) {
-                        spdlog::warn("Config file does not exist: {}", ctx.cfg_filename);
-                        continue;  // Skip this iteration if file is missing
-                    }
-
-                    FileSys::file_time_type current_mod_time
-                        = FileSys::last_write_time(ctx.cfg_filename);
-
-                    if (current_mod_time > last_read_time) {  // Only reload if modified
-                        spdlog::info("Config file updated, reloading: {}", ctx.cfg_filename);
-                        load_config();
-                        last_read_time = current_mod_time;  // Update last read time
-                    } else {
-                        spdlog::info("Config file unchanged, skipping reload.");
-                    }
+                    spdlog::info("config reloading: {}", ctx.cfg_filename);
+                    load_config();
                 } catch (const std::exception& e) {
                     spdlog::error("config loop error: {} {}", ctx.cfg_filename, e.what());
                 }
