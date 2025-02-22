@@ -16,6 +16,7 @@ namespace app {
         constexpr StrView SCHEME = "scheme";
         constexpr StrView CLIENT_STATUS = "status";
         constexpr StrView VERSION = "version";
+        constexpr StrView CONFIG_VERSION = "config-version";
         constexpr StrView TS = "ts";
         constexpr StrView STARTED = "started";
         constexpr StrView UPTIME = "uptime";

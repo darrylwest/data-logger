@@ -304,7 +304,7 @@ Results test_config() {
 
         const json jcfg = app::config::parse_config(filename);
 
-        Str vers = jcfg[app::jsonkeys::VERSION];
+        Str vers = jcfg[app::jsonkeys::CONFIG_VERSION];
         r.equals(vers.starts_with("0.6"), "cfg version");
 
         // TODO test the webservice settings
@@ -672,7 +672,21 @@ Results test_cfgsvc() {
     spdlog::info("jweb: {}", jweb.dump());
     r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");
 
+    // const json jclients = app::cfgsvc::get<json>([](const json& config) -> json {
+    //     return config.value("clients", json{});  // ✅ Safe fallback if "clients" is missing
+    // });
+
+    // r.equals(jclients.size() == 3, "there should be 3 clients in config.json");
+
     json jclient = cfgsvc::client_config("cottage");
+    spdlog::info("jclient: {}", jclient.dump());
+    r.equals(jclient[PORT] == 2030, "the configured client port");
+
+    jclient = cfgsvc::client_config("deck");
+    spdlog::info("jclient: {}", jclient.dump());
+    r.equals(jclient[PORT] == 2030, "the configured client port");
+
+    jclient = cfgsvc::client_config("shed");
     spdlog::info("jclient: {}", jclient.dump());
     r.equals(jclient[PORT] == 2030, "the configured client port");
 
@@ -699,11 +713,11 @@ int main() {
     };
 
     run_test(test_version);
+    run_test(test_cfgsvc); // this starts a service so test it before the others
     run_test(test_taskrunner);
     run_test(test_temperature);
     run_test(test_client);
     run_test(test_config);
-    run_test(test_cfgsvc);
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_service);

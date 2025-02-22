@@ -27,6 +27,8 @@
 #include <app/nodes.hpp>
 #include <iostream>
 #include <thread>
+#include <app/exceptions.hpp>
+#include <app/types.hpp>
 
 using namespace app::taskrunner;
 using namespace colors;
@@ -39,11 +41,12 @@ void start_config_service() {
     cfgsvc::ServiceContext ctx;
     // add validators, funcs etc...
 
+    // add the funcs and test before refactor
+
     cfgsvc::configure(ctx);
 }
 
 void configure_logging(const Str& logfile, const bool rolling) {
-    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
     if (rolling) {
         auto logger = spdlog::rotating_logger_mt("rotating_logger", logfile, LOG_SIZE, LOG_SAVE);
         spdlog::set_default_logger(logger);
@@ -53,8 +56,17 @@ void configure_logging(const Str& logfile, const bool rolling) {
 }
 
 int main(int argc, char* argv[]) {
-    // configuration service
-    start_config_service();
+    // set the log format first
+    spdlog::set_pattern("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [thread %t] %v");
+
+    // configuration service has to work or we are toast
+    try {
+        start_config_service();
+    } catch (std::exception& e) {
+        std::cerr << "Configuration died on startup, " << e.what() << ", aborting..." << std::endl;
+        std::exit(1);
+    }
+
     // add funcs
 
     // get the pid; write to data-tasks.pid
