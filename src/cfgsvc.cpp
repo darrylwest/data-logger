@@ -23,17 +23,7 @@ namespace app {
             return service;
         }
 
-        template <typename T> T ConfigService::get(const std::function<T(const json&)>& func) {
-            std::lock_guard<std::mutex> lock(mtx);
-
-            try {
-                return func(app_config);  // Execute the provided function
-            } catch (const std::exception& e) {
-                throw std::runtime_error(fmt::format("Failed to execute function: {}", e.what()));
-            }
-        }
-
-        json ConfigService::web_config() {
+        json ConfigService::webservice() {
             std::lock_guard<std::mutex> lock(mtx);
 
             json j = instance().app_config[WEBSERVICE];
@@ -42,13 +32,29 @@ namespace app {
             return j;
         }
 
-        json ConfigService::client_config(const std::string& client_name) {
+        json ConfigService::client(const Str& client_name) {
             spdlog::info("return the client config for {}", client_name);
             std::lock_guard<std::mutex> lock(mtx);
-            json j = instance().app_config[CLIENTS][0];
+            json jclients = instance().app_config[CLIENTS];
+
+            for (const auto& jclient : jclients) {
+                if (jclient[LOCATION] == client_name) {
+                    return jclient;
+                }
+            }
+
+            throw std::runtime_error("can not find client named: " + client_name);
+        }
+
+        json ConfigService::clients() {
+            spdlog::info("return all clients in the list");
+
+            std::lock_guard<std::mutex> lock(mtx);
+            json j = instance().app_config[CLIENTS];
 
             return j;
         }
+
 
         bool ConfigService::is_running() { return instance().running.load(); }
 
@@ -156,14 +162,14 @@ namespace app {
 
         // Public interface implementations
 
-        template <typename T> T get(const Func<T(const json&)>& func) {
-            return ConfigService::instance().get<json>(func);
+        json webservice() { return ConfigService::instance().webservice(); }
+
+        json clients() {
+            return ConfigService::instance().clients();
         }
 
-        json web_config() { return ConfigService::instance().web_config(); }
-
-        json client_config(const std::string& client_name) {
-            return ConfigService::instance().client_config(client_name);
+        json client(const std::string& client_name) {
+            return ConfigService::instance().client(client_name);
         }
 
         void configure(const ServiceContext& config) { ConfigService::configure(config); }

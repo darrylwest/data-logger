@@ -668,25 +668,22 @@ Results test_cfgsvc() {
     running = cfgsvc::is_running();
     r.equals(running, "should running now configured");
 
-    json jweb = cfgsvc::web_config();
+    json jweb = cfgsvc::webservice();
     spdlog::info("jweb: {}", jweb.dump());
     r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");
 
-    // const json jclients = app::cfgsvc::get<json>([](const json& config) -> json {
-    //     return config.value("clients", json{});  // ✅ Safe fallback if "clients" is missing
-    // });
+    const json jclients = cfgsvc::clients();
+    r.equals(jclients.size() == 3, "there should be 3 clients in config.json");
 
-    // r.equals(jclients.size() == 3, "there should be 3 clients in config.json");
-
-    json jclient = cfgsvc::client_config("cottage");
+    json jclient = cfgsvc::client("cottage");
     spdlog::info("jclient: {}", jclient.dump());
     r.equals(jclient[PORT] == 2030, "the configured client port");
 
-    jclient = cfgsvc::client_config("deck");
+    jclient = cfgsvc::client("deck");
     spdlog::info("jclient: {}", jclient.dump());
     r.equals(jclient[PORT] == 2030, "the configured client port");
 
-    jclient = cfgsvc::client_config("shed");
+    jclient = cfgsvc::client("shed");
     spdlog::info("jclient: {}", jclient.dump());
     r.equals(jclient[PORT] == 2030, "the configured client port");
 
