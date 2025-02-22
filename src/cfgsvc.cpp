@@ -5,6 +5,7 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <app/types.hpp>
 #include <app/cfgsvc.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
@@ -18,6 +19,17 @@ namespace app {
         ConfigService& ConfigService::instance() {
             static ConfigService service;
             return service;
+        }
+
+        template <typename T>
+        T ConfigService::get(const std::function<T(const json&)>& func) {
+            std::lock_guard<std::mutex> lock(mtx);
+
+            try {
+                return func(app_config);  // Execute the provided function
+            } catch (const std::exception& e) {
+                throw std::runtime_error(fmt::format("Failed to execute function: {}", e.what()));
+            }
         }
 
         json ConfigService::web_config() {
@@ -112,6 +124,11 @@ namespace app {
         }
 
         // Public interface implementations
+
+        json get(const Func<json(const json&)>& func) {
+             return ConfigService::instance().get<json>(func);
+        }
+
         json web_config() { return ConfigService::instance().web_config(); }
 
         json client_config(const std::string& client_name) {

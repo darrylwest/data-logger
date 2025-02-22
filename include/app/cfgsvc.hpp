@@ -10,13 +10,14 @@
 #include <nlohmann/json.hpp>
 #include <string>
 #include <thread>
+#include <app/types.hpp>
 
 namespace app {
     namespace cfgsvc {
         using json = nlohmann::json;
 
         struct ServiceContext {
-            std::string cfg_filename = "config/config.json";
+            Str cfg_filename = "config/config.json";
             std::chrono::seconds sleep_duration{10};  // Sleep time between work
         };
 
@@ -29,6 +30,9 @@ namespace app {
 
             // return true if the service is running, else false
             bool is_running();
+
+            template <typename T = json>
+            T get(const Func<T(const json&)>& func);
 
             json web_config();
             json client_config(const std::string& client_name);
@@ -53,8 +57,11 @@ namespace app {
         };
 
         // Public interface functions
+        // template <typename T = json>
+        json get(const Func<json(const json&)>& func);
+
         json web_config();
-        json client_config(const std::string& client_name);
+        json client_config(const Str& client_name);
         void configure(const ServiceContext& config);
         bool is_running();
     }  // namespace cfgsvc
