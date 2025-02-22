@@ -5,11 +5,13 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
-#include <app/types.hpp>
 #include <app/cfgsvc.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
+#include <app/types.hpp>
+#include <filesystem>
 #include <fstream>
+#include <iostream>
 
 namespace app {
     namespace cfgsvc {
@@ -21,8 +23,7 @@ namespace app {
             return service;
         }
 
-        template <typename T>
-        T ConfigService::get(const std::function<T(const json&)>& func) {
+        template <typename T> T ConfigService::get(const std::function<T(const json&)>& func) {
             std::lock_guard<std::mutex> lock(mtx);
 
             try {
@@ -54,17 +55,17 @@ namespace app {
         void ConfigService::configure(const ServiceContext& new_ctx) {
             spdlog::info("configure, validate, and start the config service");
             auto& service = instance();
-        
+
             try {
                 service.load_config();
             } catch (const std::exception& e) {
                 spdlog::error("Error reading config file: {}", new_ctx.cfg_filename);
-                throw; // re-throw the original exception
+                throw;  // re-throw the original exception
             }
-        
+
             std::lock_guard<std::mutex> lock(service.mtx);
             service.ctx = new_ctx;  // Only assign if validation passed
-        
+
             service.start_worker();
         }
 
@@ -116,22 +117,38 @@ namespace app {
                 spdlog::error(msg);
                 throw ValidationException(msg);
             }
-        
+
             std::lock_guard<std::mutex> lock(mtx);
             app_config = std::move(data);  // Update app_config
             spdlog::info("updated app_config: {}", app_config.dump());
         }
 
-
         void ConfigService::worker_loop() {
+            using FileSys = std::filesystem;
+            FileSys::file_time_type last_read_time;
+
             while (running) {
+                // sleep first because the file was read/validated on configure
                 std::this_thread::sleep_for(ctx.sleep_duration);
+
                 try {
-                    spdlog::info("read the config file: {}", ctx.cfg_filename);
-                    load_config();
+                    if (!FileSys::exists(ctx.cfg_filename)) {
+                        spdlog::warn("Config file does not exist: {}", ctx.cfg_filename);
+                        continue;  // Skip this iteration if file is missing
+                    }
+
+                    FileSys::file_time_type current_mod_time
+                        = FileSys::last_write_time(ctx.cfg_filename);
+
+                    if (current_mod_time > last_read_time) {  // Only reload if modified
+                        spdlog::info("Config file updated, reloading: {}", ctx.cfg_filename);
+                        load_config();
+                        last_read_time = current_mod_time;  // Update last read time
+                    } else {
+                        spdlog::info("Config file unchanged, skipping reload.");
+                    }
                 } catch (const std::exception& e) {
-                    spdlog::error("config loop has been stopped: {} {}", ctx.cfg_filename,
-                                  e.what());
+                    spdlog::error("config loop error: {} {}", ctx.cfg_filename, e.what());
                 }
             }
 
@@ -140,9 +157,8 @@ namespace app {
 
         // Public interface implementations
 
-        template <typename T>
-        T get(const Func<T(const json&)>& func) {
-             return ConfigService::instance().get<json>(func);
+        template <typename T> T get(const Func<T(const json&)>& func) {
+            return ConfigService::instance().get<json>(func);
         }
 
         json web_config() { return ConfigService::instance().web_config(); }

@@ -48,5 +48,4 @@ namespace app {
         using ServiceException::ServiceException;
     };
 
-
 }  // namespace app
