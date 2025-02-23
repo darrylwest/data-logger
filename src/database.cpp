@@ -66,18 +66,27 @@ namespace app {
         }
 
         // Thread-safe keys method with optional filter; returns sorted vector
-        // TODO replace Str search with bool Func(const Str& key), and a custom sort func
-        Vec<Str> Database::keys(const Func<bool(const Str&)>& filter) const {
+        // returns a new Vec<Str> as a copy.
+        Vec<Str> Database::keys(const FilterFunc& filter) const {
             Vec<Str> key_list;
 
-            {
-                std::lock_guard<std::mutex> lock(mtx);
+            std::lock_guard<std::mutex> lock(mtx);
 
-                // extract keys into views::keys then filter
-                std::ranges::copy_if(data | std::views::keys, std::back_inserter(key_list), filter);
-            }
+            // extract keys into views::keys then filter
+            std::ranges::copy_if(data | std::views::keys, std::back_inserter(key_list), filter);
 
             return key_list;
+        }
+
+        SortedMap Database::search(const FilterFunc& filter) const {
+            SortedMap map;
+
+            std::lock_guard<std::mutex> lock(mtx);
+
+            std::ranges::copy_if(data, std::inserter(map, map.end()), 
+                [&](const auto& pair) { return filter(pair.first); });
+    
+            return map;
         }
 
         size_t Database::size() const { return data.size(); }

@@ -535,8 +535,8 @@ void test_read_current(Results& r) {
         const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
 
         const auto t1 = std::chrono::high_resolution_clock::now();
-        auto d= std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), d);
+        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), dur);
 
         for (const auto& ky : kylist) {
             spdlog::debug("key: {}", ky);
@@ -546,7 +546,35 @@ void test_read_current(Results& r) {
 
     {
         // map (transform) temperature strings to Vec<float> and keys to Vec<isodate>
+        const auto all_keys = [](const Str&) { return true; };
 
+        const auto t0 = std::chrono::high_resolution_clock::now();
+        const auto data = db.search(all_keys) ;
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+
+        r.equals(data.size() == db.size(), "data map element count should equal db.size");
+    }
+
+    {
+        // map (transform) temperature strings to Vec<float> and keys to Vec<isodate>
+        const auto start = "1740313800"; // .cottage.0"; 
+        const auto key_filter = [&](const Str& key) { 
+            return key > start;
+        };
+
+        const auto t0 = std::chrono::high_resolution_clock::now();
+        const auto data = db.search(key_filter) ;
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+
+        for (const auto& [k, v] : data) {
+            spdlog::info("{} {}", k, v);
+        }
+
+        r.equals(data.size() > 25, "data map element count should equal ");
     }
 
     spdlog::set_level(spdlog::level::off);

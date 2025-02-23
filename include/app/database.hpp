@@ -14,6 +14,8 @@
 
 namespace app {
     namespace database {
+        using FilterFunc = std::function<bool(const Str&)>;
+        using SortedMap = std::map<Str, Str>;
 
         struct ReadingType {
             enum class Value : short {
@@ -74,7 +76,7 @@ namespace app {
         void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
         // a lambda to pass to Database::keys() (the default)
-        static Func<bool(const Str&)> all_keys = [](const Str&) { return true; };
+        static FilterFunc all_keys = [](const Str&) { return true; };
 
         struct Database {
           private:
@@ -95,7 +97,9 @@ namespace app {
             }
 
             // Thread-safe keys method with optional filter function
-            Vec<Str> keys(const Func<bool(const Str&)>& filter = all_keys) const;
+            Vec<Str> keys(const FilterFunc& filter = all_keys) const;
+
+            SortedMap search(const FilterFunc& filter = all_keys) const;
 
             // return the current database size
             size_t size() const;
