@@ -649,8 +649,8 @@ Results test_cfgsvc() {
         const auto badvalue = cfgsvc::get_node(badkey);
         spdlog::info("badvalue: {}", badvalue.dump());
         r.fail("should throw exception");
-    } catch(std::exception& e) {
-        spdlog::info("bad key error: ", e.what());
+    } catch (const std::exception& e) {
+        spdlog::info("{}", e.what());
         r.pass();
     }
 

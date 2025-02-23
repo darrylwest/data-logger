@@ -28,12 +28,11 @@ namespace app {
             std::lock_guard<std::mutex> lock(mtx);
 
             try {
-                json j = instance().app_config.at(node_name);
-                return j;
+                return instance().app_config.at(node_name);
             } catch (const std::exception& e) {
-                const auto msg = fmt::format("key not found in config: {}", node_name);
+                const auto msg = fmt::format("key not found in config: {}: {}", node_name, e.what());
                 spdlog::error(msg);
-                throw KeyException(msg);
+                throw KeyException("key exception: " + msg);
             }
         }
 
@@ -173,9 +172,7 @@ namespace app {
         }
 
         // Public interface implementations
-        json get_node(const StrView& node_name) {
-            return ConfigService::instance().get_node(node_name);
-        }
+        json get_node(const StrView& node_name) { return ConfigService::instance().get_node(node_name); }
 
         json webservice() { return ConfigService::instance().webservice(); }
 
