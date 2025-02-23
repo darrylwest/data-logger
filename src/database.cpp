@@ -10,6 +10,8 @@
 #include <datetimelib/datetimelib.hpp>
 #include <iomanip>
 // #include <nlohmann/json.hpp>
+#include <algorithm>
+#include <ranges>
 
 /*
  * create a k/v compatible with future redis integration
@@ -63,15 +65,22 @@ namespace app {
             return "";  // Return an empty string if key is not found
         }
 
-        // Thread-safe keys method with optional filter
+        // Thread-safe keys method with optional filter; returns sorted vector
+        // TODO replace Str search with bool Func(const Str& key), and a custom sort func
         Vec<Str> Database::keys(const Str& search) const {
-            std::lock_guard<std::mutex> lock(mtx);
             Vec<Str> key_list;
-            for (const auto& [key, _] : data) {
-                if (search.empty() || key.find(search) != Str::npos) {
-                    key_list.push_back(key);
+
+            {
+                std::lock_guard<std::mutex> lock(mtx);
+                for (const auto& [key, _] : data) {
+                    if (search.empty() || key.find(search) != Str::npos) {
+                        key_list.push_back(key);
+                    }
                 }
             }
+
+            std::ranges::sort(key_list);
+
             return key_list;
         }
 

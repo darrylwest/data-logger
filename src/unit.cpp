@@ -5,6 +5,8 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+#include <algorithm>
+#include <ranges>
 #include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/client.hpp>
@@ -378,17 +380,18 @@ void test_create_key(Results& r) {
     using namespace app::database;
 
     time_t timestamp = 1739563051;
-    DbKey key = create_key(timestamp, "tmp.0");
+    const auto location = "shed.0";
+    DbKey key = create_key(timestamp, location);
 
     r.equals(key.timestamp == timestamp, "create key");
     // r.equals(key.type == ReadingType::Value::Temperature, "reading type");
     // r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
     // r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
 
-    r.equals(key.location == "tmp.0", "probe sensor key");
+    r.equals(key.location == location, "probe sensor key");
 
     spdlog::info("key: {}", key.to_string());
-    r.equals(key.to_string() == "1739563051.tmp.0", "date/probe sensor key");
+    r.equals(key.to_string() == "1739563051.shed.0", "date/probe sensor key");
 }
 
 // Unit test method to populate with random data
@@ -484,10 +487,10 @@ void test_append_key_value(Results& r) {
 }
 
 void test_read_current(Results& r) {
-    // spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::info);
 
     using namespace app::database;
-    const auto filename = "data/temperature/current.deck-west.test";
+    const auto filename = "data/temperature/current.cottage.test";
     Database db;
 
     // read the current file
@@ -497,7 +500,50 @@ void test_read_current(Results& r) {
     const auto keys = db.keys();
     r.equals(keys.size() == db.size(), "size matters");
 
-    // TODO grab some keys
+    // time the sort...
+    if (false) {
+        auto kylist = keys;
+        const auto t0 = std::chrono::high_resolution_clock::now();
+        std::ranges::sort(kylist);
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("sort of {} keys took {} µs", keys.size(), duration);
+    }
+
+    if (false) {   // select to get a range of keys (slow)
+        const auto start = "1740307200"; // .cottage.0"; 
+        Vec<Str> kylist;
+        const auto t0 = std::chrono::high_resolution_clock::now();
+        for (const auto& key : keys) {
+            if (key > start) {
+                spdlog::debug("{}", key);
+                kylist.push_back(key);
+            }
+        }
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("selection of {} keys from {} took {} µs", kylist.size(), keys.size(), duration);
+
+        spdlog::info("kylist size: {}", kylist.size());
+        r.equals(kylist.size() > 20, "kylist should be at least 20 element long");
+    }
+
+    {   // range drop
+        const auto t0 = std::chrono::high_resolution_clock::now();
+
+         // Ensure we don't drop more elements than exist
+        const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
+
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto d= std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), d);
+
+        for (const auto& ky : kylist) {
+            spdlog::debug("key: {}", ky);
+        }
+    }
+
+    spdlog::set_level(spdlog::level::off);
 }
 
 Results test_database() {
@@ -637,7 +683,6 @@ Results test_cfgsvc() {
     running = cfgsvc::is_running();
     r.equals(running, "should running now configured");
 
-    spdlog::set_level(spdlog::level::info);
     const json jvers = cfgsvc::get_node(CONFIG_VERSION);
     spdlog::info("jvers: {}", jvers.dump());
     const Str vers = jvers.template get<Str>();
