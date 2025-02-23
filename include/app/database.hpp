@@ -96,6 +96,9 @@ namespace app {
                 return data.erase(key) > 0;
             }
 
+            // return the last n number of k/v elements
+            SortedMap last(const size_t count = 1) const;
+
             // Thread-safe keys method with optional filter function
             Vec<Str> keys(const FilterFunc& filter = all_keys) const;
 

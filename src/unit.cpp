@@ -574,12 +574,24 @@ void test_read_current(Results& r) {
         spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
 
         for (const auto& [k, v] : data) {
-            spdlog::info("{} {}", k, v);
+            spdlog::debug("{} {}", k, v);
         }
 
         r.equals(data.size() == 25, "data map element count should equal ");
     }
 
+    {
+        const auto last = db.last();
+        r.equals(last.size() == 1, "last size should be a single element");
+
+        const auto t0 = std::chrono::high_resolution_clock::now();
+        const auto last25 = db.last(25);
+        const auto t1 = std::chrono::high_resolution_clock::now();
+        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
+        spdlog::info("return last 25 of {} k/v's from took {} µs", db.size(), dur);
+
+        r.equals(last25.size() == 25, "last 25 size should be 25 elements");
+    }
     spdlog::set_level(spdlog::level::off);
 }
 
