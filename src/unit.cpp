@@ -544,6 +544,11 @@ void test_read_current(Results& r) {
         r.equals(kylist.size() == 25, "should be exactly 25 keys");
     }
 
+    {
+        // map (transform) temperature strings to Vec<float> and keys to Vec<isodate>
+
+    }
+
     spdlog::set_level(spdlog::level::off);
 }
 

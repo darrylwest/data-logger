@@ -74,14 +74,8 @@ namespace app {
                 std::lock_guard<std::mutex> lock(mtx);
 
                 // extract keys into views::keys then filter
-                std::ranges::copy_if(
-                    data | std::views::keys,
-                    std::back_inserter(key_list),
-                    filter
-                );
+                std::ranges::copy_if(data | std::views::keys, std::back_inserter(key_list), filter);
             }
-
-            std::ranges::sort(key_list);
 
             return key_list;
         }
