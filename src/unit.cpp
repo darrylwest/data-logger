@@ -541,6 +541,7 @@ void test_read_current(Results& r) {
         for (const auto& ky : kylist) {
             spdlog::debug("key: {}", ky);
         }
+        r.equals(kylist.size() == 25, "should be exactly 25 keys");
     }
 
     spdlog::set_level(spdlog::level::off);
