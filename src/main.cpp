@@ -45,9 +45,16 @@ int main(int argc, char* argv[]) {
     auto config = app::config::parse_cli(argc, argv);
     spdlog::info("DataLogger Version: {}", vers.to_string());
 
+    // implement a global shutdown flag to be read by threads
+    // clear it here, the set it when run service exits
+    // or figure out how to use std::terminate with hooks
+
     // now start the web/http listener
     auto ok = app::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
+
+    // ok, not clean but it works;
+    std::terminate();
 
     return 0;
 }
