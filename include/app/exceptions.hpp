@@ -48,4 +48,9 @@ namespace app {
         using ServiceException::ServiceException;
     };
 
+    class KeyException : public ServiceException {
+      public:
+        using ServiceException::ServiceException;
+    };
+
 }  // namespace app

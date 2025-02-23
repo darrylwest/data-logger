@@ -23,12 +23,18 @@ namespace app {
             return service;
         }
 
-        // get any top-level node in the config definition; return empty object if not found
+        // get any top-level node in the config definition; throw if key is not found
         json ConfigService::get_node(const StrView& node_name) {
             std::lock_guard<std::mutex> lock(mtx);
 
-            json j = instance().app_config[node_name];
-            return j;
+            try {
+                json j = instance().app_config.at(node_name);
+                return j;
+            } catch (const std::exception& e) {
+                const auto msg = fmt::format("key not found in config: {}", node_name);
+                spdlog::error(msg);
+                throw KeyException(msg);
+            }
         }
 
         json ConfigService::webservice() {
@@ -167,7 +173,9 @@ namespace app {
         }
 
         // Public interface implementations
-        json get_node(const StrView& node_name) { return ConfigService::instance().get_node(node_name); }
+        json get_node(const StrView& node_name) {
+            return ConfigService::instance().get_node(node_name);
+        }
 
         json webservice() { return ConfigService::instance().webservice(); }
 

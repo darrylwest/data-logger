@@ -644,6 +644,16 @@ Results test_cfgsvc() {
     spdlog::info("vers: {}", vers);
     r.equals(vers.starts_with("0.6"), "the config version");
 
+    try {
+        const StrView badkey = "badkey";
+        const auto badvalue = cfgsvc::get_node(badkey);
+        spdlog::info("badvalue: {}", badvalue.dump());
+        r.fail("should throw exception");
+    } catch(std::exception& e) {
+        spdlog::info("bad key error: ", e.what());
+        r.pass();
+    }
+
     json jweb = cfgsvc::webservice();
     spdlog::info("jweb: {}", jweb.dump());
     r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");
