@@ -67,7 +67,7 @@ void run_server(std::atomic<bool>& running, const Config& config) {
 }
 
 void test_version_endpoint(Results& r, httplib::Client& cli) {
-    if (auto res = cli.Get("/version")) {
+    if (auto res = cli.Get("/api/version")) {
         r.equals(res->status == 200, "version endpoint status should be 200");
         fmt::print("\t{}Test passed: Version endpoint returned correct response{}\n", green, reset);
     } else {
@@ -95,7 +95,7 @@ void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
     nlohmann::json jdata = {{"key", key}, {"value", value}};
     auto body = jdata.dump();
 
-    if (auto res = cli.Put("/temperature", body, "application/json")) {
+    if (auto res = cli.Put("/api/temperature", body, "application/json")) {
         if (res->status == 200) {
             r.equals(res->status == 200, "put data should return 200");
             fmt::print("\t{}Test passed: Put temperature data.{}\n", green, reset);
@@ -112,8 +112,8 @@ void test_put_temperature_endpoint(Results& r, httplib::Client& cli) {
 }
 
 void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
-    if (auto res = cli.Delete("/shutdown")) {
-        r.equals(res->status == 200, "return status should be 200");
+    if (auto res = cli.Delete("/api/shutdown")) {
+        r.equals(res->status == 200, "shutdown return status should be 200");
         r.equals(res->body.find("down") != Str::npos, "the response should say down");
         fmt::print("\t{}Test passed: Shutdown endpoint had correct response.{}\n", green, reset);
     } else {
@@ -179,7 +179,7 @@ int main() {
 
     // Verify server has stopped
     // try to Shut down the server
-    if (auto res = cli.Delete("/shutdown")) {
+    if (auto res = cli.Delete("/api/shutdown")) {
         r.fail("server should be shutdown here");
         fmt::print("\t{}Test failed: Unable to reach shutdown endpoint.{}\n", red, reset);
     } else {

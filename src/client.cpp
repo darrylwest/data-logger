@@ -115,7 +115,7 @@ namespace app {
         bool put_temps(const Str& url, const app::database::DbKey& key, const temperature::Probe& probe) {
             spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC, probe.tempF);
             auto client = create_http_client(url);
-            const auto path = "/temperature";
+            const auto path = "/api/temperature";
 
             json jdata = {{"key", key.to_string()}, {"value", probe.tempC}};
             const auto body = jdata.dump();

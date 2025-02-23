@@ -80,7 +80,7 @@ do
             exit 0
         ;;
         shutdown)
-            curl -X DELETE "http://localhost:${port}/shutdown"
+            curl -X DELETE "http://localhost:${port}/api/shutdown"
             shift
         ;;
 

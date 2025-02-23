@@ -71,7 +71,7 @@ namespace app {
         // TODO add a status GET endpoint to report on the client nodes, probes, etc...
 
         // TODO add a PUT endpoint /api/temp to insert new temp reading
-        svr.Put("/temperature", [&](const Request &req, Response &res) mutable {
+        svr.Put("/api/temperature", [&](const Request &req, Response &res) mutable {
             try {
                 auto json_body = json::parse(req.body);
                 spdlog::info("json parsed: {}", json_body.dump());
@@ -106,13 +106,13 @@ namespace app {
         });
 
         // Shutdown hook
-        svr.Delete("/shutdown", [&](const Request &, Response &res) {
+        svr.Delete("/api/shutdown", [&](const Request &, Response &res) {
             res.set_content("ok, shutting down...", "text/plain");
             spdlog::warn("Shutting down...");
             svr.stop();
         });
 
-        svr.Get("/version", [](const Request &, Response &res) {
+        svr.Get("/api/version", [](const Request &, Response &res) {
             auto vers = app::Version().to_string();
             res.set_content(vers, "text/plain");
             spdlog::warn("Version Request: {}", vers);
