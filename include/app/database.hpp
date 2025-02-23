@@ -73,6 +73,9 @@ namespace app {
         // append the key/value to the file; throws FileException on error
         void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
+        // a lambda to pass to Database::keys() (the default)
+        static Func<bool(const Str&)> all_keys = [](const Str&) { return true; };
+
         struct Database {
           private:
             std::map<Str, Str> data;
@@ -91,8 +94,8 @@ namespace app {
                 return data.erase(key) > 0;
             }
 
-            // Thread-safe keys method with optional filter
-            Vec<Str> keys(const Str& search = "") const;
+            // Thread-safe keys method with optional filter function
+            Vec<Str> keys(const Func<bool(const Str&)>& filter = all_keys) const;
 
             // return the current database size
             size_t size() const;

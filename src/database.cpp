@@ -67,16 +67,18 @@ namespace app {
 
         // Thread-safe keys method with optional filter; returns sorted vector
         // TODO replace Str search with bool Func(const Str& key), and a custom sort func
-        Vec<Str> Database::keys(const Str& search) const {
+        Vec<Str> Database::keys(const Func<bool(const Str&)>& filter) const {
             Vec<Str> key_list;
 
             {
                 std::lock_guard<std::mutex> lock(mtx);
-                for (const auto& [key, _] : data) {
-                    if (search.empty() || key.find(search) != Str::npos) {
-                        key_list.push_back(key);
-                    }
-                }
+
+                // extract keys into views::keys then filter
+                std::ranges::copy_if(
+                    data | std::views::keys,
+                    std::back_inserter(key_list),
+                    filter
+                );
             }
 
             std::ranges::sort(key_list);
