@@ -32,7 +32,7 @@ Results test_version() {
     auto vers = app::Version();
     r.equals(vers.major == 0);
     r.equals(vers.minor == 6);
-    r.equals(vers.patch == 4);
+    r.equals(vers.patch == 5);
     r.equals(vers.build >= 180);
 
     return r;
@@ -538,8 +538,9 @@ void test_read_current(Results& r) {
         auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
         spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), dur);
 
-        for (const auto& ky : kylist) {
-            spdlog::debug("key: {}", ky);
+        for (const auto& key : kylist) {
+            const auto value = db.get(key);
+            spdlog::debug("key: {} {}", key, value);
         }
         r.equals(kylist.size() == 25, "should be exactly 25 keys");
     }
@@ -559,9 +560,11 @@ void test_read_current(Results& r) {
 
     {
         // map (transform) temperature strings to Vec<float> and keys to Vec<isodate>
-        const auto start = "1740313800"; // .cottage.0"; 
+        // TODO get the last element, track back 25 * 5 minutes; use that as a start
+        const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
+        const auto start = *kylist.begin();
         const auto key_filter = [&](const Str& key) { 
-            return key > start;
+            return key >= start;
         };
 
         const auto t0 = std::chrono::high_resolution_clock::now();
@@ -574,7 +577,7 @@ void test_read_current(Results& r) {
             spdlog::info("{} {}", k, v);
         }
 
-        r.equals(data.size() > 25, "data map element count should equal ");
+        r.equals(data.size() == 25, "data map element count should equal ");
     }
 
     spdlog::set_level(spdlog::level::off);

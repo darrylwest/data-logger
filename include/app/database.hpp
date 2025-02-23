@@ -99,6 +99,7 @@ namespace app {
             // Thread-safe keys method with optional filter function
             Vec<Str> keys(const FilterFunc& filter = all_keys) const;
 
+            // search with FilterFunc returns a SortedMap
             SortedMap search(const FilterFunc& filter = all_keys) const;
 
             // return the current database size
