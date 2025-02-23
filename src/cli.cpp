@@ -17,11 +17,11 @@ namespace app {
         using json = nlohmann::json;
 
         // initialize config with json file
-        Config webservice_from_json(const auto& wscfg) {
+        WebConfig webconfig_from_json(const auto& wscfg) {
             using namespace app::jsonkeys;
 
             spdlog::debug("wscfg: {}", wscfg.dump());
-            return Config{
+            return WebConfig{
                 .scheme = wscfg[SCHEME],
                 .host = wscfg[HOST],
                 .port = wscfg[PORT],
@@ -34,10 +34,10 @@ namespace app {
         /*
          * parse config and the command line;
          */
-        Config parse_cli(const int argc, char** argv) {
+        WebConfig parse_cli(const int argc, char** argv) {
             try {
                 auto webcfg = cfgsvc::webservice();
-                auto config = webservice_from_json(webcfg);
+                auto config = webconfig_from_json(webcfg);
 
                 // first, read the standard config file
 

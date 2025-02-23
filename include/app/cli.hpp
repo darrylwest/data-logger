@@ -14,7 +14,7 @@ namespace app {
         using json = nlohmann::json;
 
         // TODO move this defaults to config.json
-        struct Config {
+        struct WebConfig {
             Str scheme;
             Str host;
             int port;
@@ -23,7 +23,7 @@ namespace app {
             Str key_file;
             bool verbose = false;
 
-            friend std::ostream& operator<<(std::ostream& os, const Config v) {
+            friend std::ostream& operator<<(std::ostream& os, const WebConfig v) {
                 // better to use <format> but it breaks on linux and fmt broken on darwin
                 os << "sheme: " << v.scheme << ", "
                    << "host: " << v.host << ", "
@@ -44,7 +44,7 @@ namespace app {
         };
 
         // parse the CLI and return web config
-        Config parse_cli(const int argc, char* argv[]);
+        WebConfig parse_cli(const int argc, char* argv[]);
 
         // parse and return the config file from filename
         // json parse_config(const Str filename);
@@ -53,6 +53,6 @@ namespace app {
         // Str find_config_filename();
 
         // use config.json to set webservice defaults
-        Config webservice_from_json(const auto& wscfg);
+        WebConfig webconfig_from_json(const auto& wscfg);
     }  // namespace config
 }  // namespace app

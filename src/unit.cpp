@@ -279,7 +279,7 @@ void test_web_service_from_json(Results& r, const auto& cfg) {
     r.equals(cfg[HOST] == "0.0.0.0", "webservice host");
     r.equals(cfg[SCHEME] == "http", "webservice host scheme");
 
-    const auto config = app::config::webservice_from_json(cfg);
+    const auto config = app::config::webconfig_from_json(cfg);
     r.equals(config.scheme == "http", "config webservice host");
     r.equals(config.host == "0.0.0.0", "config webservice host");
     r.equals(config.port == 9090, "config webservice port");

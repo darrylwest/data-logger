@@ -51,7 +51,7 @@ namespace app {
 
                     // TODO get port from jcfg
                     const auto wcfg = cfgsvc::webservice();
-                    const auto cfg = app::config::webservice_from_json(wcfg);
+                    const auto cfg = app::config::webconfig_from_json(wcfg);
 
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
