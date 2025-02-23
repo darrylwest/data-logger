@@ -14,7 +14,7 @@ unsigned int unix_ts() {
 int main() {
     httplib::Client cli("http://localhost:9090");
 
-    auto key = fmt::format("{}.tmp.0", unix_ts());
+    auto key = fmt::format("{}.location.0", unix_ts());
     nlohmann::json json_data = {
         {"key", key },
         {"value", 10.1234}  // No need to convert manually
@@ -23,7 +23,7 @@ int main() {
     std::string body = json_data.dump();  // Convert JSON to string
     spdlog::info("put data: {}", body);
 
-    auto path = "/temperature";
+    auto path = "/api/temperature";
     auto res = cli.Put(path, body, "application/json");
 
     if (res) { 
