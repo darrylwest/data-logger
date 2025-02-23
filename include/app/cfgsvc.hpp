@@ -32,6 +32,8 @@ namespace app {
             // return true if the service is running, else false
             bool is_running();
 
+            json get_node(const StrView& node_name);
+
             json webservice();
             json clients();
             json client(const std::string& client_name);
@@ -56,6 +58,8 @@ namespace app {
         };
 
         // Public interface functions
+
+        json get_node(const StrView& node_name);
 
         json webservice();
         json clients();

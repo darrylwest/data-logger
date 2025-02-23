@@ -637,6 +637,13 @@ Results test_cfgsvc() {
     running = cfgsvc::is_running();
     r.equals(running, "should running now configured");
 
+    spdlog::set_level(spdlog::level::info);
+    const json jvers = cfgsvc::get_node(CONFIG_VERSION);
+    spdlog::info("jvers: {}", jvers.dump());
+    const Str vers = jvers.template get<Str>();
+    spdlog::info("vers: {}", vers);
+    r.equals(vers.starts_with("0.6"), "the config version");
+
     json jweb = cfgsvc::webservice();
     spdlog::info("jweb: {}", jweb.dump());
     r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");

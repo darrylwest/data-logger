@@ -23,6 +23,14 @@ namespace app {
             return service;
         }
 
+        // get any top-level node in the config definition; return empty object if not found
+        json ConfigService::get_node(const StrView& node_name) {
+            std::lock_guard<std::mutex> lock(mtx);
+
+            json j = instance().app_config[node_name];
+            return j;
+        }
+
         json ConfigService::webservice() {
             std::lock_guard<std::mutex> lock(mtx);
 
@@ -159,6 +167,7 @@ namespace app {
         }
 
         // Public interface implementations
+        json get_node(const StrView& node_name) { return ConfigService::instance().get_node(node_name); }
 
         json webservice() { return ConfigService::instance().webservice(); }
 
