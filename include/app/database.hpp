@@ -52,7 +52,7 @@ namespace app {
         };
 
         struct DbKey {
-            time_t timestamp;
+            std::time_t timestamp;
             Str location;
 
             friend std::ostream& operator<<(std::ostream& os, const DbKey v) {

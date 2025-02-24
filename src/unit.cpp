@@ -610,12 +610,31 @@ Results test_database() {
     return r;
 }
 
+void test_api_temps(Results& r) {
+    spdlog::set_level(spdlog::level::info);
+    using namespace app::database;
+    const auto filename = "data/temperature/current.cottage.test";
+    Database db;
+
+    // read the current file
+    db.read(filename, true);
+    const auto temps = db.last(25);
+    r.equals(temps.size() == 25, "get the last 25 readings");
+
+    for (const auto& [k, v] : temps) {
+        spdlog::info("{} {}", k, v);
+    }
+
+    spdlog::set_level(spdlog::level::off);
+}
+
 Results test_service() {
     using json = nlohmann::json;
 
     Results r = {.name = "Service Tests"};
 
     spdlog::set_level(spdlog::level::off);
+    test_api_temps(r);
 
     const Str end_date = "2025-02-06";
     const Vec<Str> labels = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
@@ -639,6 +658,7 @@ Results test_service() {
     return r;
 }
 
+// TODO remove this to replace with date formatting from std::put_time
 void test_truncate_to_minutes(Results& r) {
     Str isodate = "2025-02-05T07:49:22";
     Str truncated = datetimelib::truncate_to_minutes(isodate);
@@ -653,6 +673,7 @@ void test_truncate_to_minutes(Results& r) {
     r.equals(truncated == "2025-02-05T08:00", "top of hour minute");
 }
 
+// TODO remove this to replace with date formatting from std::put_time
 void test_parse_datetime_to_minutes(Results& r) {
     // spdlog::set_level(spdlog::level::info);
     Str datetime = "2025-02-04T11:40:23";
@@ -667,11 +688,9 @@ void test_parse_datetime_to_minutes(Results& r) {
 Results test_datetimelib() {
     Results r = {.name = "Datetime Tests"};
 
-    spdlog::set_level(spdlog::level::off);
-
     auto unix_ts = datetimelib::timestamp_seconds();
     spdlog::info("unix ts: {}", unix_ts);
-    unsigned int tsz = 1738888855;
+    std::time_t tsz = 1738888855;
     r.equals(unix_ts > tsz, "unix ts should be in the future");
 
     std::time_t tszl = 1738888855000;
@@ -693,6 +712,16 @@ Results test_datetimelib() {
 
     test_parse_datetime_to_minutes(r);
     test_truncate_to_minutes(r);
+
+
+    // format with std::put_time
+    iso_dt = datetimelib::ts_to_local_isodate(tsz, "%F");
+    spdlog::info("ts: {}, iso: {}", tsz, iso_dt);
+    r.equals(iso_dt == "2025-02-06", "just the date using formatting");
+
+    auto label = datetimelib::ts_to_local_isodate(tsz, "%R%p");
+    std::transform(label.end() - 2, label.end(), label.end() - 2, ::tolower);
+    spdlog::info("ts: {}, hh:mm am/pm: {}", tsz, label);
 
     spdlog::set_level(spdlog::level::off);
 

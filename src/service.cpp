@@ -52,8 +52,11 @@ namespace app {
         //
 
         svr.Get("/api/temps", [](const Request &, Response &res) {
-            // pull this from params
-            const Str end_date = "2025-02-06";
+
+            // const auto data = db.last(25);
+            // for (const auto )
+            const Str end_date = "2025-02-19"; // datetimelib::ts_to_local_isodate(data.at(24), "%T");
+            // spdlog::info()
 
             // TODO : create a function to generate these based on end date and interval.
             // this is set to 30 minutes; there are always 25 labels; move this to temperature?
