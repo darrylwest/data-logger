@@ -65,6 +65,7 @@ add_executable(data-logger
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
+    ${SRC_DIR}/web-handlers.cpp
     ${SRC_DIR}/main.cpp)
 
 add_executable(data-tasks
@@ -89,6 +90,7 @@ add_executable(datalogger-unit
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
+    ${SRC_DIR}/web-handlers.cpp
     ${SRC_DIR}/unit.cpp)
 
 add_executable(datalogger-integration 

@@ -158,6 +158,7 @@ namespace app {
         return svr.listen(config.host, config.port);
     }
 
+    // build a json response the the UI can work with
     Str create_temps_response(const Vec<Str> &labels, const Str end_date) {
         json j;
 

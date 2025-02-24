@@ -487,7 +487,7 @@ void test_append_key_value(Results& r) {
 }
 
 void test_read_current(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::err);
 
     using namespace app::database;
     const auto filename = "data/temperature/current.cottage.test";
@@ -612,6 +612,7 @@ Results test_database() {
 
 void test_api_temps(Results& r) {
     spdlog::set_level(spdlog::level::info);
+
     using namespace app::database;
     const auto filename = "data/temperature/current.cottage.test";
     Database db;
