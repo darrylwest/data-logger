@@ -582,7 +582,7 @@ void test_read_current(Results& r) {
 
     {
         const auto last = db.last();
-        r.equals(last.size() == 1, "last size should be a single element");
+        r.equals(last.size() == 1, "the default for last size should be a single element");
 
         const auto t0 = std::chrono::high_resolution_clock::now();
         const auto last25 = db.last(25);
