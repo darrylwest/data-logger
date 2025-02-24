@@ -674,13 +674,13 @@ Results test_datetimelib() {
     unsigned int tsz = 1738888855;
     r.equals(unix_ts > tsz, "unix ts should be in the future");
 
-    unsigned long tszl = 1738888855000;
+    std::time_t tszl = 1738888855000;
     auto mts = datetimelib::timestamp_millis();
     spdlog::info("millis ts: {}", mts);
     r.equals(mts > tszl, "millis ts should be in the future");
 
-    unsigned long tms = datetimelib::timestamp_millis();
-    unsigned long tss = datetimelib::timestamp_seconds();
+    std::time_t tms = datetimelib::timestamp_millis();
+    std::time_t tss = datetimelib::timestamp_seconds();
     spdlog::info("tms: {}, tss: {}", tms, tss);
     r.equals(tms / 10000 == tss / 10, "times should match");
 
