@@ -148,10 +148,7 @@ export default defineComponent({
         chartInstance.value.destroy()
       }
 
-      let all_data = []
-      for (let i = 0; i < datasets.value.length; i++) {
-        all_data = all_data.concat(datasets.value[i].data);
-      }
+      const all_data = datasets.value.flatMap(dataset => dataset.data);
 
       const miny = Math.floor(Math.min(...all_data) - 2)
       const maxy = Math.ceil(Math.max(...all_data) + 2)
