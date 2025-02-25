@@ -118,8 +118,8 @@ namespace app {
             ChartData chart = {
                 .end_date = end_date,
                 .start_date = start_date,
-                .labels = labels,
                 .temps = readings,
+                .labels = labels,
             };
 
             return chart;
