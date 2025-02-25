@@ -6,7 +6,6 @@
 #include <spdlog/spdlog.h>
 
 #include <algorithm>
-#include <ranges>
 #include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/client.hpp>
@@ -23,6 +22,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <random>
+#include <ranges>
 #include <vendor/testlib.hpp>
 
 using namespace rcstestlib;
@@ -511,8 +511,8 @@ void test_read_current(Results& r) {
         spdlog::info("sort of {} keys took {} µs", keys.size(), duration);
     }
 
-    if (false) {   // select to get a range of keys (slow)
-        const auto start = "1740307200"; // .cottage.0"; 
+    if (false) {                          // select to get a range of keys (slow)
+        const auto start = "1740307200";  // .cottage.0";
         Vec<Str> kylist;
         const auto t0 = std::chrono::high_resolution_clock::now();
         for (const auto& key : keys) {
@@ -529,10 +529,10 @@ void test_read_current(Results& r) {
         r.equals(kylist.size() > 20, "kylist should be at least 20 element long");
     }
 
-    {   // range drop
+    {  // range drop
         const auto t0 = std::chrono::high_resolution_clock::now();
 
-         // Ensure we don't drop more elements than exist
+        // Ensure we don't drop more elements than exist
         const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
 
         const auto t1 = std::chrono::high_resolution_clock::now();
@@ -551,7 +551,7 @@ void test_read_current(Results& r) {
         const auto all_keys = [](const Str&) { return true; };
 
         const auto t0 = std::chrono::high_resolution_clock::now();
-        const auto data = db.search(all_keys) ;
+        const auto data = db.search(all_keys);
         const auto t1 = std::chrono::high_resolution_clock::now();
         auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
         spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
@@ -564,12 +564,10 @@ void test_read_current(Results& r) {
         // TODO get the last element, track back 25 * 5 minutes; use that as a start
         const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
         const auto start = *kylist.begin();
-        const auto key_filter = [&](const Str& key) { 
-            return key >= start;
-        };
+        const auto key_filter = [&](const Str& key) { return key >= start; };
 
         const auto t0 = std::chrono::high_resolution_clock::now();
-        const auto data = db.search(key_filter) ;
+        const auto data = db.search(key_filter);
         const auto t1 = std::chrono::high_resolution_clock::now();
         auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
         spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
@@ -631,7 +629,6 @@ void test_api_temps(Results& r) {
 }
 
 void test_create_chart_data(Results& r) {
-
     using namespace app::database;
     using namespace app::webhandlers;
 
@@ -641,9 +638,8 @@ void test_create_chart_data(Results& r) {
 
     spdlog::set_level(spdlog::level::info);
     const std::time_t ts = 1740427800;
-    const Vec<Str> locations = { "cottage.0" };
-    const auto cfg = ChartConfig {
-        .start_ts = ts - 144,
+    const Vec<Str> locations = {"cottage.0"};
+    const auto cfg = ChartConfig{
         .end_ts = ts,
         .locations = locations,
         .data_points = 25,
@@ -656,12 +652,15 @@ void test_create_chart_data(Results& r) {
     r.equals(chart.start_date == "24-Feb-2025", "the start date should be feb");
 
     r.equals(chart.labels.size() == 25, "number of labels should be 25");
+    r.equals(chart.temps.size() == 2, "should be 2 locations for temp data (C and F)");
+    for (const auto& [k, v] : chart.temps) {
+        spdlog::info("loc: {} vec: {}", k, v.size());
+    }
 
     spdlog::set_level(spdlog::level::off);
 }
 
 Results test_webhandlers() {
-
     Results r = {.name = "Service Tests"};
 
     test_api_temps(r);
@@ -754,7 +753,6 @@ Results test_datetimelib() {
 
     test_parse_datetime_to_minutes(r);
     test_truncate_to_minutes(r);
-
 
     // format with std::put_time
     iso_dt = datetimelib::ts_to_local_isodate(tsz, "%F");

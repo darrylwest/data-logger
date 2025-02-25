@@ -22,9 +22,8 @@ namespace app {
     namespace webhandlers {
         using json = nlohmann::json;
         using app::database::Database;
-        
+
         struct ChartConfig {
-            std::time_t start_ts;
             std::time_t end_ts;
             Vec<Str> locations;
             int data_points = 25;
@@ -37,8 +36,8 @@ namespace app {
             Vec<Str> labels;
         };
 
-       // read the temperature database and create the chart data
-       ChartData create_chart_data(const Database& db, const std::time_t end_ts);
+        // read the temperature database and create the chart data
+        ChartData create_chart_data(const Database& db, const std::time_t end_ts);
 
-    }
-}
+    }  // namespace webhandlers
+}  // namespace app

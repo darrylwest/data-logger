@@ -2,13 +2,6 @@
 // 2025-02-24 23:40:03 dpw
 //
 
-#include <ranges>
-#include <vector>
-#include <map>
-#include <string>
-#include <ctime>
-#include <ranges>
-
 #include <spdlog/spdlog.h>
 #include <vendor/httplib.h>
 
@@ -19,11 +12,16 @@
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
-#include <cstdio>
-#include <iostream>
-#include <nlohmann/json.hpp>
 #include <app/webhandlers.hpp>
+#include <cstdio>
+#include <ctime>
 #include <datetimelib/datetimelib.hpp>
+#include <iostream>
+#include <map>
+#include <nlohmann/json.hpp>
+#include <ranges>
+#include <string>
+#include <vector>
 
 namespace app {
     namespace webhandlers {
@@ -41,41 +39,38 @@ namespace app {
         auto map_temps_data(const std::map<Str, Str>& temps) {
             Vec<TempsData> result;
             result.reserve(temps.size());
-        
-            auto view = temps
-                | std::views::transform([](const auto& pair) {
-                    const auto& [key, tempC] = pair;
-        
-                    // Find the first and last dots to extract all parts
-                    auto first_dot = key.find('.');
-                    if (first_dot == std::string::npos)
-                        throw std::runtime_error("bad format");
-        
-                    try {
-                        std::time_t ts = std::stoll(key.substr(0, first_dot));
-                        Str label = datetimelib::ts_to_local_isodate(ts, "%R %p");
-                        float float_tempC = std::stof(tempC);
-                        float tempF = float_tempC * 1.8 + 32;
-                        // Extract everything after the first dot for the location
-                        std::string location = key.substr(first_dot + 1);
-        
-                        return TempsData{ts, label, float_tempC, tempF, location};
-                    } catch (const std::exception&) {
-                        throw;
-                    }
-                })
-                | std::views::filter([](const TempsData& tv) {
-                    return tv.ts != 0; // Filter out invalid entries
-                });
-        
+
+            auto view = temps | std::views::transform([](const auto& pair) {
+                            const auto& [key, tempC] = pair;
+
+                            // Find the first and last dots to extract all parts
+                            auto first_dot = key.find('.');
+                            if (first_dot == std::string::npos) throw std::runtime_error("bad format");
+
+                            try {
+                                std::time_t ts = std::stoll(key.substr(0, first_dot));
+                                Str label = datetimelib::ts_to_local_isodate(ts, "%R %p");
+                                float float_tempC = std::stof(tempC);
+                                float tempF = float_tempC * 1.8 + 32;
+                                // Extract everything after the first dot for the location
+                                std::string location = key.substr(first_dot + 1);
+
+                                return TempsData{ts, label, float_tempC, tempF, location};
+                            } catch (const std::exception&) {
+                                throw;
+                            }
+                        })
+                        | std::views::filter([](const TempsData& tv) {
+                              return tv.ts != 0;  // Filter out invalid entries
+                          });
+
             std::ranges::copy(view, std::back_inserter(result));
             return result;
         }
 
         ChartData create_chart_data(const Database& db, const ChartConfig cfg) {
-
             const auto end_date = datetimelib::ts_to_local_isodate(cfg.end_ts, "%d-%b-%Y");
-            auto start_date = datetimelib::ts_to_local_isodate(cfg.start_ts, "%d-%b-%Y");
+            auto start_date = end_date;
             spdlog::info("create chart data for end date {}", end_date);
 
             // TODO fix this so it uses the end_ts; maybe use db.filter?
@@ -97,7 +92,7 @@ namespace app {
             Str location;
             Vec<float> tempsC;
             Vec<float> tempsF;
-            
+
             for (const auto& t : data) {
                 labels.push_back(t.label);
                 location = t.location;
@@ -105,16 +100,12 @@ namespace app {
                 tempsF.push_back(t.tempF);
             }
 
-            Str locC = location + "C";
-            Str locF = location + "F";
-            HashMap<Str, Vec<float>> readings = {
-                { locC, tempsC },
-                { locF, tempsF }
-            };
+            Str locC = location + ".C";
+            Str locF = location + ".F";
+            HashMap<Str, Vec<float>> readings = {{locC, tempsC}, {locF, tempsF}};
 
-            // transform the temp C with location = location + "-C"
+            // TODO modify the start date if it's on a different day than end date
 
-            // transform the temp F with location = location + "-F"
             ChartData chart = {
                 .start_date = start_date,
                 .end_date = end_date,
@@ -124,5 +115,5 @@ namespace app {
 
             return chart;
         }
-    }
-}
+    }  // namespace webhandlers
+}  // namespace app

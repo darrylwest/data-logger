@@ -21,8 +21,8 @@ namespace app {
         struct Task {
             const char* name;
             const std::time_t started_at;  // unix timestamp in seconds
-            int last_run;                   // unix timestamp in seconds
-            int period;                     // in seconds
+            int last_run;                  // unix timestamp in seconds
+            int period;                    // in seconds
             unsigned long run_count;
             Func<void()> runner;
 

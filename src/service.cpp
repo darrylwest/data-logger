@@ -12,6 +12,7 @@
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
+#include <app/webhandlers.hpp>
 #include <cstdio>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -19,6 +20,7 @@
 namespace app {
     using namespace httplib;
     using json = nlohmann::json;
+    // using handler = app::webhandlers;
 
     // Function to set up the server and apply configurations
     bool setup_service(Server &svr, const config::WebConfig &config, database::Database &db) {
@@ -52,10 +54,9 @@ namespace app {
         //
 
         svr.Get("/api/temps", [](const Request &, Response &res) {
-
             // const auto data = db.last(25);
             // for (const auto )
-            const Str end_date = "2025-02-19"; // datetimelib::ts_to_local_isodate(data.at(24), "%T");
+            const Str end_date = "2025-02-19";  // datetimelib::ts_to_local_isodate(data.at(24), "%T");
             // spdlog::info()
 
             // TODO : create a function to generate these based on end date and interval.

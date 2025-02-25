@@ -68,16 +68,16 @@ namespace app {
         SortedMap Database::last(const size_t count) const {
             SortedMap result;
             std::lock_guard<std::mutex> lock(mtx);
-        
-            if (count <= 0 || data.empty()) return result; // Handle edge cases
-        
+
+            if (count <= 0 || data.empty()) return result;  // Handle edge cases
+
             // Create a view that skips the first (size - count) elements
             auto last_view = data | std::views::drop(data.size() > count ? data.size() - count : 0);
-        
+
             // Copy selected elements into result (still sorted)
             std::ranges::copy(last_view, std::inserter(result, result.end()));
-        
-            return result; // Already in sorted order
+
+            return result;  // Already in sorted order
         }
 
         // Thread-safe keys method with optional filter; returns sorted vector
@@ -98,9 +98,9 @@ namespace app {
 
             std::lock_guard<std::mutex> lock(mtx);
 
-            std::ranges::copy_if(data, std::inserter(map, map.end()), 
-                [&](const auto& pair) { return filter(pair.first); });
-    
+            std::ranges::copy_if(data, std::inserter(map, map.end()),
+                                 [&](const auto& pair) { return filter(pair.first); });
+
             return map;
         }
 
