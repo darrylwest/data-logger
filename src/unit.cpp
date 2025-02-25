@@ -633,16 +633,23 @@ void test_api_temps(Results& r) {
 void test_create_chart_data(Results& r) {
 
     using namespace app::database;
-    // using handlers = app::webhandlers;
+    using namespace app::webhandlers;
 
     const auto filename = "data/temperature/current.cottage.test";
     Database db;
     db.read(filename, true);
 
     spdlog::set_level(spdlog::level::info);
-    const std::time_t end_ts = 1740427800;
+    const std::time_t ts = 1740427800;
+    const Vec<Str> locations = { "cottage.0" };
+    const auto cfg = ChartConfig {
+        .start_ts = ts - 144,
+        .end_ts = ts,
+        .locations = locations,
+        .data_points = 25,
+    };
 
-    const auto chart = app::webhandlers::create_chart_data(db, end_ts);
+    const auto chart = create_chart_data(db, cfg);
     spdlog::info("end date: {}", chart.end_date);
 
     r.equals(chart.end_date == "24-Feb-2025", "the end date should be feb");

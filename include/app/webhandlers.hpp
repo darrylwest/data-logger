@@ -23,6 +23,13 @@ namespace app {
         using json = nlohmann::json;
         using app::database::Database;
         
+        struct ChartConfig {
+            std::time_t start_ts;
+            std::time_t end_ts;
+            Vec<Str> locations;
+            int data_points = 25;
+        };
+
         struct ChartData {
             Str start_date;
             Str end_date;

@@ -72,9 +72,10 @@ namespace app {
             return result;
         }
 
-        ChartData create_chart_data(const Database& db, const std::time_t end_ts) {
+        ChartData create_chart_data(const Database& db, const ChartConfig cfg) {
 
-            auto end_date = datetimelib::ts_to_local_isodate(end_ts, "%d-%b-%Y");
+            const auto end_date = datetimelib::ts_to_local_isodate(cfg.end_ts, "%d-%b-%Y");
+            auto start_date = datetimelib::ts_to_local_isodate(cfg.start_ts, "%d-%b-%Y");
             spdlog::info("create chart data for end date {}", end_date);
 
             // TODO fix this so it uses the end_ts; maybe use db.filter?
@@ -90,7 +91,6 @@ namespace app {
             }
 
             // TODO pick the first entry to get the start date
-            auto start_date = end_date;
 
             // transform the labels
             Vec<Str> labels;
