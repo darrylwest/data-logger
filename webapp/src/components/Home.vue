@@ -148,10 +148,13 @@ export default defineComponent({
         chartInstance.value.destroy()
       }
 
-      let all_data = [ ...datasets.value[0].data, ...datasets.value[1].data ]
+      let all_data = []
+      for (let i = 0; i < datasets.value.length; i++) {
+        all_data = all_data.concat(datasets.value[i].data);
+      }
 
-      let miny = Math.floor(Math.min(...all_data) - 2)
-      let maxy = Math.ceil(Math.max(...all_data) + 2)
+      const miny = Math.floor(Math.min(...all_data) - 2)
+      const maxy = Math.ceil(Math.max(...all_data) + 2)
 
       chartInstance.value = new Chart(ctx, {
         type: 'line',
