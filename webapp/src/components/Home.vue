@@ -49,11 +49,12 @@
       <label class="flex flex-col">
         Interval (minutes):
         <select v-model="dataParams.interval" class="border p-2 rounded">
+          <option :value="5">5</option>
           <option :value="10">10</option>
           <option :value="15">15</option>
+          <option :value="20">20</option>
           <option :value="30">30</option>
           <option :value="60">60</option>
-          <option :value="120">120</option>
         </select>
       </label>
     </div>
@@ -100,7 +101,7 @@ export default defineComponent({
 
     // Auto-refresh states
     const isAutoRefreshEnabled = ref(true)
-    const autoRefreshInterval = ref(10) // Default: n minutes
+    const autoRefreshInterval = ref(5) // Default: n minutes
     let autoRefreshTimer = null
 
     // Function to fetch data
@@ -147,8 +148,10 @@ export default defineComponent({
         chartInstance.value.destroy()
       }
 
-      let miny = Math.floor(Math.min(...datasets.value[0].data) - 5)
-      let maxy = Math.ceil(Math.max(...datasets.value[0].data) + 5)
+      let all_data = [ ...datasets.value[0].data, ...datasets.value[1].data ]
+
+      let miny = Math.floor(Math.min(...all_data) - 2)
+      let maxy = Math.ceil(Math.max(...all_data) + 2)
 
       chartInstance.value = new Chart(ctx, {
         type: 'line',
