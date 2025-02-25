@@ -36,6 +36,18 @@ namespace app {
             Vec<Str> labels;
         };
 
+        // compatible with Chart.js
+        std::array<Str, 8> common_colors = {
+            "red",
+            "green",
+            "blue",
+            "yellow",
+            "black",
+            "cyan",
+            "magenta",
+            "orange"
+        };
+
         // read the temperature database and create the chart data
         ChartData create_chart_data(const Database& db, const ChartConfig& cfg);
 

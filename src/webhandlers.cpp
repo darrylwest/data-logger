@@ -68,6 +68,7 @@ namespace app {
             return result;
         }
 
+
         ChartData create_chart_data(const database::Database& db, const ChartConfig& cfg) {
             const auto end_date = datetimelib::ts_to_local_isodate(cfg.end_ts, "%d-%b-%Y");
             auto start_date = end_date;
@@ -125,30 +126,25 @@ namespace app {
             // Add labels
             j[LABELS] = chart.labels;
 
+            // Initialize an index to keep track of the current color
+            size_t index = 0;
+
+            // Create a lambda function to return the next color
+            auto next_color = [&]() {
+                // Get the current color
+                Str color = common_colors[index];
+                // Increment the index, wrapping around if necessary
+                index = (index + 1) % common_colors.size();
+                return color;
+            };
+
             Vec<json> data;
+            data.reserve(chart.temps.size());
 
-            // Sensor 1 data
-            const json sensor1
-                = {{"sensor_id", "sensor_1"},
-                   {"label", "cottage-south"},
-                   {"data", {49.5781,  50.2531,  50.8156,  50.7406,  51.5281,  51.8094,  51.9688,  51.9969,  52.3906,
-                             52.5312,  52.5219,  53.6375,  52.7,     52.82187, 52.82187, 49.71875, 47.75937, 46.46563,
-                             45.94062, 44.51563, 44.51563, 43.95313, 43.95313, 43.86875, 43.86875}},
-                   {"borderColor", "red"},
-                   {"fill", false}};
-
-            // Sensor 2 data
-            const json sensor2 = {
-                {"sensor_id", "sensor_2"},
-                {"label", "shed-west"},
-                {"data", {49.32900, 49.521116, 50.02136, 51.18444, 52.293116, 51.43887, 52.48388, 52.980233, 53.10152,
-                          52.00872, 52.635993, 54.16272, 52.29799, 53.557073, 51.98579, 48.73718, 48.225931, 45.70019,
-                          45.66436, 44.396992, 44.27969, 43.71025, 43.768674, 44.14863, 43.34765}},
-                {"borderColor", "blue"},
-                {"fill", false}};
-
-            data.push_back(sensor1);
-            data.push_back(sensor2);
+            for (const auto& [key, values] : chart.temps) {
+                const json sensor = {{"sensor_id", key}, {"label", key}, {"data", values}, {"borderColor", next_color()}, {"fill", false}};
+                data.push_back(sensor);
+            }
 
             // Add datasets and end_date
             j[DATASETS] = data;
