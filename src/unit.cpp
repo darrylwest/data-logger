@@ -612,7 +612,7 @@ Results test_database() {
 }
 
 void test_api_temps(Results& r) {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::err);
 
     using namespace app::database;
     const auto filename = "data/temperature/current.cottage.test";
@@ -631,7 +631,6 @@ void test_api_temps(Results& r) {
 }
 
 void test_create_chart_data(Results& r) {
-    spdlog::set_level(spdlog::level::info);
 
     using namespace app::database;
     // using handlers = app::webhandlers;
@@ -640,12 +639,14 @@ void test_create_chart_data(Results& r) {
     Database db;
     db.read(filename, true);
 
-    const std::time_t end_ts = datetimelib::timestamp_seconds();
+    spdlog::set_level(spdlog::level::info);
+    const std::time_t end_ts = 1740427800;
 
     const auto chart = app::webhandlers::create_chart_data(db, end_ts);
     spdlog::info("end date: {}", chart.end_date);
 
-    r.pass();
+    r.equals(chart.end_date == "24-Feb-2025", "the end date should be feb");
+    r.equals(chart.start_date == "24-Feb-2025", "the start date should be feb");
 
     spdlog::set_level(spdlog::level::off);
 }
