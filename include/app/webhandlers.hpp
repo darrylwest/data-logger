@@ -37,7 +37,7 @@ namespace app {
         };
 
         // read the temperature database and create the chart data
-        ChartData create_chart_data(const Database& db, const std::time_t end_ts);
+        ChartData create_chart_data(const Database& db, const ChartConfig& cfg);
 
     }  // namespace webhandlers
 }  // namespace app

@@ -16,6 +16,7 @@
 #include <cstdio>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <datetimelib/datetimelib.hpp>
 
 namespace app {
     using namespace httplib;
@@ -23,7 +24,7 @@ namespace app {
     // using handler = app::webhandlers;
 
     // Function to set up the server and apply configurations
-    bool setup_service(Server &svr, const config::WebConfig &config, database::Database &db) {
+    bool setup_service(Server &svr, const config::WebConfig &config, database::Database& db) {
         // open the server's database; read all current data
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
@@ -53,10 +54,25 @@ namespace app {
         // add new/custom routes here
         //
 
-        svr.Get("/api/temps", [](const Request &, Response &res) {
-            // const auto data = db.last(25);
+        svr.Get("/api/temps", [&](const Request &, Response &res) {
+            using namespace app::webhandlers;
+
+            // TODO pluck request start/end timestamps (or dates) ; default to now
+            // TODO use webhandlers
             // for (const auto )
-            const Str end_date = "2025-02-19";  // datetimelib::ts_to_local_isodate(data.at(24), "%T");
+
+            // const Vec<Str> locations = {"cottage.0"};
+            // const auto cfg = ChartConfig {
+            //     .end_ts = datetimelib::timestamp_seconds(),
+            //     .locations = locations,
+            //     .data_points = 25,
+            // };
+
+            // TODO pass in the data, not the database...
+            // const auto chart = create_chart_data(db); // , cfg);
+
+            // const Str end_date = chart.end_date;
+            const Str end_date = "24-Feb-2025";
             // spdlog::info()
 
             // TODO : create a function to generate these based on end date and interval.
@@ -76,6 +92,7 @@ namespace app {
 
         // TODO add a PUT endpoint /api/temp to insert new temp reading
         svr.Put("/api/temperature", [&](const Request &req, Response &res) mutable {
+            // TODO move to webhandlers
             try {
                 auto json_body = json::parse(req.body);
                 spdlog::info("json parsed: {}", json_body.dump());
@@ -113,6 +130,7 @@ namespace app {
         svr.Delete("/api/shutdown", [&](const Request &, Response &res) {
             res.set_content("ok, shutting down...", "text/plain");
             spdlog::warn("Shutting down...");
+            // TODO set the shutdown flag
             svr.stop();
         });
 

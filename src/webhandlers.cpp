@@ -26,7 +26,7 @@
 namespace app {
     namespace webhandlers {
         using json = nlohmann::json;
-        using app::database::Database;
+        using namespace app::database;
 
         struct TempsData {
             std::time_t ts;
@@ -68,7 +68,7 @@ namespace app {
             return result;
         }
 
-        ChartData create_chart_data(const Database& db, const ChartConfig cfg) {
+        ChartData create_chart_data(const database::Database& db, const ChartConfig& cfg) {
             const auto end_date = datetimelib::ts_to_local_isodate(cfg.end_ts, "%d-%b-%Y");
             auto start_date = end_date;
             spdlog::info("create chart data for end date {}", end_date);
