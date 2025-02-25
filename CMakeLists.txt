@@ -78,6 +78,7 @@ add_executable(data-tasks
     ${SRC_DIR}/taskrunner.cpp
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
+    ${SRC_DIR}/webhandlers.cpp
     ${SRC_DIR}/data-tasks.cpp)
 
 add_executable(datalogger-unit 
