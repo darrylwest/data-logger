@@ -648,6 +648,8 @@ void test_create_chart_data(Results& r) {
     r.equals(chart.end_date == "24-Feb-2025", "the end date should be feb");
     r.equals(chart.start_date == "24-Feb-2025", "the start date should be feb");
 
+    r.equals(chart.labels.size() == 25, "number of labels should be 25");
+
     spdlog::set_level(spdlog::level::off);
 }
 

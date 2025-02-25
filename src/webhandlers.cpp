@@ -73,11 +73,9 @@ namespace app {
         }
 
         ChartData create_chart_data(const Database& db, const std::time_t end_ts) {
-            ChartData chart;
 
-            chart.end_date = datetimelib::ts_to_local_isodate(end_ts, "%d-%b-%Y");
-            chart.start_date = chart.end_date;
-            spdlog::info("create chart data for {}", chart.end_date);
+            auto end_date = datetimelib::ts_to_local_isodate(end_ts, "%d-%b-%Y");
+            spdlog::info("create chart data for end date {}", end_date);
 
             // TODO fix this so it uses the end_ts; maybe use db.filter?
             const auto temps = db.last(25);
@@ -85,15 +83,44 @@ namespace app {
             spdlog::info("data size: {}", data.size());
 
             // create the labels
-            for (const auto& d : data) {
-                spdlog::info("{} {} {:.5f}°C {:.5f}°F {}", d.ts, d.label, d.tempC, d.tempF, d.location);
+            if (false) {
+                for (const auto& d : data) {
+                    spdlog::info("{} {} {:.2f}°C {:.2f}°F {}", d.ts, d.label, d.tempC, d.tempF, d.location);
+                }
             }
 
+            // TODO pick the first entry to get the start date
+            auto start_date = end_date;
+
             // transform the labels
+            Vec<Str> labels;
+            Str location;
+            Vec<float> tempsC;
+            Vec<float> tempsF;
+            
+            for (const auto& t : data) {
+                labels.push_back(t.label);
+                location = t.location;
+                tempsC.push_back(t.tempC);
+                tempsF.push_back(t.tempF);
+            }
+
+            Str locC = location + "C";
+            Str locF = location + "F";
+            HashMap<Str, Vec<float>> readings = {
+                { locC, tempsC },
+                { locF, tempsF }
+            };
 
             // transform the temp C with location = location + "-C"
 
             // transform the temp F with location = location + "-F"
+            ChartData chart = {
+                .end_date = end_date,
+                .start_date = start_date,
+                .labels = labels,
+                .temps = readings,
+            };
 
             return chart;
         }
