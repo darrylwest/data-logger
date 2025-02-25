@@ -50,7 +50,7 @@ namespace app {
 
                             try {
                                 std::time_t ts = std::stoll(key.substr(0, first_dot));
-                                Str label = datetimelib::ts_to_local_isodate(ts, "%R %p");
+                                Str label = datetimelib::ts_to_local_isodate(ts, "%R");
                                 float float_tempC = std::stof(tempC);
                                 float tempF = float_tempC * 1.8 + 32;
                                 // Extract everything after the first dot for the location
@@ -76,12 +76,12 @@ namespace app {
             spdlog::info("create chart data for end date {}", end_date);
 
             // TODO fix this so it uses the end_ts; maybe use db.filter?
-            const auto day_temps = db.last(150);
+            const auto day_temps = db.last(300);
 
             SortedMap temps;
             auto it = day_temps.begin();
             for (std::size_t i = 0; i < day_temps.size(); i++) {
-                if (i % 6 == 0) {
+                if (i % 12 == 0) {
                     temps.emplace(*it);
                 }
                 ++it;
