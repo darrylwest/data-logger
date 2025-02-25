@@ -50,7 +50,14 @@ namespace app {
 
                             try {
                                 std::time_t ts = std::stoll(key.substr(0, first_dot));
-                                Str label = datetimelib::ts_to_local_isodate(ts, "%R");
+                                Str label = datetimelib::ts_to_local_isodate(ts, "%I:%M%p");
+                                // 
+                                if (label.ends_with("AM")) {
+                                    label = label.substr(0,5) + "a";
+                                } else {
+                                    label = label.substr(0,5) + "p";
+                                }
+                                
                                 float float_tempC = std::stof(tempC);
                                 float tempF = float_tempC * 1.8 + 32;
                                 // Extract everything after the first dot for the location
@@ -81,7 +88,7 @@ namespace app {
             SortedMap temps;
             auto it = day_temps.begin();
             for (std::size_t i = 0; i < day_temps.size(); i++) {
-                if (i % 12 == 0) {
+                if (i % 12 == 11) {
                     temps.emplace(*it);
                 }
                 ++it;
@@ -115,9 +122,12 @@ namespace app {
 
             Str locC = location + ".C";
             Str locF = location + ".F";
-            HashMap<Str, Vec<float>> readings = {{locC, tempsC}, {locF, tempsF}};
-
-            // TODO modify the start date if it's on a different day than end date
+            HashMap<Str, Vec<float>> readings;
+            if (false) { 
+                readings = {{locC, tempsC}, {locF, tempsF}};
+            } else {
+                readings = {{locF, tempsF}};
+            }
 
             ChartData chart = {
                 .start_date = start_date,

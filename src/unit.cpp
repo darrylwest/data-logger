@@ -652,7 +652,7 @@ void test_create_chart_data(Results& r) {
     r.equals(chart.start_date == "24-Feb-2025", "the start date should be feb");
 
     r.equals(chart.labels.size() == 25, "number of labels should be 25");
-    r.equals(chart.temps.size() == 2, "should be 2 locations for temp data (C and F)");
+    r.equals(chart.temps.size() == 1, "should be 1 locations for temp data F");
     for (const auto& [k, v] : chart.temps) {
         spdlog::info("loc: {} vec: {}", k, v.size());
     }
