@@ -116,8 +116,8 @@ namespace app {
 
             // transform the temp F with location = location + "-F"
             ChartData chart = {
-                .end_date = end_date,
                 .start_date = start_date,
+                .end_date = end_date,
                 .temps = readings,
                 .labels = labels,
             };
