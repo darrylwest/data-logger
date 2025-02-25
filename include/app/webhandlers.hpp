@@ -20,6 +20,18 @@
 
 namespace app {
     namespace webhandlers {
+        using json = nlohmann::json;
+        using app::database::Database;
+        
+        struct ChartData {
+            Str start_date;
+            Str end_date;
+            HashMap<Str, Vec<float>> temps;
+            Vec<Str> labels;
+        };
+
+       // read the temperature database and create the chart data
+       ChartData create_chart_data(const Database& db, const std::time_t end_ts);
 
     }
 }

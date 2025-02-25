@@ -17,6 +17,7 @@
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
+#include <app/webhandlers.hpp>
 #include <datetimelib/datetimelib.hpp>
 #include <fstream>
 #include <iostream>
@@ -629,13 +630,43 @@ void test_api_temps(Results& r) {
     spdlog::set_level(spdlog::level::off);
 }
 
+void test_create_chart_data(Results& r) {
+    spdlog::set_level(spdlog::level::info);
+
+    using namespace app::database;
+    // using handlers = app::webhandlers;
+
+    const auto filename = "data/temperature/current.cottage.test";
+    Database db;
+    db.read(filename, true);
+
+    const std::time_t end_ts = datetimelib::timestamp_seconds();
+
+    const auto chart = app::webhandlers::create_chart_data(db, end_ts);
+    spdlog::info("end date: {}", chart.end_date);
+
+    r.pass();
+
+    spdlog::set_level(spdlog::level::off);
+}
+
+Results test_webhandlers() {
+
+    Results r = {.name = "Service Tests"};
+
+    test_api_temps(r);
+    test_create_chart_data(r);
+
+    spdlog::set_level(spdlog::level::off);
+    return r;
+}
+
 Results test_service() {
     using json = nlohmann::json;
 
     Results r = {.name = "Service Tests"};
 
     spdlog::set_level(spdlog::level::off);
-    test_api_temps(r);
 
     const Str end_date = "2025-02-06";
     const Vec<Str> labels = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
@@ -827,6 +858,7 @@ int main() {
     run_test(test_cli);
     run_test(test_exceptions);
     run_test(test_database);
+    run_test(test_webhandlers);
     run_test(test_service);
     run_test(test_datetimelib);
 
