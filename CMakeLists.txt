@@ -54,8 +54,8 @@ set(DEPENDENT_LIBRARIES
     datetimelib_static
 )
 
-# Create executables
-add_executable(data-logger
+# Common sources for executables
+set(COMMON_SOURCES
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/cfgsvc.cpp
     ${SRC_DIR}/logging.cpp
@@ -66,32 +66,19 @@ add_executable(data-logger
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/webhandlers.cpp
+)
+
+# Create executables
+add_executable(data-logger
+    ${COMMON_SOURCES}
     ${SRC_DIR}/main.cpp)
 
 add_executable(data-tasks
-    ${SRC_DIR}/cli.cpp
-    ${SRC_DIR}/cfgsvc.cpp
-    ${SRC_DIR}/logging.cpp
-    ${SRC_DIR}/temperature.cpp
-    ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/nodes.cpp
-    ${SRC_DIR}/taskrunner.cpp
-    ${SRC_DIR}/client.cpp
-    ${SRC_DIR}/service.cpp
-    ${SRC_DIR}/webhandlers.cpp
+    ${COMMON_SOURCES}
     ${SRC_DIR}/data-tasks.cpp)
 
 add_executable(datalogger-unit 
-    ${SRC_DIR}/cli.cpp
-    ${SRC_DIR}/cfgsvc.cpp
-    ${SRC_DIR}/logging.cpp
-    ${SRC_DIR}/temperature.cpp
-    ${SRC_DIR}/database.cpp
-    ${SRC_DIR}/nodes.cpp
-    ${SRC_DIR}/taskrunner.cpp
-    ${SRC_DIR}/client.cpp
-    ${SRC_DIR}/service.cpp
-    ${SRC_DIR}/webhandlers.cpp
+    ${COMMON_SOURCES}
     ${SRC_DIR}/unit.cpp)
 
 add_executable(datalogger-integration 
