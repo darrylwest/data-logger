@@ -19,6 +19,4 @@ namespace app {
     // Function to run the server
     bool run_service(const config::WebConfig &config);
 
-    Str create_temps_response(const Vec<Str> &labels, const Str end_date);
-
 }  // namespace app

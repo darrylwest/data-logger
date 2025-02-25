@@ -39,5 +39,8 @@ namespace app {
         // read the temperature database and create the chart data
         ChartData create_chart_data(const Database& db, const ChartConfig& cfg);
 
+        // create and return the json chart data
+        Str create_temps_response(const ChartData& chart);
+
     }  // namespace webhandlers
 }  // namespace app

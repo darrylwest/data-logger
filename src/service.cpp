@@ -14,9 +14,9 @@
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
 #include <cstdio>
+#include <datetimelib/datetimelib.hpp>
 #include <iostream>
 #include <nlohmann/json.hpp>
-#include <datetimelib/datetimelib.hpp>
 
 namespace app {
     using namespace httplib;
@@ -24,7 +24,7 @@ namespace app {
     // using handler = app::webhandlers;
 
     // Function to set up the server and apply configurations
-    bool setup_service(Server &svr, const config::WebConfig &config, database::Database& db) {
+    bool setup_service(Server &svr, const config::WebConfig &config, database::Database &db) {
         // open the server's database; read all current data
         if (svr.is_valid() == 0) {
             spdlog::error("ERROR! Server is not valid. Check the cert/key files? Exiting...");
@@ -57,13 +57,11 @@ namespace app {
         svr.Get("/api/temps", [&](const Request &, Response &res) {
             using namespace app::webhandlers;
 
-            // TODO pluck request start/end timestamps (or dates) ; default to now
-            // TODO use webhandlers
-            // for (const auto )
+            // TODO read request start/end timestamps (or dates) ; default to now
 
             const Vec<Str> locations = {"cottage.0"};
-            const auto cfg = ChartConfig {
-                .end_ts = datetimelib::timestamp_seconds(),
+            const auto cfg = ChartConfig{
+                .end_ts = 1740496800,  // datetimelib::timestamp_seconds(),
                 .locations = locations,
                 .data_points = 25,
             };
@@ -71,19 +69,7 @@ namespace app {
             // TODO pass in the data, not the database...
             const auto chart = create_chart_data(db, cfg);
 
-            const Str end_date = chart.end_date;
-            // const Str end_date = "24-Feb-2025";
-            // spdlog::info()
-
-            // TODO : create a function to generate these based on end date and interval.
-            // this is set to 30 minutes; there are always 25 labels; move this to temperature?
-            const Vec<Str> labels = {"09:30", "10:00", "10:30", "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
-                                     "14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30", "18:00",
-                                     "18:30", "19:00", "19:30", "20:00", "20:30", "21:00", "21:30"};
-
-            const auto json_text = create_temps_response(labels, end_date);
-            // parse the interval and end_date
-            // spdlog::info("info content: {}", data);
+            const auto json_text = create_temps_response(chart);
 
             res.set_content(json_text, "application/json");
         });
@@ -177,43 +163,4 @@ namespace app {
         return svr.listen(config.host, config.port);
     }
 
-    // build a json response the the UI can work with
-    Str create_temps_response(const Vec<Str> &labels, const Str end_date) {
-        json j;
-
-        using namespace app::jsonkeys;
-
-        // Add labels
-        j[LABELS] = labels;
-
-        // Sensor 1 data
-        const json sensor1
-            = {{"sensor_id", "sensor_1"},
-               {"label", "cottage-south"},
-               {"data", {49.5781,  50.2531,  50.8156,  50.7406,  51.5281,  51.8094,  51.9688,  51.9969,  52.3906,
-                         52.5312,  52.5219,  53.6375,  52.7,     52.82187, 52.82187, 49.71875, 47.75937, 46.46563,
-                         45.94062, 44.51563, 44.51563, 43.95313, 43.95313, 43.86875, 43.86875}},
-               {"borderColor", "red"},
-               {"fill", false}};
-
-        // Sensor 2 data
-        const json sensor2
-            = {{"sensor_id", "sensor_2"},
-               {"label", "shed-west"},
-               {"data", {49.32900, 49.521116, 50.02136, 51.18444, 52.293116, 51.43887, 52.48388, 52.980233, 53.10152,
-                         52.00872, 52.635993, 54.16272, 52.29799, 53.557073, 51.98579, 48.73718, 48.225931, 45.70019,
-                         45.66436, 44.396992, 44.27969, 43.71025, 43.768674, 44.14863, 43.34765}},
-               {"borderColor", "blue"},
-               {"fill", false}};
-
-        Vec<json> data;
-        data.push_back(sensor1);
-        data.push_back(sensor2);
-
-        // Add datasets and end_date
-        j[DATASETS] = data;
-        j[END_DATE] = end_date;
-
-        return j.dump();
-    };
 }  // namespace app
