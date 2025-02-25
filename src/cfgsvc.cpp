@@ -161,7 +161,7 @@ namespace app {
                         load_config();
                         last_read_time = current_mod_time;  // Update last read time
                     } else {
-                        spdlog::info("Config file unchanged, skipping reload.");
+                        spdlog::debug("Config file unchanged, skipping reload.");
                     }
                 } catch (const std::exception& e) {
                     spdlog::error("config loop error: {} {}", ctx.cfg_filename, e.what());
