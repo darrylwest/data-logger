@@ -37,7 +37,7 @@ namespace app {
         };
 
         // compatible with Chart.js
-        std::array<Str, 8> common_colors = {
+        constexpr std::array<Str, 8> common_colors = {
             "red",
             "green",
             "blue",

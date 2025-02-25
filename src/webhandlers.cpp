@@ -20,6 +20,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include <ranges>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -75,7 +76,18 @@ namespace app {
             spdlog::info("create chart data for end date {}", end_date);
 
             // TODO fix this so it uses the end_ts; maybe use db.filter?
-            const auto temps = db.last(25);
+            const auto day_temps = db.last(150);
+
+            SortedMap temps;
+            auto it = day_temps.begin();
+            for (std::size_t i = 0; i < day_temps.size(); i++) {
+                if (i % 6 == 0) {
+                    temps.emplace(*it);
+                }
+                ++it;
+            }
+            spdlog::info("temps: {}", temps.size());
+
             const auto data = map_temps_data(temps);
             spdlog::info("data size: {}", data.size());
 
