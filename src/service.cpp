@@ -61,18 +61,18 @@ namespace app {
             // TODO use webhandlers
             // for (const auto )
 
-            // const Vec<Str> locations = {"cottage.0"};
-            // const auto cfg = ChartConfig {
-            //     .end_ts = datetimelib::timestamp_seconds(),
-            //     .locations = locations,
-            //     .data_points = 25,
-            // };
+            const Vec<Str> locations = {"cottage.0"};
+            const auto cfg = ChartConfig {
+                .end_ts = datetimelib::timestamp_seconds(),
+                .locations = locations,
+                .data_points = 25,
+            };
 
             // TODO pass in the data, not the database...
-            // const auto chart = create_chart_data(db); // , cfg);
+            const auto chart = create_chart_data(db, cfg);
 
-            // const Str end_date = chart.end_date;
-            const Str end_date = "24-Feb-2025";
+            const Str end_date = chart.end_date;
+            // const Str end_date = "24-Feb-2025";
             // spdlog::info()
 
             // TODO : create a function to generate these based on end date and interval.
