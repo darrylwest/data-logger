@@ -34,7 +34,7 @@ namespace app {
                 throw app::FileException(msg);
             }
 
-            file << key << "=" << value << std::endl;
+            file << key << "=" << value << '\n';
             file.close();
         }
 

@@ -20,7 +20,6 @@
 #include <map>
 #include <nlohmann/json.hpp>
 #include <ranges>
-#include <iostream>
 #include <string>
 #include <vector>
 
@@ -51,13 +50,13 @@ namespace app {
                             try {
                                 std::time_t ts = std::stoll(key.substr(0, first_dot));
                                 Str label = datetimelib::ts_to_local_isodate(ts, "%I:%M%p");
-                                // 
+                                //
                                 if (label.ends_with("AM")) {
-                                    label = label.substr(0,5) + "a";
+                                    label = label.substr(0, 5) + "a";
                                 } else {
-                                    label = label.substr(0,5) + "p";
+                                    label = label.substr(0, 5) + "p";
                                 }
-                                
+
                                 float float_tempC = std::stof(tempC);
                                 float tempF = float_tempC * 1.8 + 32;
                                 // Extract everything after the first dot for the location
@@ -75,7 +74,6 @@ namespace app {
             std::ranges::copy(view, std::back_inserter(result));
             return result;
         }
-
 
         ChartData create_chart_data(const database::Database& db, const ChartConfig& cfg) {
             const auto end_date = datetimelib::ts_to_local_isodate(cfg.end_ts, "%d-%b-%Y");
@@ -123,7 +121,7 @@ namespace app {
             Str locC = location + ".C";
             Str locF = location + ".F";
             HashMap<Str, Vec<float>> readings;
-            if (false) { 
+            if (false) {
                 readings = {{locC, tempsC}, {locF, tempsF}};
             } else {
                 readings = {{locF, tempsF}};
@@ -164,7 +162,11 @@ namespace app {
             data.reserve(chart.temps.size());
 
             for (const auto& [key, values] : chart.temps) {
-                const json sensor = {{"sensor_id", key}, {"label", key}, {"data", values}, {"borderColor", next_color()}, {"fill", false}};
+                const json sensor = {{"sensor_id", key},
+                                     {"label", key},
+                                     {"data", values},
+                                     {"borderColor", next_color()},
+                                     {"fill", false}};
                 data.push_back(sensor);
             }
 
