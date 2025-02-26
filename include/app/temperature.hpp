@@ -6,7 +6,6 @@
 #pragma once
 
 #include <app/types.hpp>
-#include <iostream>
 #include <nlohmann/json.hpp>
 #include <sstream>
 
