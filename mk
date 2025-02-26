@@ -17,7 +17,7 @@ do
     case $1 in
         init)
             /bin/rm -fr build/
-            [ -d dep-cache ] || mkdir dep-cache
+            # [ -d dep-cache ] || mkdir dep-cache
             (mkdir build && cd build && cmake ..)
 
             shift
