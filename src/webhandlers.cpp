@@ -3,20 +3,14 @@
 //
 
 #include <spdlog/spdlog.h>
-#include <vendor/httplib.h>
 
-#include <app/cli.hpp>
 #include <app/database.hpp>
 #include <app/jsonkeys.hpp>
-#include <app/logging.hpp>
-#include <app/service.hpp>
+#include <app/temperature.hpp>
 #include <app/types.hpp>
-#include <app/version.hpp>
 #include <app/webhandlers.hpp>
-#include <cstdio>
 #include <ctime>
 #include <datetimelib/datetimelib.hpp>
-#include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <ranges>
@@ -58,7 +52,8 @@ namespace app {
                                 }
 
                                 const float float_tempC = std::stof(tempC);
-                                const float tempF = 1.8 * float_tempC + 32;
+                                const float tempF = temperature::celsius_to_fahrenheit(float_tempC);
+
                                 // Extract everything after the first dot for the location
                                 const std::string location = key.substr(first_dot + 1);
 

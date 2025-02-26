@@ -14,6 +14,9 @@ namespace app {
     namespace temperature {
         using json = nlohmann::json;
 
+        constexpr float C2F_RATIO = 1.8f;
+        constexpr float C2F_OFFSET = 32.0f;
+
         struct Probe {
             int sensor;
             Str location;
@@ -49,6 +52,10 @@ namespace app {
 
         // parse the json reading response
         TemperatureData parse_reading(const Str& json_text);
+
+
+        // convert celsius to fahrenheit
+        float celsius_to_fahrenheit(const float celsius);
 
     }  // namespace temperature
 }  // namespace app

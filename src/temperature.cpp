@@ -74,5 +74,9 @@ namespace app {
             return std::nullopt;
         }
 
+        // convert celsius to fahrenheit
+        float celsius_to_fahrenheit(const float celsius) {
+            return C2F_RATIO * celsius + C2F_OFFSET;
+        }
     }  // namespace temperature
 }  // namespace app
