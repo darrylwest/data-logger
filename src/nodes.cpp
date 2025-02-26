@@ -110,7 +110,7 @@ namespace app {
 
                     const auto status = app::client::fetch_status(node);
 
-                    const auto isodate = datetimelib::local_iso_datetime(status.timestamp);
+                    const auto isodate = datetimelib::ts_to_local_isodate(status.timestamp);
                     spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp, status.uptime,
                                  status.access_count, status.errors);
 
