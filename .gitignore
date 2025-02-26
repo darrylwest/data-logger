@@ -1,8 +1,11 @@
 ai-prompts
 /build*
+/cmake-build-*
 /.vscode
+/.idea
 /cpm_modules
 /dep-cache
 .DS_Store
 .ssh/*.pem
 logs/*.log
+datetimelib
