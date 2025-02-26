@@ -158,12 +158,6 @@ export default defineComponent({
         data: { labels: labels.value, datasets: datasets.value },
         options: {
           responsive: true,
-          scales: {
-            y: {
-              min: miny,
-              max: maxy,
-            },
-          },
           plugins: {
             legend: {
               position: 'top',
