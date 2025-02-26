@@ -4,16 +4,12 @@
 import axios from 'axios'
 
 // alamo 10.0.1.237
-// const API_URL = "http://10.0.1.237:2090/api/temperature"; // Replace with actual API URL
-// const API_URL = 'http://10.0.1.192:3000/api/temps' // Replace with actual API URL
-// const API_URL = 'http://localhost:9090/api/temps' // Replace with actual API URL
-// const API_URL = 'http://10.0.1.192:9999/api/temps' // Replace with actual API URL
-const API_URL = 'http://10.0.1.237:9090/api/temps' // Replace with actual API URL
+const TEMPS_API_URL = import.meta.env.VITE_API_URL;
 
 export default {
   async fetchTemperatureData(end_date, interval) {
     try {
-      const response = await axios.get(API_URL, {
+      const response = await axios.get(TEMPS_API_URL, {
         params: { end_date, interval },
       })
 
