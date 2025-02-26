@@ -684,33 +684,6 @@ Results test_service() {
     return r;
 }
 
-// TODO remove this to replace with date formatting from std::put_time
-void test_truncate_to_minutes(Results& r) {
-    Str isodate = "2025-02-05T07:49:22";
-    Str truncated = datetimelib::truncate_to_minutes(isodate);
-    r.equals(truncated == "2025-02-05T07:45", "45 minute");
-
-    isodate = "2025-02-05T07:51:22";
-    truncated = datetimelib::truncate_to_minutes(isodate);
-    r.equals(truncated == "2025-02-05T07:50", "50 minute");
-
-    isodate = "2025-02-05T08:01:22";
-    truncated = datetimelib::truncate_to_minutes(isodate);
-    r.equals(truncated == "2025-02-05T08:00", "top of hour minute");
-}
-
-// TODO remove this to replace with date formatting from std::put_time
-void test_parse_datetime_to_minutes(Results& r) {
-    // spdlog::set_level(spdlog::level::info);
-    Str datetime = "2025-02-04T11:40:23";
-
-    auto dt = datetimelib::parse_datetime_to_minutes(datetime);
-    r.equals(dt == "202502041140", "parse date time for key");
-    r.equals(dt.size() == 12, "dt size");
-
-    spdlog::set_level(spdlog::level::off);
-}
-
 Results test_datetimelib() {
     Results r = {.name = "Datetime Tests"};
 
@@ -735,9 +708,6 @@ Results test_datetimelib() {
     auto iso_dt = datetimelib::local_iso_datetime(tsz);
     spdlog::info("local iso: {}", iso_dt);
     r.equals(iso_dt == "2025-02-06T16:40:55-0800", "iso time");
-
-    test_parse_datetime_to_minutes(r);
-    test_truncate_to_minutes(r);
 
     // format with std::put_time
     iso_dt = datetimelib::ts_to_local_isodate(tsz, "%F");

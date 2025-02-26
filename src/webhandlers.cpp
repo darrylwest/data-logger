@@ -48,7 +48,7 @@ namespace app {
                             if (first_dot == std::string::npos) throw std::runtime_error("bad format");
 
                             try {
-                                std::time_t ts = std::stoll(key.substr(0, first_dot));
+                                const std::time_t ts = std::stoll(key.substr(0, first_dot));
                                 Str label = datetimelib::ts_to_local_isodate(ts, "%I:%M%p");
                                 //
                                 if (label.ends_with("AM")) {
@@ -57,10 +57,10 @@ namespace app {
                                     label = label.substr(0, 5) + "p";
                                 }
 
-                                float float_tempC = std::stof(tempC);
-                                float tempF = float_tempC * 1.8 + 32;
+                                const float float_tempC = std::stof(tempC);
+                                const float tempF = 1.8 * float_tempC + 32;
                                 // Extract everything after the first dot for the location
-                                std::string location = key.substr(first_dot + 1);
+                                const std::string location = key.substr(first_dot + 1);
 
                                 return TempsData{ts, label, float_tempC, tempF, location};
                             } catch (const std::exception&) {
