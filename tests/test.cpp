@@ -7,7 +7,7 @@ TEST_CASE("Version test", "[version]") {
 
     auto vers = app::Version();
 
-    INFO("Version: " << vers.to_string());
+    INFO("Checking Application Version: " << vers.to_string());
 
     REQUIRE(vers.major == 0);
     REQUIRE(vers.minor == 6);
