@@ -85,9 +85,9 @@ add_executable(datalogger-integration
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/integration.cpp)
 
-if(APPLE)
-    link_libraries(c++fs)
-endif()
+# if(APPLE)
+ #    link_libraries(c++fs)
+# endif()
 
 # Configure all targets
 foreach(target data-logger data-tasks datalogger-unit datalogger-integration)
@@ -109,7 +109,7 @@ if(NOT APPLE)
 endif()
 
 # Add stdc++fs to DEPENDENT_LIBRARIES
-list(APPEND DEPENDENT_LIBRARIES stdc++fs)
+# list(APPEND DEPENDENT_LIBRARIES stdc++fs)
 
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
@@ -134,5 +134,7 @@ FetchContent_Declare(
     GIT_TAG v3.4.0
 )
 
-add_executable(tests test.cpp)
+FetchContent_MakeAvailable(Catch2)
+
+add_executable(tests tests/test.cpp)
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
