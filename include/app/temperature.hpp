@@ -27,7 +27,7 @@ namespace app::temperature {
         time_t reading_at;
         Vec<Probe> probes;
 
-        friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
+        friend std::ostream& operator<<(std::ostream& os, const TemperatureData& v) {
             os << "reading_at: " << v.reading_at;
 
             for (const auto& probe : v.probes)
@@ -37,7 +37,7 @@ namespace app::temperature {
             return os;
         }
 
-        Str to_string() const {
+        [[nodiscard]] Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 
@@ -52,6 +52,6 @@ namespace app::temperature {
     TemperatureData parse_reading(const Str& json_text);
 
     // convert celsius to fahrenheit
-    float celsius_to_fahrenheit(const float celsius);
+    float celsius_to_fahrenheit(float celsius);
 
 }  // namespace app::temperature
