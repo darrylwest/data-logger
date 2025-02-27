@@ -16,43 +16,39 @@ while [[ $# -gt 0 ]]
 do
     case $1 in
         init)
-            /bin/rm -fr build/
-            # [ -d dep-cache ] || mkdir dep-cache
-            (mkdir build && cd build && cmake ..)
+            mv build/_deps/ . && /bin/rm -fr build && mkdir build && mv _deps/ build/ 
+            (cd build && cmake ..)
 
             shift
         ;;
         build)
             clear
 
-            # remove any old unit test
-            # /bin/rm -f $root/build/unit
-
-            # cmake --build build/ 
-            (cd build && time make -j4 || exit 1)
+            (cd build && time make -j8 || exit 1)
 
             shift
         ;;
         unit)
-            (cd build && make -j4)
+            (cd build && make -j8)
             $root/build/datalogger-unit
+            $root/build/tests
 
             shift
         ;;
         test)
-            (cd build && make -j4)
+            (cd build && make -j8)
             $root/build/datalogger-integration
 
             shift
         ;;
         run)
-            (cd build && make -j4)
+            (cd build && make -j8)
             $root/build/$project
 
             shift
         ;;
         run-data)
-            (cd build && make -j4)
+            (cd build && make -j8)
             export TESTING=true
             $root/build/data-tasks
 
