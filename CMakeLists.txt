@@ -140,8 +140,8 @@ file(GLOB TEST_SOURCES
         "tests/*.cpp"
         "tests/*.h"
 )
-add_executable(tests ${TEST_SOURCES})
+add_executable(unit_tests ${TEST_SOURCES})
 
 # Specify include directories for tests
-target_include_directories(tests PRIVATE src include include/app)
-target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
+target_include_directories(unit_tests PRIVATE src include include/app)
+target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain)
