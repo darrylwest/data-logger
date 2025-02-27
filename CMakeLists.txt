@@ -126,3 +126,13 @@ endif()
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
 set_target_properties(data-tasks PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
 
+Include(FetchContent)
+
+FetchContent_Declare(
+    Catch2
+    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+    GIT_TAG v3.4.0
+)
+
+add_executable(tests test.cpp)
+target_link_libraries(tests PRIVATE Catch2::Catch2WithMain)
