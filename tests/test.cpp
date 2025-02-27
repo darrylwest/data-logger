@@ -6,7 +6,7 @@
 
 TEST_CASE("Version test", "[version]") {
 
-    const auto vers = app::Version();
+    constexpr auto vers = app::Version();
 
     INFO("Checking Application Version: " << vers.to_string());
 
