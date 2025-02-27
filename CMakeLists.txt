@@ -85,10 +85,6 @@ add_executable(datalogger-integration
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/integration.cpp)
 
-# if(APPLE)
- #    link_libraries(c++fs)
-# endif()
-
 # Configure all targets
 foreach(target data-logger data-tasks datalogger-unit datalogger-integration)
     target_include_directories(${target} PRIVATE 
@@ -137,11 +133,14 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 file(GLOB TEST_SOURCES
-        "tests/*.cpp"
-        "tests/*.h"
+    "tests/*.cpp"
+    "tests/*.hpp"
 )
 add_executable(unit_tests ${TEST_SOURCES})
 
 # Specify include directories for tests
 target_include_directories(unit_tests PRIVATE src include include/app)
-target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(unit_tests PRIVATE
+        Catch2::Catch2WithMain
+        ${DEPENDENT_LIBRARIES}
+)

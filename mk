@@ -16,7 +16,11 @@ while [[ $# -gt 0 ]]
 do
     case $1 in
         init)
-            mv build/_deps/ . && /bin/rm -fr build && mkdir build && mv _deps/ build/ 
+            [ -d build/_deps/ ] && {
+                mv build/_deps/ . && /bin/rm -fr build && mkdir build && mv _deps/ build/ 
+            } || {
+                mkdir build
+            }
             (cd build && cmake ..)
 
             shift

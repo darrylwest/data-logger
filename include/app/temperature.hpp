@@ -9,52 +9,51 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 
-namespace app {
-    namespace temperature {
-        using json = nlohmann::json;
 
-        constexpr float C2F_RATIO = 1.8f;
-        constexpr float C2F_OFFSET = 32.0f;
+namespace app::temperature {
+    using json = nlohmann::json;
 
-        struct Probe {
-            int sensor;
-            Str location;
-            bool enabled;
-            float tempC;
-            float tempF;
-        };
+    constexpr float C2F_RATIO = 1.8f;
+    constexpr float C2F_OFFSET = 32.0f;
 
-        struct TemperatureData {
-            time_t reading_at;
-            Vec<Probe> probes;
+    struct Probe {
+        int sensor;
+        Str location;
+        bool enabled;
+        float tempC;
+        float tempF;
+    };
 
-            friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
-                os << "reading_at: " << v.reading_at;
+    struct TemperatureData {
+        time_t reading_at;
+        Vec<Probe> probes;
 
-                for (const auto& probe : v.probes)
-                    os << ", sensor: " << probe.sensor << ", location: " << probe.location
-                       << ", enabled: " << probe.enabled << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
+        friend std::ostream& operator<<(std::ostream& os, const TemperatureData v) {
+            os << "reading_at: " << v.reading_at;
 
-                return os;
-            }
+            for (const auto& probe : v.probes)
+                os << ", sensor: " << probe.sensor << ", location: " << probe.location
+                   << ", enabled: " << probe.enabled << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
 
-            Str to_string() const {
-                std::ostringstream oss;
-                oss << *this;
+            return os;
+        }
 
-                return oss.str();
-            }
-        };
+        Str to_string() const {
+            std::ostringstream oss;
+            oss << *this;
 
-        // parse the probe node of json config
-        Optional<Probe> parse_probe(const json& data, const Str& location);
+            return oss.str();
+        }
+    };
 
-        // parse the json reading response
-        TemperatureData parse_reading(const Str& json_text);
+    // parse the probe node of json config
+    Optional<Probe> parse_probe(const json& data, const Str& location);
+
+    // parse the json reading response
+    TemperatureData parse_reading(const Str& json_text);
 
 
-        // convert celsius to fahrenheit
-        float celsius_to_fahrenheit(const float celsius);
+    // convert celsius to fahrenheit
+    float celsius_to_fahrenheit(const float celsius);
 
-    }  // namespace temperature
-}  // namespace app
+} // namespace app::temperature
