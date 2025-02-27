@@ -132,11 +132,15 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(Catch2)
 
-file(GLOB TEST_SOURCES
-    "tests/*.cpp"
-    "tests/*.hpp"
+# currently unused
+file(GLOB TEST_SOURCES "tests/*.cpp" "tests/*.hpp")
+
+add_executable(unit_tests
+        "tests/database_tests.cpp"
+        "tests/taskrunner_tests.cpp"
+        "tests/temperature_tests.cpp"
+        "tests/main_unit.cpp"
 )
-add_executable(unit_tests ${TEST_SOURCES})
 
 # Specify include directories for tests
 target_include_directories(unit_tests PRIVATE src include include/app)
