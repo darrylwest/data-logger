@@ -9,7 +9,6 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 
-
 namespace app::temperature {
     using json = nlohmann::json;
 
@@ -32,8 +31,8 @@ namespace app::temperature {
             os << "reading_at: " << v.reading_at;
 
             for (const auto& probe : v.probes)
-                os << ", sensor: " << probe.sensor << ", location: " << probe.location
-                   << ", enabled: " << probe.enabled << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
+                os << ", sensor: " << probe.sensor << ", location: " << probe.location << ", enabled: " << probe.enabled
+                   << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
 
             return os;
         }
@@ -52,8 +51,7 @@ namespace app::temperature {
     // parse the json reading response
     TemperatureData parse_reading(const Str& json_text);
 
-
     // convert celsius to fahrenheit
     float celsius_to_fahrenheit(const float celsius);
 
-} // namespace app::temperature
+}  // namespace app::temperature
