@@ -12,112 +12,110 @@
 #include <mutex>
 #include <sstream>
 
-namespace app {
-    namespace database {
-        using FilterFunc = std::function<bool(const Str&)>;
-        using SortedMap = std::map<Str, Str>;
+namespace app::database {
+    using FilterFunc = std::function<bool(const Str&)>;
+    using SortedMap = std::map<Str, Str>;
 
-        struct ReadingType {
-            enum class Value : short {
-                Status,
-                Temperature,
-                Light,
-                Humidity,
-                Proximity,
-                Distance,
-            };
-
-            // return the label
-            static Str to_label(Value v) {
-                switch (v) {
-                    case Value::Status:
-                        return "status";
-                    case Value::Temperature:
-                        return "temperature";
-                    case Value::Light:
-                        return "light";
-                    case Value::Humidity:
-                        return "humidity";
-                    case Value::Proximity:
-                        return "proximity";
-                    case Value::Distance:
-                        return "distance";
-                    default:
-                        return "unknown";
-                }
-            }
-
-            // return the numeric value
-            static short to_value(Value reading_type) { return static_cast<short>(reading_type); }
+    struct ReadingType {
+        enum class Value : short {
+            Status,
+            Temperature,
+            Light,
+            Humidity,
+            Proximity,
+            Distance,
         };
 
-        struct DbKey {
-            std::time_t timestamp;
-            Str location;
-
-            friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
-                os << v.timestamp << "." << v.location;
-
-                return os;
+        // return the label
+        static Str to_label(Value v) {
+            switch (v) {
+                case Value::Status:
+                    return "status";
+                case Value::Temperature:
+                    return "temperature";
+                case Value::Light:
+                    return "light";
+                case Value::Humidity:
+                    return "humidity";
+                case Value::Proximity:
+                    return "proximity";
+                case Value::Distance:
+                    return "distance";
+                default:
+                    return "unknown";
             }
+        }
 
-            Str to_string() const {
-                std::ostringstream oss;
-                oss << *this;
+        // return the numeric value
+        static short to_value(Value reading_type) { return static_cast<short>(reading_type); }
+    };
 
-                return oss.str();
-            }
-        };
+    struct DbKey {
+        std::time_t timestamp;
+        Str location;
 
-        // create the db key from unix timestamp and the probe location
-        DbKey create_key(const time_t& timestamp, const Str& location);
+        friend std::ostream& operator<<(std::ostream& os, const DbKey v) {
+            os << v.timestamp << "." << v.location;
 
-        // append the key/value to the file; throws FileException on error
-        void append_key_value(const Str& filename, const DbKey& key, const Str& value);
+            return os;
+        }
 
-        // a lambda to pass to Database::keys() (the default)
-        static FilterFunc all_keys = [](const Str&) { return true; };
+        Str to_string() const {
+            std::ostringstream oss;
+            oss << *this;
 
-        struct Database {
-          private:
-            std::map<Str, Str> data;
-            mutable std::mutex mtx;  // mutable to allow locking in const methods
+            return oss.str();
+        }
+    };
 
-          public:
-            // Thread-safe set method
-            bool set(const Str& key, const Str& value);
+    // create the db key from unix timestamp and the probe location
+    DbKey create_key(const time_t& timestamp, const Str& location);
 
-            // Thread-safe get method
-            Str get(const Str& key) const;
+    // append the key/value to the file; throws FileException on error
+    void append_key_value(const Str& filename, const DbKey& key, const Str& value);
 
-            // Thread-safe remove method
-            bool remove(const Str& key) {
-                std::lock_guard<std::mutex> lock(mtx);
-                return data.erase(key) > 0;
-            }
+    // a lambda to pass to Database::keys() (the default)
+    static FilterFunc all_keys = [](const Str&) { return true; };
 
-            // return the last n number of k/v elements
-            SortedMap last(const size_t count = 1) const;
+    struct Database {
+      private:
+        std::map<Str, Str> data;
+        mutable std::mutex mtx;  // mutable to allow locking in const methods
 
-            // Thread-safe keys method with optional filter function
-            Vec<Str> keys(const FilterFunc& filter = all_keys) const;
+      public:
+        // Thread-safe set method
+        bool set(const Str& key, const Str& value);
 
-            // search with FilterFunc returns a SortedMap
-            SortedMap search(const FilterFunc& filter = all_keys) const;
+        // Thread-safe get method
+        Str get(const Str& key) const;
 
-            // return the current database size
-            size_t size() const;
+        // Thread-safe remove method
+        bool remove(const Str& key) {
+            std::lock_guard<std::mutex> lock(mtx);
+            return data.erase(key) > 0;
+        }
 
-            // read from file to populate database; optionally clear the db first
-            bool read(const Str& filename, const bool clear = false);
+        // return the last n number of k/v elements
+        SortedMap last(const size_t count = 1) const;
 
-            // save the current database to filename
-            bool save(const Str& filename) const;
+        // Thread-safe keys method with optional filter function
+        Vec<Str> keys(const FilterFunc& filter = all_keys) const;
 
-        };  // struct database
+        // search with FilterFunc returns a SortedMap
+        SortedMap search(const FilterFunc& filter = all_keys) const;
 
-        // open and readin database files (reference config)
-        bool read_current_data(Database& db);
+        // return the current database size
+        size_t size() const;
 
-    }  // namespace database
-}  // namespace app
+        // read from file to populate database; optionally clear the db first
+        bool read(const Str& filename, const bool clear = false);
+
+        // save the current database to filename
+        bool save(const Str& filename) const;
+
+    };  // struct database
+
+    // open and readin database files (reference config)
+    bool read_current_data(Database& db);
+
+}  // namespace app::database
