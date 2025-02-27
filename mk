@@ -31,7 +31,7 @@ do
         unit)
             (cd build && make -j8)
             $root/build/datalogger-unit
-            $root/build/tests
+            $root/build/unit_tests
 
             shift
         ;;
