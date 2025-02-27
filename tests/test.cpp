@@ -2,10 +2,11 @@
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 
 #include <app/version.hpp>
+#include <app/types.hpp>
 
 TEST_CASE("Version test", "[version]") {
 
-    auto vers = app::Version();
+    const auto vers = app::Version();
 
     INFO("Checking Application Version: " << vers.to_string());
 
@@ -13,4 +14,8 @@ TEST_CASE("Version test", "[version]") {
     REQUIRE(vers.minor == 6);
     REQUIRE(vers.patch == 5);
     REQUIRE(vers.build > 200);
+
+    const Str ss = vers.to_string();
+
+    REQUIRE(ss.starts_with("0.6."));
 }

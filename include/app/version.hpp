@@ -8,7 +8,6 @@
 #pragma once
 
 #include <app/types.hpp>
-#include <iostream>
 #include <sstream>
 
 namespace app {
