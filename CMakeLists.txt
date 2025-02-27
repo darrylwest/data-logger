@@ -133,13 +133,20 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Catch2)
 
 # currently unused
-file(GLOB TEST_SOURCES "tests/*.cpp" "tests/*.hpp")
+# file(GLOB TEST_SOURCES "tests/*.cpp" "tests/*.hpp")
 
 add_executable(unit_tests
-        "tests/database_tests.cpp"
-        "tests/taskrunner_tests.cpp"
-        "tests/temperature_tests.cpp"
-        "tests/main_unit.cpp"
+        tests/database_tests.cpp
+        tests/taskrunner_tests.cpp
+        tests/temperature_tests.cpp
+        tests/main_unit.cpp
+        tests/cfgsvc_tests.cpp
+        tests/client_tests.cpp
+        tests/cli_tests.cpp
+        tests/exceptions_tests.cpp
+        tests/webhandlers_tests.cpp
+        tests/service_tests.cpp
+        tests/datetimelib_tests.cpp
 )
 
 # Specify include directories for tests
