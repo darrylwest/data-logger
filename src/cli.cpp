@@ -16,17 +16,17 @@ namespace app::config {
     using json = nlohmann::json;
 
     // initialize config with json file
-    WebConfig webconfig_from_json(const auto& wscfg) {
+    WebConfig webconfig_from_json(const json& ws_cfg) {
         using namespace app::jsonkeys;
 
-        spdlog::debug("wscfg: {}", wscfg.dump());
+        spdlog::debug("ws_cfg: {}", ws_cfg.dump());
         return WebConfig{
-            .scheme = wscfg[SCHEME],
-            .host = wscfg[HOST],
-            .port = wscfg[PORT],
-            .www = wscfg[WWW],
-            .cert_file = wscfg[TLS_CERT_FILE],
-            .key_file = wscfg[TLS_KEY_FILE],
+            .scheme = ws_cfg[SCHEME],
+            .host = ws_cfg[HOST],
+            .port = ws_cfg[PORT],
+            .www = ws_cfg[WWW],
+            .cert_file = ws_cfg[TLS_CERT_FILE],
+            .key_file = ws_cfg[TLS_KEY_FILE],
         };
     }
 

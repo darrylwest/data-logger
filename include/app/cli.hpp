@@ -22,7 +22,7 @@ namespace app::config {
         Str key_file;
         bool verbose = false;
 
-        friend std::ostream& operator<<(std::ostream& os, const WebConfig v) {
+        friend std::ostream& operator<<(std::ostream& os, const WebConfig& v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
             os << "sheme: " << v.scheme << ", "
                << "host: " << v.host << ", "
@@ -43,7 +43,7 @@ namespace app::config {
     };
 
     // parse the CLI and return web config
-    WebConfig parse_cli(const int argc, char* argv[]);
+    WebConfig parse_cli(int argc, char* argv[]);
 
     // parse and return the config file from filename
     // json parse_config(const Str filename);
@@ -52,5 +52,5 @@ namespace app::config {
     // Str find_config_filename();
 
     // use config.json to set webservice defaults
-    WebConfig webconfig_from_json(const auto& wscfg);
+    WebConfig webconfig_from_json(const json& wscfg);
 }  // namespace app::config
