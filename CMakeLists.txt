@@ -178,9 +178,22 @@ endif()
 
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
-# Unity build settings
-set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
-set_target_properties(data-tasks PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
+# Apply unity build settings consistently
+set(UNITY_BUILD_TARGETS
+        data-logger
+        data-tasks
+        datalogger-unit
+        datalogger-integration
+        unit_tests
+)
+
+foreach(target ${UNITY_BUILD_TARGETS})
+    set_target_properties(${target} PROPERTIES
+            UNITY_BUILD ON
+            UNITY_BUILD_MAX_FILE_COUNT 4
+            UNITY_BUILD_BATCH_SIZE 0
+    )
+endforeach()
 
 # Enable testing
 enable_testing()
