@@ -19,9 +19,15 @@ void start_config_service() {
 struct MainTestSetup {
     MainTestSetup() {
         using namespace colors;
-        fmt::print("{}Catch2 Unit Test:{}\n", cyan, reset);
+        fmt::print("{}Catch2 unit test setup.{}\n", green, reset);
         spdlog::set_level(spdlog::level::off); // Setup: Disable logging
         start_config_service();
+    }
+
+    ~MainTestSetup() {
+        // using namespace colors;
+        // fmt::print("{}unit test tear-down.{}\n", green, reset);
+        // app::cfgsvc::stop_worker();
     }
 };
 
