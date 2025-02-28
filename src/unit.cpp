@@ -260,26 +260,6 @@ Results test_client() {
     return r;
 }
 
-void test_web_service_from_json(Results& r, const auto& cfg) {
-    spdlog::set_level(spdlog::level::info);
-
-    using namespace app::jsonkeys;
-
-    r.equals(cfg[HOST] == "0.0.0.0", "webservice host");
-    r.equals(cfg[SCHEME] == "http", "webservice host scheme");
-
-    const auto config = app::config::webconfig_from_json(cfg);
-    r.equals(config.scheme == "http", "config webservice host");
-    r.equals(config.host == "0.0.0.0", "config webservice host");
-    r.equals(config.port == 9090, "config webservice port");
-    r.equals(config.www == "html", "config webservice www folder");
-    r.equals(config.cert_file == ".ssh/cert.pem", "config webservice tls cert");
-    r.equals(config.key_file == ".ssh/key.pem", "config webservice tls key file");
-    r.equals(config.verbose == false, "config verbose");
-
-    spdlog::set_level(spdlog::level::off);
-}
-
 bool bad_db_file(const Str& filename) {
     if (filename == "bad_db_file") {
         throw app::DatabaseException("Db Failed to connect to file: " + filename);

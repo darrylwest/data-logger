@@ -88,6 +88,10 @@ namespace app::config {
                 config.key_file = result["key"].as<Str>();
             }
 
+            if (result.count("verbose")) {
+                config.verbose = true;
+            }
+
             return config;
         } catch (const std::exception& exp) {
             spdlog::error("error parsing cli options: {}", exp.what());

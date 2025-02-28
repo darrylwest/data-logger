@@ -7,7 +7,24 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
+void start_config_service() {
+    using namespace app::cfgsvc;
+
+    // start the config service
+    ServiceContext ctx;
+    ctx.sleep_duration = std::chrono::seconds(1);
+    configure(ctx);
+}
+
+struct MainTestSetup {
+    MainTestSetup() {
+        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
+        start_config_service();
+    }
+};
+
 TEST_CASE("Version test", "[version]") {
+    start_config_service();
     using namespace colors;
     spdlog::set_level(spdlog::level::off); // Setup: Disable logging
 
