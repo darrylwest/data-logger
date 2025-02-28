@@ -8,7 +8,17 @@
 #include <spdlog/spdlog.h>
 #include <nlohmann/json.hpp>
 
-TEST_CASE("Config Service Tests", "[cfgsv]") {
+struct CfgSrvTestSetup {
+    CfgSrvTestSetup() {
+        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
+    }
+
+    ~CfgSrvTestSetup() {
+        spdlog::set_level(spdlog::level::off); // Teardown: Restore logging
+    }
+};
+
+TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv]") {
     spdlog::info("Config Service Tests");
     const Str ss = R"({"name":"config service"})";
     const auto j = nlohmann::json::parse(ss);
