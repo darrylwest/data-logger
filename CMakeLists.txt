@@ -23,6 +23,16 @@ if(NOT CMAKE_BUILD_TYPE IN_LIST ALLOWED_BUILD_TYPES)
     message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
 endif()
 
+# Useful for IDE integration and static analysis tools
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+# Add version checks for system requirements
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++23" COMPILER_SUPPORTS_CXX20)
+if(NOT COMPILER_SUPPORTS_CXX20)
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++23 support.")
+endif()
+
 # Define source and include directories
 set(SRC_DIR "src")
 set(INCLUDE_DIR "include")
@@ -137,6 +147,13 @@ add_executable(unit_tests
         tests/datetimelib_tests.cpp
 )
 
+# Add optimization flags based on build type
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    target_compile_options(data-logger PRIVATE -O3)
+    target_compile_options(data-tasks PRIVATE -O3)
+    # Add other optimization flags as needed
+endif()
+
 # Specify include directories for tests
 # target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
 # target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
@@ -164,4 +181,10 @@ message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}
 # Unity build settings
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
 set_target_properties(data-tasks PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
+
+# Enable testing
+enable_testing()
+
+# Add tests
+add_test(NAME unit_tests COMMAND unit_tests)
 
