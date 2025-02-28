@@ -684,38 +684,6 @@ Results test_service() {
     return r;
 }
 
-Results test_datetimelib() {
-    Results r = {.name = "Datetime Tests"};
-
-    auto unix_ts = datetimelib::timestamp_seconds();
-    spdlog::info("unix ts: {}", unix_ts);
-    std::time_t tsz = 1738888855;
-    r.equals(unix_ts > tsz, "unix ts should be in the future");
-
-    std::time_t tszl = 1738888855000;
-    auto mts = datetimelib::timestamp_millis();
-    spdlog::info("millis ts: {}", mts);
-    r.equals(mts > tszl, "millis ts should be in the future");
-
-    std::time_t tms = datetimelib::timestamp_millis();
-    std::time_t tss = datetimelib::timestamp_seconds();
-    spdlog::info("tms: {}, tss: {}", tms, tss);
-    r.equals(tms / 10000 == tss / 10, "times should match");
-
-    // format with std::put_time
-    auto iso_dt = datetimelib::ts_to_local_isodate(tsz, "%F");
-    spdlog::info("ts: {}, iso: {}", tsz, iso_dt);
-    r.equals(iso_dt == "2025-02-06", "just the date using formatting");
-
-    auto label = datetimelib::ts_to_local_isodate(tsz, "%R%p");
-    std::transform(label.end() - 2, label.end(), label.end() - 2, ::tolower);
-    spdlog::info("ts: {}, hh:mm am/pm: {}", tsz, label);
-
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
-}
-
 Results test_cfgsvc() {
     Results r = {.name = "Config Service (cfgsvc) Tests"};
     using namespace app;
@@ -816,7 +784,6 @@ int main() {
     run_test(test_database);
     run_test(test_webhandlers);
     run_test(test_service);
-    run_test(test_datetimelib);
 
     fmt::print("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";

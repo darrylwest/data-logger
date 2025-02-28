@@ -41,5 +41,4 @@ TEST_CASE("DateTimeLib Format Tests", "[datetimelib][format]") {
     spdlog::info("ts: {}, hh:mm am/pm: {}", tsz, label);
     INFO("shoud by 16:40pm");
     REQUIRE(label == "16:40pm");
-
 }
