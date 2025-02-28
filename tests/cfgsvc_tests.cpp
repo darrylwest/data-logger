@@ -5,8 +5,14 @@
 
 #include <app/types.hpp>
 #include <app/cfgsvc.hpp>
+#include <spdlog/spdlog.h>
+#include <nlohmann/json.hpp>
 
 TEST_CASE("Config Service Tests", "[cfgsv]") {
-    const Str ss = "test string";
-    REQUIRE(ss == "test string");
+    spdlog::info("Config Service Tests");
+    const Str ss = R"({"name":"config service"})";
+    const auto j = nlohmann::json::parse(ss);
+    spdlog::info("JSON {}", j.dump(4));
+    REQUIRE(j["name"] == "config service");
+
 }
