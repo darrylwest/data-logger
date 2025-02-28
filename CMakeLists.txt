@@ -23,10 +23,10 @@ set(INCLUDE_DIR "include")
 set(BIN_DIR "build")
 
 # Find required packages
-find_package(spdlog REQUIRED)
+find_package(spdlog 1.9.2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
-find_package(OpenSSL REQUIRED)
-find_package(ZLIB REQUIRED)
+find_package(OpenSSL 3.0 REQUIRED)
+find_package(ZLIB 1.2.11 REQUIRED)
 
 # Add datetimelib as a subdirectory
 add_subdirectory(../datetimelib ${CMAKE_BINARY_DIR}/datetimelib)

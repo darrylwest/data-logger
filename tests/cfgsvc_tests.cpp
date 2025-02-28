@@ -12,7 +12,7 @@ TEST_CASE("Config Service Tests", "[cfgsv]") {
     spdlog::info("Config Service Tests");
     const Str ss = R"({"name":"config service"})";
     const auto j = nlohmann::json::parse(ss);
-    spdlog::info("JSON {}", j.dump(4));
+    spdlog::info("JSON {}", j.dump());
     REQUIRE(j["name"] == "config service");
 
 }
