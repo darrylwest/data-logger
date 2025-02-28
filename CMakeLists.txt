@@ -158,15 +158,21 @@ endif()
 # target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
 # target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
 # Configure all targets
-foreach(target data-logger data-tasks datalogger-unit datalogger-integration unit_tests)
-    target_include_directories(${target} PRIVATE 
-        ${CMAKE_SOURCE_DIR}/include
-        ${CMAKE_SOURCE_DIR}/include/vendor
-        ${CMAKE_SOURCE_DIR}/../datetimelib/include
+# Create a function for setting up common target properties
+function(setup_target_properties target)
+    target_include_directories(${target} PRIVATE
+            ${CMAKE_SOURCE_DIR}/include
+            ${CMAKE_SOURCE_DIR}/include/vendor
+            ${CMAKE_SOURCE_DIR}/../datetimelib/include
     )
     target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
     target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
     set_target_properties(${target} PROPERTIES UNITY_BUILD ON)
+endfunction()
+
+# Use the function for each target
+foreach(target data-logger data-tasks datalogger-unit datalogger-integration unit_tests)
+    setup_target_properties(${target})
 endforeach()
 
 # Output directories

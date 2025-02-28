@@ -629,6 +629,7 @@ void test_api_temps(Results& r) {
 }
 
 void test_create_chart_data(Results& r) {
+    spdlog::set_level(spdlog::level::off);
     using namespace app::database;
     using namespace app::webhandlers;
 
@@ -636,7 +637,6 @@ void test_create_chart_data(Results& r) {
     Database db;
     db.read(filename, true);
 
-    spdlog::set_level(spdlog::level::info);
     const std::time_t ts = 1740427800;
     const Vec<Str> locations = {"cottage.0"};
     const auto cfg = ChartConfig{
