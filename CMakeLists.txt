@@ -24,11 +24,21 @@ find_package(ZLIB REQUIRED)
 # Add datetimelib as a subdirectory
 add_subdirectory(../datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
 
-# Brotli setup
-if(APPLE AND EXISTS "/opt/homebrew")
-    set(BROTLI_ROOT "/opt/homebrew")
-else()
-    set(BROTLI_ROOT "/usr/local")
+if(APPLE)
+    # Detect the host architecture
+    execute_process(
+            COMMAND uname -m
+            OUTPUT_VARIABLE HOST_ARCHITECTURE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    # Set the target architecture based on the host
+    if(HOST_ARCHITECTURE STREQUAL "arm64")
+        set(CMAKE_OSX_ARCHITECTURES "arm64")
+    else()
+        set(CMAKE_OSX_ARCHITECTURES "x86_64")
+    endif()
+    message(STATUS "osx arch: ${CMAKE_OSX_ARCHITECTURES}")
 endif()
 
 find_path(BROTLI_INCLUDE_DIR brotli PATHS ${BROTLI_ROOT}/include)
@@ -39,6 +49,15 @@ find_library(BROTLI_DEC_LIBRARY NAMES brotlidec PATHS ${BROTLI_ROOT}/lib)
 if(NOT BROTLI_INCLUDE_DIR OR NOT BROTLI_COMMON_LIBRARY OR NOT BROTLI_ENC_LIBRARY OR NOT BROTLI_DEC_LIBRARY)
     message(FATAL_ERROR "Brotli libraries not found. Make sure they are installed.")
 endif()
+
+# unit test lib catch2
+Include(FetchContent)
+FetchContent_Declare(
+        Catch2
+        GIT_REPOSITORY https://github.com/catchorg/Catch2.git
+        GIT_TAG v3.4.0
+)
+FetchContent_MakeAvailable(Catch2)
 
 # Libraries for dependencies
 set(DEPENDENT_LIBRARIES
@@ -52,6 +71,7 @@ set(DEPENDENT_LIBRARIES
     nlohmann_json::nlohmann_json
     pthread
     datetimelib_static
+    Catch2::Catch2WithMain
 )
 
 # Common sources for executables
@@ -85,8 +105,27 @@ add_executable(datalogger-integration
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/integration.cpp)
 
+
+add_executable(unit_tests
+        ${COMMON_SOURCES}
+        tests/database_tests.cpp
+        tests/taskrunner_tests.cpp
+        tests/temperature_tests.cpp
+        tests/main_unit.cpp
+        tests/cfgsvc_tests.cpp
+        tests/client_tests.cpp
+        tests/cli_tests.cpp
+        tests/exceptions_tests.cpp
+        tests/webhandlers_tests.cpp
+        tests/service_tests.cpp
+        tests/datetimelib_tests.cpp
+)
+
+# Specify include directories for tests
+# target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
+# target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
 # Configure all targets
-foreach(target data-logger data-tasks datalogger-unit datalogger-integration)
+foreach(target data-logger data-tasks datalogger-unit datalogger-integration unit_tests)
     target_include_directories(${target} PRIVATE 
         ${CMAKE_SOURCE_DIR}/include
         ${CMAKE_SOURCE_DIR}/include/vendor
@@ -104,9 +143,6 @@ if(NOT APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
 endif()
 
-# Add stdc++fs to DEPENDENT_LIBRARIES
-# list(APPEND DEPENDENT_LIBRARIES stdc++fs)
-
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
 # MacOS universal binary setup
@@ -122,36 +158,3 @@ endif()
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
 set_target_properties(data-tasks PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
 
-Include(FetchContent)
-
-FetchContent_Declare(
-    Catch2
-    GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-    GIT_TAG v3.4.0
-)
-
-FetchContent_MakeAvailable(Catch2)
-
-# currently unused
-# file(GLOB TEST_SOURCES "tests/*.cpp" "tests/*.hpp")
-
-add_executable(unit_tests
-        tests/database_tests.cpp
-        tests/taskrunner_tests.cpp
-        tests/temperature_tests.cpp
-        tests/main_unit.cpp
-        tests/cfgsvc_tests.cpp
-        tests/client_tests.cpp
-        tests/cli_tests.cpp
-        tests/exceptions_tests.cpp
-        tests/webhandlers_tests.cpp
-        tests/service_tests.cpp
-        tests/datetimelib_tests.cpp
-)
-
-# Specify include directories for tests
-target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
-target_link_libraries(unit_tests PRIVATE
-        Catch2::Catch2WithMain
-        ${DEPENDENT_LIBRARIES}
-)

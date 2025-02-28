@@ -6,7 +6,7 @@
 #include <app/types.hpp>
 #include <app/cfgsvc.hpp>
 
-TEST_CASE("Config Service Tests", "[cfgsvc]") {
+TEST_CASE("Config Service Tests", "[cfgsv]") {
     const Str ss = "test string";
     REQUIRE(ss == "test string");
 }
