@@ -3,10 +3,16 @@
 
 #include <app/version.hpp>
 #include <app/types.hpp>
+#include <vendor/ansi_colors.hpp>
+#include <spdlog/fmt/fmt.h>
 
 TEST_CASE("Version test", "[version]") {
+    using namespace colors;
+    spdlog::set_level(spdlog::level::off); // Setup: Disable logging
 
     constexpr auto vers = app::Version();
+    const Str ss = vers.to_string();
+    fmt::print("App Version: {}{}{}\n", cyan, ss, reset);
 
     INFO("Checking Application Version: " << vers.to_string());
 
@@ -15,7 +21,6 @@ TEST_CASE("Version test", "[version]") {
     REQUIRE(vers.patch == 5);
     REQUIRE(vers.build > 200);
 
-    const Str ss = vers.to_string();
 
     REQUIRE(ss.starts_with("0.6."));
 }

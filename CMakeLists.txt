@@ -65,6 +65,11 @@ if(APPLE)
             "-framework Security"
     )
     message(STATUS "osx arch: ${CMAKE_OSX_ARCHITECTURES}")
+elseif(UNIX AND NOT APPLE)
+    set(PLATFORM_SPECIFIC_LIBS
+        # Ubuntu-specific libraries if needed
+    )
+    message(STATUS "linux")
 endif()
 
 find_path(BROTLI_INCLUDE_DIR brotli PATHS ${BROTLI_ROOT}/include)
@@ -207,3 +212,14 @@ enable_testing()
 # Add tests
 add_test(NAME unit_tests COMMAND unit_tests)
 
+# Add installation rules
+install(TARGETS data-logger data-tasks datalogger-unit datalogger-integration
+        RUNTIME DESTINATION bin
+)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
+        DESTINATION include
+        FILES_MATCHING
+            PATTERN "*.hpp"
+            PATTERN "*.h"
+)
