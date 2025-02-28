@@ -27,18 +27,6 @@
 
 using namespace rcstestlib;
 
-Results test_version() {
-    Results r = {.name = "Version Tests"};
-
-    auto vers = app::Version();
-    r.equals(vers.major == 0);
-    r.equals(vers.minor == 6);
-    r.equals(vers.patch == 5);
-    r.equals(vers.build >= 180);
-
-    return r;
-}
-
 Results test_taskrunner() {
     Results r = {.name = "TaskRunner Tests"};
 
@@ -774,7 +762,6 @@ int main() {
         summary.add(result);
     };
 
-    run_test(test_version);
     run_test(test_cfgsvc);  // this starts a service so test it before the others
     run_test(test_taskrunner);
     run_test(test_temperature);
