@@ -24,13 +24,14 @@ struct MainTestSetup {
 };
 
 TEST_CASE("Version test", "[version]") {
-    start_config_service();
-    using namespace colors;
     spdlog::set_level(spdlog::level::off); // Setup: Disable logging
+    MainTestSetup setup;
+
+    using namespace colors;
 
     constexpr auto vers = app::Version();
     const Str ss = vers.to_string();
-    fmt::print("App Version: {}{}{}\n", cyan, ss, reset);
+    fmt::print("Unit Test App Version: {}{}{}\n", cyan, ss, reset);
 
     INFO("Checking Application Version: " << vers.to_string());
 
