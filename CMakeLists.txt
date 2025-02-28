@@ -150,7 +150,7 @@ add_executable(unit_tests
 )
 
 # Specify include directories for tests
-target_include_directories(unit_tests PRIVATE src include include/app)
+target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
 target_link_libraries(unit_tests PRIVATE
         Catch2::Catch2WithMain
         ${DEPENDENT_LIBRARIES}
