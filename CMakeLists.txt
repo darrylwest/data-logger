@@ -10,6 +10,13 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
 
+# Add minimum compiler version check
+if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 16)
+        message(FATAL_ERROR "Clang version must be at least 16!")
+    endif()
+endif()
+
 # Define source and include directories
 set(SRC_DIR "src")
 set(INCLUDE_DIR "include")
@@ -24,20 +31,17 @@ find_package(ZLIB REQUIRED)
 # Add datetimelib as a subdirectory
 add_subdirectory(../datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
 
+# MacOS universal binary setup
 if(APPLE)
-    # Detect the host architecture
-    execute_process(
-            COMMAND uname -m
-            OUTPUT_VARIABLE HOST_ARCHITECTURE
-            OUTPUT_STRIP_TRAILING_WHITESPACE
-    )
-
-    # Set the target architecture based on the host
     if(HOST_ARCHITECTURE STREQUAL "arm64")
         set(CMAKE_OSX_ARCHITECTURES "arm64")
     else()
         set(CMAKE_OSX_ARCHITECTURES "x86_64")
     endif()
+    list(APPEND DEPENDENT_LIBRARIES
+            "-framework CoreFoundation"
+            "-framework Security"
+    )
     message(STATUS "osx arch: ${CMAKE_OSX_ARCHITECTURES}")
 endif()
 
@@ -145,14 +149,6 @@ endif()
 
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
-# MacOS universal binary setup
-if(APPLE)
-    set(CMAKE_OSX_ARCHITECTURES "x86_64;arm64")
-    list(APPEND DEPENDENT_LIBRARIES
-        "-framework CoreFoundation"
-        "-framework Security"
-    )
-endif()
 
 # Unity build settings
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
