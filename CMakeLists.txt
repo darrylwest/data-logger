@@ -33,6 +33,12 @@ add_subdirectory(../datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
 
 # MacOS universal binary setup
 if(APPLE)
+    execute_process(
+            COMMAND uname -m
+            OUTPUT_VARIABLE HOST_ARCHITECTURE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
     if(HOST_ARCHITECTURE STREQUAL "arm64")
         set(CMAKE_OSX_ARCHITECTURES "arm64")
     else()
@@ -148,7 +154,6 @@ if(NOT APPLE)
 endif()
 
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
-
 
 # Unity build settings
 set_target_properties(data-logger PROPERTIES UNITY_BUILD_MAX_FILE_COUNT 4)
