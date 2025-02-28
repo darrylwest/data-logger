@@ -5,6 +5,7 @@
 #include <app/types.hpp>
 #include <vendor/ansi_colors.hpp>
 #include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 
 TEST_CASE("Version test", "[version]") {
     using namespace colors;
@@ -20,7 +21,6 @@ TEST_CASE("Version test", "[version]") {
     REQUIRE(vers.minor == 6);
     REQUIRE(vers.patch == 5);
     REQUIRE(vers.build > 200);
-
 
     REQUIRE(ss.starts_with("0.6."));
 }
