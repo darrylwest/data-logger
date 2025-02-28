@@ -17,6 +17,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     endif()
 endif()
 
+# Add more build type validation
+set(ALLOWED_BUILD_TYPES Debug Release RelWithDebInfo MinSizeRel)
+if(NOT CMAKE_BUILD_TYPE IN_LIST ALLOWED_BUILD_TYPES)
+    message(FATAL_ERROR "Invalid build type: ${CMAKE_BUILD_TYPE}")
+endif()
+
 # Define source and include directories
 set(SRC_DIR "src")
 set(INCLUDE_DIR "include")
