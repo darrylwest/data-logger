@@ -18,6 +18,8 @@ void start_config_service() {
 
 struct MainTestSetup {
     MainTestSetup() {
+        using namespace colors;
+        fmt::print("{}Catch2 Unit Test:{}\n", cyan, reset);
         spdlog::set_level(spdlog::level::off); // Setup: Disable logging
         start_config_service();
     }
