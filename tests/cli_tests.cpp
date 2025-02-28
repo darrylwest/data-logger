@@ -16,8 +16,11 @@ struct CLITestSetup {
     }
 };
 
-TEST_CASE_METHOD(CLITestSetup, "CLI Tests", "[cli]") {
+TEST_CASE_METHOD(CLITestSetup, "CLI::webconfig_from_jsonTests", "[cli][parse_json]") {
     const Str ss = "test string";
     REQUIRE(ss == "test string");
-    spdlog::info("cli tests");
+    spdlog::info("parse web json tests");
+}
+TEST_CASE_METHOD(CLITestSetup, "CLI::parse_cli", "[cli][parse_cli]") {
+    spdlog::info("parse_cli tests");
 }

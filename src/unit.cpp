@@ -18,8 +18,6 @@
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
 #include <datetimelib/datetimelib.hpp>
-#include <fstream>
-#include <iostream>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <ranges>
@@ -280,15 +278,6 @@ void test_web_service_from_json(Results& r, const auto& cfg) {
     r.equals(config.verbose == false, "config verbose");
 
     spdlog::set_level(spdlog::level::off);
-}
-
-Results test_cli() {
-    Results r = {.name = "CLI Tests"};
-
-    r.pass();
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
 }
 
 bool bad_db_file(const Str& filename) {
@@ -766,7 +755,6 @@ int main() {
     run_test(test_taskrunner);
     run_test(test_temperature);
     run_test(test_client);
-    run_test(test_cli);
     run_test(test_exceptions);
     run_test(test_database);
     run_test(test_webhandlers);

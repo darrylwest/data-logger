@@ -12,89 +12,87 @@
 #include <nlohmann/json.hpp>
 #include <vendor/cxxopts.hpp>
 
-namespace app {
-    namespace config {
-        using json = nlohmann::json;
+namespace app::config {
+    using json = nlohmann::json;
 
-        // initialize config with json file
-        WebConfig webconfig_from_json(const auto& wscfg) {
-            using namespace app::jsonkeys;
+    // initialize config with json file
+    WebConfig webconfig_from_json(const auto& wscfg) {
+        using namespace app::jsonkeys;
 
-            spdlog::debug("wscfg: {}", wscfg.dump());
-            return WebConfig{
-                .scheme = wscfg[SCHEME],
-                .host = wscfg[HOST],
-                .port = wscfg[PORT],
-                .www = wscfg[WWW],
-                .cert_file = wscfg[TLS_CERT_FILE],
-                .key_file = wscfg[TLS_KEY_FILE],
-            };
-        }
+        spdlog::debug("wscfg: {}", wscfg.dump());
+        return WebConfig{
+            .scheme = wscfg[SCHEME],
+            .host = wscfg[HOST],
+            .port = wscfg[PORT],
+            .www = wscfg[WWW],
+            .cert_file = wscfg[TLS_CERT_FILE],
+            .key_file = wscfg[TLS_KEY_FILE],
+        };
+    }
 
-        /*
-         * parse config and the command line;
-         */
-        WebConfig parse_cli(const int argc, char** argv) {
-            try {
-                auto webcfg = cfgsvc::webservice();
-                auto config = webconfig_from_json(webcfg);
+    /*
+     * parse config and the command line;
+     */
+    WebConfig parse_cli(const int argc, char** argv) {
+        try {
+            auto webcfg = cfgsvc::webservice();
+            auto config = webconfig_from_json(webcfg);
 
-                // first, read the standard config file
+            // first, read the standard config file
 
-                cxxopts::Options options("DataLogger", "Log some readings.");
-                // clang-format off
-                options
-                    .add_options()
-                        ("p,port", "listening port", cxxopts::value<int>())
-                        ("H,host", "listening host", cxxopts::value<Str>())
-                        ("w,www", "web base folder",  cxxopts::value<Str>())
-                        ("C,cert", "the cert pem file", cxxopts::value<Str>())
-                        ("K,key", "the key pem file", cxxopts::value<Str>())
-                        ("v,verbose", "verbose")
-                        ("V,version", "Show the current version and exit")
-                        ("h,help", "Show this help")
-                    ;
+            cxxopts::Options options("DataLogger", "Log some readings.");
+            // clang-format off
+            options
+                .add_options()
+                    ("p,port", "listening port", cxxopts::value<int>())
+                    ("H,host", "listening host", cxxopts::value<Str>())
+                    ("w,www", "web base folder",  cxxopts::value<Str>())
+                    ("C,cert", "the cert pem file", cxxopts::value<Str>())
+                    ("K,key", "the key pem file", cxxopts::value<Str>())
+                    ("v,verbose", "verbose")
+                    ("V,version", "Show the current version and exit")
+                    ("h,help", "Show this help")
+                ;
 
-                // clang-format on
-                const auto version = app::Version();
-                const auto result = options.parse(argc, argv);
-                if (result.count("version")) {
-                    std::cout << "Version: " << app::Version() << std::endl;
-                    exit(0);
-                }
-
-                if (result.count("help")) {
-                    std::cout << "Version: " << version << '\n';
-                    std::cout << options.help() << std::endl;
-                    exit(0);
-                }
-
-                if (result.count("port")) {
-                    config.port = result["port"].as<int>();
-                }
-
-                if (result.count("host")) {
-                    config.host = result["host"].as<Str>();
-                }
-
-                if (result.count("www")) {
-                    config.www = result["www"].as<Str>();
-                }
-
-                if (result.count("cert")) {
-                    config.cert_file = result["cert"].as<Str>();
-                }
-
-                if (result.count("key")) {
-                    config.key_file = result["key"].as<Str>();
-                }
-
-                return config;
-            } catch (const std::exception& exp) {
-                spdlog::error("error parsing cli options: {}", exp.what());
-                exit(1);
+            // clang-format on
+            const auto version = app::Version();
+            const auto result = options.parse(argc, argv);
+            if (result.count("version")) {
+                std::cout << "Version: " << app::Version() << std::endl;
+                exit(0);
             }
-        }
 
-    }  // namespace config
-}  // namespace app
+            if (result.count("help")) {
+                std::cout << "Version: " << version << '\n';
+                std::cout << options.help() << std::endl;
+                exit(0);
+            }
+
+            if (result.count("port")) {
+                config.port = result["port"].as<int>();
+            }
+
+            if (result.count("host")) {
+                config.host = result["host"].as<Str>();
+            }
+
+            if (result.count("www")) {
+                config.www = result["www"].as<Str>();
+            }
+
+            if (result.count("cert")) {
+                config.cert_file = result["cert"].as<Str>();
+            }
+
+            if (result.count("key")) {
+                config.key_file = result["key"].as<Str>();
+            }
+
+            return config;
+        } catch (const std::exception& exp) {
+            spdlog::error("error parsing cli options: {}", exp.what());
+            exit(1);
+        }
+    }
+
+}  // namespace app::config
