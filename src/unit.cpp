@@ -125,37 +125,6 @@ void test_find_probe(Results& r) {
     spdlog::set_level(spdlog::level::off);
 }
 
-Results test_temperature() {
-    Results r = {.name = "Temperature Reading Tests"};
-
-    // spdlog::set_level(spdlog::level::debug);
-
-    const auto reading = create_mock_reading();
-    spdlog::info("reading: {}", reading);
-    app::temperature::TemperatureData data = app::temperature::parse_reading(reading);
-
-    r.equals(data.reading_at == 1738362466, "timestamp should match");
-    r.equals(data.probes.size() == 2, "should be two probes");
-    // now test the probe data; sensor, location, tempC, tempF
-    auto probe0 = data.probes.at(0);
-    r.equals(probe0.sensor == 0, "sensor id 0");
-    r.equals(probe0.location == "cottage-south", "probe0 location");
-    r.equals(probe0.enabled, "probe 0 should be enabled");
-    r.equals(std::abs(probe0.tempC - 10.88542) < EPSILON, "probe0 tempC");
-    r.equals(std::abs(probe0.tempF - 51.59375) < EPSILON, "probe0 tempC");
-
-    auto probe1 = data.probes.at(1);
-    r.equals(probe1.sensor == 1, "sensor id 1");
-    r.equals(probe1.location == "cottage-east", "probe1 location");
-    r.equals(probe1.enabled == false, "probe 1 should be disabled");
-    r.equals(probe1.tempC < 100.0, "probe1 tempC");
-    r.equals(std::abs(probe1.tempF - 51.66576) < EPSILON, "probe1 tempC");
-
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
-}
-
 const app::client::ClientNode create_test_client() {
     const Str json_text
         = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
@@ -582,7 +551,6 @@ int main() {
     };
 
     run_test(test_taskrunner);
-    run_test(test_temperature);
     run_test(test_client);
     run_test(test_database);
     run_test(test_webhandlers);

@@ -5,6 +5,7 @@
 #include <app/cli.hpp>
 
 namespace helpers {
+    constexpr double EPSILON = 1e-5;
 
     inline std::string capture_stdout(Func<void()> func) {
         std::ostringstream oss;
@@ -25,6 +26,31 @@ namespace helpers {
         .key_file = "cert.pem",
         .verbose = false,
     };
+
+    const Str mock_reading = R"(
+        {"reading_at": 1738362466,
+        "probes":[
+            {"sensor":0,"location":"cottage-south","enabled":true,"millis":349548023,"tempC":10.88542,"tempF":51.59375},
+            {"sensor":1,"location":"cottage-east","enabled":false,"millis":349548023,"tempC":-127.0,"tempF":51.66576}
+        ]
+    })";
+
+    const Str mock_client_config = R"({
+        "location": "cottage",
+        "ip": "10.0.1.197",
+        "port": 2030,
+        "active": true,
+        "sensors": [
+            {
+                "type": "temperature",
+                "path": "/temps",
+                "probes": [
+                    { "sensor": 0, "location": "cottage-south", "enabled": true },
+                    { "sensor": 1, "location": "cottage-east", "enabled": false}
+                ]
+            }
+        ]
+    })";
 
     const Str full_config_json_text = R"(
     {
