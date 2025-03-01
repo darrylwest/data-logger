@@ -17,15 +17,33 @@ struct CLITestSetup {
     }
 };
 
-app::config::WebConfig call_parse_cli(std::vector<std::string> args) {
-    std::vector<char*> argv;
+app::config::WebConfig default_config = {
+    .scheme = "http",
+    .host = "0.0.0.0",
+    .port = 9090,
+    .www = "html",
+    .cert_file = "cert.pem",
+    .key_file = "cert.pem",
+    .verbose = false,
+};
+
+app::config::WebConfig call_parse_cli(Vec<Str> args) {
+    Vec<char*> argv;
     argv.push_back(const_cast<char*>("test_binary")); // argv[0] is usually the program name
+
     for (auto& arg : args) {
         argv.push_back(const_cast<char*>(arg.c_str()));
     }
     argv.push_back(nullptr); // Null-terminate the argument list
 
-    return app::config::parse_cli(static_cast<int>(argv.size() - 1), argv.data());
+    const auto params = app::config::CliParams {
+        .argc = static_cast<int>(argv.size() - 1),
+        .argv = argv.data(),
+        .config = default_config,
+        .shutdown = [](int) { }
+    };
+
+    return app::config::parse_cli(params);
 }
 
 TEST_CASE_METHOD(CLITestSetup, "CLI::json format", "[cli][parse_json]") {

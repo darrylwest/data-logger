@@ -33,12 +33,9 @@ namespace app::config {
     /*
      * parse config and the command line;
      */
-    WebConfig parse_cli(const int argc, char** argv) {
+    WebConfig parse_cli(const CliParams& params) {
         try {
-            auto webcfg = cfgsvc::webservice();
-            auto config = webconfig_from_json(webcfg);
-
-            // first, read the standard config file
+            auto config = params.config;
 
             cxxopts::Options options("DataLogger", "Log some readings.");
             // clang-format off
@@ -56,16 +53,16 @@ namespace app::config {
 
             // clang-format on
             const auto version = app::Version();
-            const auto result = options.parse(argc, argv);
+            const auto result = options.parse(params.argc, params.argv);
             if (result.count("version")) {
                 std::cout << "Version: " << app::Version() << std::endl;
-                exit(0);
+                params.shutdown(0);
             }
 
             if (result.count("help")) {
                 std::cout << "Version: " << version << '\n';
                 std::cout << options.help() << std::endl;
-                exit(0);
+                params.shutdown(0);
             }
 
             if (result.count("port")) {

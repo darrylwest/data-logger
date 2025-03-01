@@ -42,8 +42,15 @@ namespace app::config {
         }
     };
 
+    struct CliParams {
+        int argc;
+        char** argv;
+        WebConfig config;
+        Func<void(const int code)> shutdown;
+    };
+
     // parse the CLI and return web config
-    WebConfig parse_cli(int argc, char* argv[]);
+    WebConfig parse_cli(const CliParams& params);
 
     // parse and return the config file from filename
     // json parse_config(const Str filename);

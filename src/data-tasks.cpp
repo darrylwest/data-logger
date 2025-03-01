@@ -24,9 +24,7 @@
 // special
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>
-#include <app/exceptions.hpp>
 #include <app/nodes.hpp>
-#include <app/types.hpp>
 #include <iostream>
 #include <thread>
 
@@ -80,10 +78,16 @@ int main(int argc, char* argv[]) {
     fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan, vers.to_string(), logfile, pid,
                reset);
 
+    const auto shutdown = [](int code) { exit(code); };
     configure_logging(logfile, !testing);
     spdlog::info("Started DataCollectionTasks, PID: {}", pid);
 
-    auto config = app::config::parse_cli(argc, argv);
+    const auto jconf = app::cfgsvc::webservice();
+    const auto webconfig = app::config::webconfig_from_json(jconf);
+
+    const auto params = app::config::CliParams{.argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
+
+    auto config = app::config::parse_cli(params);
     spdlog::info("DataTasks Version: {}", vers.to_string());
 
     // define and start the ticker + jobs
