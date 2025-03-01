@@ -122,7 +122,8 @@ set(COMMON_SOURCES
 # Create executables
 add_executable(data-logger
     ${COMMON_SOURCES}
-    ${SRC_DIR}/main.cpp)
+    ${SRC_DIR}/main.cpp
+        tests/version_tests.cpp)
 
 add_executable(data-tasks
     ${COMMON_SOURCES}
@@ -150,6 +151,7 @@ add_executable(unit_tests
         tests/webhandlers_tests.cpp
         tests/service_tests.cpp
         tests/datetimelib_tests.cpp
+        tests/version_tests.cpp
 )
 
 # Add optimization flags based on build type

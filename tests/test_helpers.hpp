@@ -5,6 +5,7 @@
 #include <app/cli.hpp>
 
 namespace helpers {
+    const MainTestSetup setup = MainTestSetup();
 
     std::string capture_stdout(Func<void()> func) {
         std::ostringstream oss;
