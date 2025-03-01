@@ -6,6 +6,8 @@
 #include <app/types.hpp>
 #include <spdlog/spdlog.h>
 #include <app/cli.hpp>
+#include <sstream>
+#include <iostream>
 
 struct CLITestSetup {
     CLITestSetup() {
@@ -27,7 +29,8 @@ app::config::WebConfig default_config = {
     .verbose = false,
 };
 
-app::config::WebConfig call_parse_cli(Vec<Str> args) {
+
+app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)>shutdown = [](int) {}) {
     Vec<char*> argv;
     argv.push_back(const_cast<char*>("test_binary")); // argv[0] is usually the program name
 
@@ -40,7 +43,7 @@ app::config::WebConfig call_parse_cli(Vec<Str> args) {
         .argc = static_cast<int>(argv.size() - 1),
         .argv = argv.data(),
         .config = default_config,
-        .shutdown = [](int) { }
+        .shutdown = shutdown,
     };
 
     return app::config::parse_cli(params);
@@ -119,11 +122,33 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles verbose flag", "[cli][parse_cl
     REQUIRE(config.verbose == true);  // Ensure WebConfig has a `verbose` flag
 }
 
-// TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[cli]") {
-//     REQUIRE_THROWS_WITH(call_parse_cli({"--version"}), Catch::Matchers::Contains("Version:"));
-// }
-//
-// TEST_CASE_METHOD("parse_cli handles help flag", "[cli]") {
-//     REQUIRE_THROWS_WITH(call_parse_cli({"--help"}), Catch::Matchers::Contains("Usage:"));
-// }
+TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[cli]") {
+    std::ostringstream oss;
+    std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
+
+    const app::config::WebConfig config = call_parse_cli({"--help"});
+
+    REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+
+    std::cout.rdbuf(old_cout);  // Restore original std::cout
+    const auto output = oss.str();
+    INFO(output);
+
+    REQUIRE(output.find("this help"));
+}
+
+TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[cli]") {
+    std::ostringstream oss;
+    std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
+
+    const app::config::WebConfig config = call_parse_cli({"--version"});
+
+    REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+
+    std::cout.rdbuf(old_cout);  // Restore original std::cout
+    const auto output = oss.str();
+    INFO(output);
+
+    REQUIRE(output.find("ersion:"));
+}
 
