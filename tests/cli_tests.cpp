@@ -8,6 +8,7 @@
 #include <app/cli.hpp>
 #include <sstream>
 #include <iostream>
+#include "test_helpers.hpp"
 
 struct CLITestSetup {
     CLITestSetup() {
@@ -17,16 +18,6 @@ struct CLITestSetup {
     ~CLITestSetup() {
         spdlog::set_level(spdlog::level::off); // Teardown: Restore logging
     }
-};
-
-app::config::WebConfig default_config = {
-    .scheme = "http",
-    .host = "0.0.0.0",
-    .port = 9090,
-    .www = "html",
-    .cert_file = "cert.pem",
-    .key_file = "cert.pem",
-    .verbose = false,
 };
 
 
@@ -42,7 +33,7 @@ app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)>shutdown = [
     const auto params = app::config::CliParams {
         .argc = static_cast<int>(argv.size() - 1),
         .argv = argv.data(),
-        .config = default_config,
+        .config = helpers::default_web_config,
         .shutdown = shutdown,
     };
 
@@ -122,33 +113,38 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles verbose flag", "[cli][parse_cl
     REQUIRE(config.verbose == true);  // Ensure WebConfig has a `verbose` flag
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[cli]") {
-    std::ostringstream oss;
-    std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
+TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[parse_cli][help]") {
 
-    const app::config::WebConfig config = call_parse_cli({"--help"});
+    const auto output = helpers::capture_stdout([]() {
+        const Func<void(int code)>shutdown = [](int code) {
+            INFO("return code should be zero");
+            REQUIRE(code == 0);
+        };
 
-    REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+        const app::config::WebConfig config = call_parse_cli({"--help"}, shutdown);
 
-    std::cout.rdbuf(old_cout);  // Restore original std::cout
-    const auto output = oss.str();
+        REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+
+    });
+
     INFO(output);
-
     REQUIRE(output.find("this help"));
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[cli]") {
-    std::ostringstream oss;
-    std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
+TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][version]") {
 
-    const app::config::WebConfig config = call_parse_cli({"--version"});
+    const auto output = helpers::capture_stdout([]() {
+        const Func<void(int code)>shutdown = [](int code) {
+            INFO("return code should be zero");
+            REQUIRE(code == 0);
+        };
 
-    REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+        const app::config::WebConfig config = call_parse_cli({"--version"}, shutdown);
 
-    std::cout.rdbuf(old_cout);  // Restore original std::cout
-    const auto output = oss.str();
+        REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+    });
+
     INFO(output);
-
     REQUIRE(output.find("ersion:"));
 }
 
