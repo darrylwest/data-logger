@@ -31,6 +31,7 @@ struct MainTestSetup {
     }
 };
 
+// TODO move this to it's own test file
 TEST_CASE("Version test", "[version]") {
     spdlog::set_level(spdlog::level::off); // Setup: Disable logging
     MainTestSetup setup;
