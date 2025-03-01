@@ -12,7 +12,7 @@ void start_config_service() {
 
     // start the config service
     ServiceContext ctx;
-    ctx.sleep_duration = std::chrono::seconds(1);
+    ctx.sleep_duration = std::chrono::seconds(0);
     configure(ctx);
 }
 

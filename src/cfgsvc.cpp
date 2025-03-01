@@ -143,8 +143,9 @@ namespace app {
         void ConfigService::worker_loop() {
             namespace fs = std::filesystem;
             fs::file_time_type last_read_time;
+            const auto zero_seconds = std::chrono::seconds(0);
 
-            while (running) {
+            while (running && ctx.sleep_duration != zero_seconds) {
                 // sleep first because the file was read/validated on configure
                 std::this_thread::sleep_for(ctx.sleep_duration);
 
