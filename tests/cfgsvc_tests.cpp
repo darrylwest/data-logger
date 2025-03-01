@@ -11,7 +11,7 @@
 
 struct CfgSrvTestSetup {
     CfgSrvTestSetup() {
-        spdlog::set_level(spdlog::level::info); // Setup: Disable logging
+        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
     }
 
     ~CfgSrvTestSetup() {
