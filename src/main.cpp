@@ -23,8 +23,7 @@ void start_config_service() {
     using namespace app;
 
     cfgsvc::ServiceContext ctx;
-    // once an hour
-    ctx.sleep_duration = std::chrono::seconds(3600);
+    ctx.sleep_duration = std::chrono::seconds(5);
 
     cfgsvc::configure(ctx);
 }
@@ -42,7 +41,11 @@ int main(int argc, char* argv[]) {
 
     const auto vers = app::Version();
 
-    const auto shutdown = [](int code) { exit(code); };
+    const auto shutdown = [](int code) {
+        // spdlog::info("Shutdown code: {}", code);
+        // better to send a kill statement
+        exit(code);
+    };
 
     const auto jconf = app::cfgsvc::webservice();
     const auto webconfig = app::config::webconfig_from_json(jconf);
@@ -60,7 +63,7 @@ int main(int argc, char* argv[]) {
     spdlog::info("Server shutdown, code: {}.", ok);
 
     // ok, not clean but it works;
-    std::terminate();
+    // std::terminate();
 
     return 0;
 }

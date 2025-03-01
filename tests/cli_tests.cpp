@@ -37,12 +37,13 @@ app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)>shutdown = [
     return app::config::parse_cli(params);
 }
 
+// TODO modify this to pull Rstring from helper
 TEST_CASE_METHOD(CLITestSetup, "CLI::json format", "[cli][parse_json]") {
     using namespace app::jsonkeys;
     using json = nlohmann::json;
 
-    std::ifstream ifs("config/config.json");
-    const json app_config = json::parse(ifs);
+    const auto text = helpers::full_config_json_text;
+    const json app_config = json::parse(text);
     const json cfg = app_config[WEBSERVICE];
 
     spdlog::info("check web json keys from {}", cfg.dump());
