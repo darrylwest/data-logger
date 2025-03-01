@@ -21,7 +21,7 @@ TEST_CASE("Version test", "[version]") {
     REQUIRE(vers.major == 0);
     REQUIRE(vers.minor == 6);
     REQUIRE(vers.patch == 5);
-    REQUIRE(vers.build > 200);
+    REQUIRE(vers.build > 210);
 
     REQUIRE(ss.starts_with("0.6."));
 }

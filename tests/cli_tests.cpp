@@ -18,7 +18,7 @@ struct CLITestSetup {
     }
 };
 
-app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)>shutdown = [](int) {}) {
+app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)> shutdown = [](int) {}) {
     Vec<char*> argv;
     argv.push_back(const_cast<char*>("test_binary")); // argv[0] is usually the program name
 

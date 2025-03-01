@@ -5,9 +5,8 @@
 #include <app/cli.hpp>
 
 namespace helpers {
-    const MainTestSetup setup = MainTestSetup();
 
-    std::string capture_stdout(Func<void()> func) {
+    inline std::string capture_stdout(Func<void()> func) {
         std::ostringstream oss;
         std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
 
@@ -17,7 +16,7 @@ namespace helpers {
         return oss.str();
     }
 
-    app::config::WebConfig default_web_config = {
+    inline app::config::WebConfig default_web_config = {
         .scheme = "http",
         .host = "0.0.0.0",
         .port = 9090,

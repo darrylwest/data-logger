@@ -79,6 +79,11 @@ do
 
             exit 0
         ;;
+        sync)
+            watchexec -c -w src/ -w include/ -w tests/ -e h,hpp,cpp ./sync.sh
+
+            exit 0
+        ;;
         shutdown)
             curl -X DELETE "http://localhost:${port}/api/shutdown"
             shift

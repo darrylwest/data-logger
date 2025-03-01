@@ -9,20 +9,9 @@
 #include "test_helpers.hpp"
 #include <nlohmann/json.hpp>
 
-void start_config_service() {
-    using namespace app::cfgsvc;
-
-    // start the config service
-
-    ServiceContext ctx;
-    ctx.json_text = helpers::full_config_json_text;
-    ctx.sleep_duration = std::chrono::seconds(0);
-    configure(ctx);
-}
-
 struct CfgSrvTestSetup {
     CfgSrvTestSetup() {
-        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
+        spdlog::set_level(spdlog::level::info); // Setup: Disable logging
     }
 
     ~CfgSrvTestSetup() {
@@ -30,11 +19,41 @@ struct CfgSrvTestSetup {
     }
 };
 
-TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv]") {
-    spdlog::info("Config Service Tests");
-    const Str ss = R"({"name":"config service"})";
-    const auto j = nlohmann::json::parse(ss);
-    spdlog::info("JSON {}", j.dump());
-    REQUIRE(j["name"] == "config service");
+TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][main]") {
+    spdlog::info("Config Service Tests: version");
 
+    using namespace app;
+    auto const jvers = cfgsvc::get_node(jsonkeys::CONFIG_VERSION);
+
+    spdlog::info("{}", jvers.dump(4));
+    const Str vers = jvers.get<Str>();
+
+    INFO(vers);
+    REQUIRE(vers.starts_with("0.6."));
+}
+
+TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][client]") {
+    spdlog::info("Config Service Tests: client");
+
+    using namespace app;
+    auto const client_cfg = cfgsvc::client("cottage");
+
+    spdlog::debug("{}", client_cfg.dump(4));
+
+    REQUIRE(client_cfg.contains("active"));
+    REQUIRE(client_cfg.contains("ip"));
+    REQUIRE(client_cfg.contains("port"));
+    REQUIRE(client_cfg.contains("sensors"));
+
+}
+
+TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][clients]") {
+    spdlog::info("Config Service Tests: clients");
+
+    using namespace app;
+    auto const clients = cfgsvc::clients();
+
+    spdlog::debug("{}", clients.dump(4));
+
+    REQUIRE(clients.size() == 3);
 }

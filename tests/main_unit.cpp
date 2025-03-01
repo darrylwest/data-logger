@@ -3,12 +3,23 @@
 #include <vendor/ansi_colors.hpp>
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
+#include "test_helpers.hpp"
+
+void start_config_service() {
+    using namespace app::cfgsvc;
+
+    ServiceContext ctx;
+    ctx.json_text = helpers::full_config_json_text;
+    ctx.sleep_duration = std::chrono::seconds(0);
+    configure(ctx);
+}
 
 struct MainTestSetup {
     MainTestSetup() {
         using namespace colors;
         fmt::print("{}Catch2 unit test setup.{}\n", green, reset);
         spdlog::set_level(spdlog::level::off); // Setup: Disable logging
+        start_config_service();
     }
 
     ~MainTestSetup() {
@@ -17,3 +28,5 @@ struct MainTestSetup {
         // app::cfgsvc::stop_worker();
     }
 };
+
+const MainTestSetup setup = MainTestSetup();
