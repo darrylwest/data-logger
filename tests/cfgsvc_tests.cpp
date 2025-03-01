@@ -56,4 +56,12 @@ TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][clients]") {
     spdlog::debug("{}", clients.dump(4));
 
     REQUIRE(clients.size() == 3);
+    for (const auto& client : clients) {
+        REQUIRE(client.contains("active"));
+        REQUIRE(client.contains("ip"));
+        REQUIRE(client.contains("port"));
+        REQUIRE(client.contains("sensors"));
+
+        REQUIRE(client[jsonkeys::PORT] == 2030);
+    }
 }
