@@ -6,7 +6,19 @@
 #include <app/types.hpp>
 #include <app/cfgsvc.hpp>
 #include <spdlog/spdlog.h>
+#include "test_helpers.hpp"
 #include <nlohmann/json.hpp>
+
+void start_config_service() {
+    using namespace app::cfgsvc;
+
+    // start the config service
+
+    ServiceContext ctx;
+    ctx.json_text = helpers::full_config_json_text;
+    ctx.sleep_duration = std::chrono::seconds(0);
+    configure(ctx);
+}
 
 struct CfgSrvTestSetup {
     CfgSrvTestSetup() {

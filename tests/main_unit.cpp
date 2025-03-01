@@ -7,21 +7,11 @@
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
-void start_config_service() {
-    using namespace app::cfgsvc;
-
-    // start the config service
-    ServiceContext ctx;
-    ctx.sleep_duration = std::chrono::seconds(0);
-    configure(ctx);
-}
-
 struct MainTestSetup {
     MainTestSetup() {
         using namespace colors;
         fmt::print("{}Catch2 unit test setup.{}\n", green, reset);
         spdlog::set_level(spdlog::level::off); // Setup: Disable logging
-        start_config_service();
     }
 
     ~MainTestSetup() {

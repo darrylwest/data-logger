@@ -110,18 +110,22 @@ namespace app {
 
         // read in, parse and validate the json config
         void ConfigService::load_config() {
-            std::ifstream fin(ctx.cfg_filename);
-            if (!fin) {
-                throw app::FileException("Failed to open config file: " + ctx.cfg_filename);
-            }
-
             json data;
-            try {
-                data = json::parse(fin);
-            } catch (const json::parse_error& e) {
-                Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
-                spdlog::error(msg);
-                throw app::ParseException(msg);
+            if (ctx.json_text != "") {
+                data = json::parse(ctx.json_text);
+            } else {
+                std::ifstream fin(ctx.cfg_filename);
+                if (!fin) {
+                    throw app::FileException("Failed to open config file: " + ctx.cfg_filename);
+                }
+
+                try {
+                    data = json::parse(fin);
+                } catch (const json::parse_error& e) {
+                    Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
+                    spdlog::error(msg);
+                    throw app::ParseException(msg);
+                }
             }
 
             // Run validation on `app_config`
