@@ -7,17 +7,14 @@
 
 #include <algorithm>
 #include <app/cfgsvc.hpp>
-#include <app/cli.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
-#include <app/service.hpp>
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
-#include <datetimelib/datetimelib.hpp>
 #include <nlohmann/json.hpp>
 #include <random>
 #include <ranges>

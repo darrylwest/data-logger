@@ -6,8 +6,6 @@
 #include <app/types.hpp>
 #include <spdlog/spdlog.h>
 #include <app/cli.hpp>
-#include <sstream>
-#include <iostream>
 #include "test_helpers.hpp"
 
 struct CLITestSetup {
@@ -146,5 +144,21 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][versi
 
     INFO(output);
     REQUIRE(output.find("ersion:"));
+}
+
+TEST_CASE_METHOD(CLITestSetup, "parse_cli with bad flag", "[parse_cli][bad]") {
+    const auto output = helpers::capture_stdout([]() {
+        const Func<void(int code)>shutdown = [](int code) {
+            INFO("return code should be zero");
+            REQUIRE(code == 1);
+        };
+
+        const app::config::WebConfig config = call_parse_cli({"--bad"}, shutdown);
+
+        REQUIRE(config.verbose == false);  // Ensure WebConfig has a `verbose` flag
+    });
+
+    INFO(output);
+    REQUIRE(output == "");
 }
 

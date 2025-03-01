@@ -34,9 +34,8 @@ namespace app::config {
      * parse config and the command line;
      */
     WebConfig parse_cli(const CliParams& params) {
+        auto config = params.config;
         try {
-            auto config = params.config;
-
             cxxopts::Options options("DataLogger", "Log some readings.");
             // clang-format off
             options
@@ -89,11 +88,11 @@ namespace app::config {
                 config.verbose = true;
             }
 
-            return config;
         } catch (const std::exception& exp) {
             spdlog::error("error parsing cli options: {}", exp.what());
-            exit(1);
+            params.shutdown(1);
         }
-    }
 
+        return config;
+    }
 }  // namespace app::config
