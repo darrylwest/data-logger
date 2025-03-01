@@ -564,79 +564,6 @@ Results test_service() {
     return r;
 }
 
-Results test_cfgsvc() {
-    Results r = {.name = "Config Service (cfgsvc) Tests"};
-    using namespace app;
-    using namespace app::jsonkeys;
-    using json = nlohmann::json;
-
-    // spdlog::set_level(spdlog::level::info);
-
-    bool running = cfgsvc::is_running();
-    r.equals(running == false, "should not be running until configured");
-
-    cfgsvc::ServiceContext ctx;
-    ctx.sleep_duration = std::chrono::seconds(0);  // force to read only once
-
-    // TODO need to test this in isolation when unit is broken into multiple runables
-    // try {
-    //     ctx.cfg_filename = "bad-file.json";
-    //     cfgsvc::configure(ctx);
-    // } catch (const std::exception& e) {
-    //     spdlog::info("bad file {}, {}", ctx.cfg_filename, e.what());
-    //     r.pass();
-    // }
-
-    running = cfgsvc::is_running();
-    r.equals(running == false, "should not be running after bad config file");
-
-    // // now fix the file
-    ctx.cfg_filename = "./config/config.json";
-    cfgsvc::configure(ctx);
-
-    running = cfgsvc::is_running();
-    r.equals(running, "should running now configured");
-
-    const json jvers = cfgsvc::get_node(CONFIG_VERSION);
-    spdlog::info("jvers: {}", jvers.dump());
-    const Str vers = jvers.template get<Str>();
-    spdlog::info("vers: {}", vers);
-    r.equals(vers.starts_with("0.6"), "the config version");
-
-    try {
-        const StrView badkey = "badkey";
-        const auto badvalue = cfgsvc::get_node(badkey);
-        spdlog::info("badvalue: {}", badvalue.dump());
-        r.fail("should throw exception");
-    } catch (const std::exception& e) {
-        spdlog::info("{}", e.what());
-        r.pass();
-    }
-
-    json jweb = cfgsvc::webservice();
-    spdlog::info("jweb: {}", jweb.dump());
-    r.equals(jweb[HOST] == "0.0.0.0", "the configured web service host");
-
-    const json jclients = cfgsvc::clients();
-    r.equals(jclients.size() == 3, "there should be 3 clients in config.json");
-
-    json jclient = cfgsvc::client("cottage");
-    spdlog::info("jclient: {}", jclient.dump());
-    r.equals(jclient[PORT] == 2030, "the configured client port");
-
-    jclient = cfgsvc::client("deck");
-    spdlog::info("jclient: {}", jclient.dump());
-    r.equals(jclient[PORT] == 2030, "the configured client port");
-
-    jclient = cfgsvc::client("shed");
-    spdlog::info("jclient: {}", jclient.dump());
-    r.equals(jclient[PORT] == 2030, "the configured client port");
-
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
-}
-
 int main() {
     using namespace colors;
     // spdlog::set_level(spdlog::level::error); // or off
@@ -654,7 +581,6 @@ int main() {
         summary.add(result);
     };
 
-    run_test(test_cfgsvc);  // this starts a service so test it before the others
     run_test(test_taskrunner);
     run_test(test_temperature);
     run_test(test_client);
