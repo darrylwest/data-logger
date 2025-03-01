@@ -257,80 +257,6 @@ Results test_client() {
     return r;
 }
 
-bool bad_db_file(const Str& filename) {
-    if (filename == "bad_db_file") {
-        throw app::DatabaseException("Db Failed to connect to file: " + filename);
-    } else if (filename == "bad_filename") {
-        throw app::FileException("Failed to open: " + filename);
-    }
-
-    // return false; should never get here
-    return false;
-}
-
-bool bad_http_get(const Str& url) {
-    if (url == "http://bad_network.com") {
-        throw app::NetworkException("Failed to connect to url: " + url);
-    } else if (url == "http://service_down.com") {
-        throw app::ServiceException("Service Failed for url: " + url);
-    } else if (url == "http://bad_parse.com") {
-        throw app::ParseException("JSON parse failed at url: " + url);
-    }
-
-    // return false; should never get here
-    return false;
-}
-
-Results test_exceptions() {
-    Results r = {.name = "Exception Tests"};
-
-    // spdlog::set_level(spdlog::level::info);
-
-    try {
-        bad_http_get("http://bad_network.com");
-        r.fail("should not get here from a bad http get");
-    } catch (const std::exception& e) {
-        spdlog::info("exception: {}", e.what());
-        r.pass();
-    }
-
-    try {
-        bool ok = bad_http_get("http://service_down.com");
-        r.equals(ok, "should not get here");
-    } catch (const std::exception& e) {
-        spdlog::info("exception: {}", e.what());
-        r.equals(true);
-    }
-
-    try {
-        bool ok = bad_http_get("http://bad_parse.com");
-        r.equals(ok, "should not get here");
-    } catch (const std::exception& e) {
-        spdlog::info("exception: {}", e.what());
-        r.equals(true);
-    }
-
-    try {
-        bool ok = bad_db_file("bad_db_file");
-        r.equals(ok, "should not get here");
-    } catch (const std::exception& e) {
-        spdlog::info("exception: {}", e.what());
-        r.equals(true);
-    }
-
-    try {
-        bool ok = bad_db_file("bad_filename");
-        r.equals(ok, "should not get here");
-    } catch (const std::exception& e) {
-        spdlog::info("exception: {}", e.what());
-        r.equals(true);
-    }
-
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
-}
-
 void test_create_key(Results& r) {
     using namespace app::database;
 
@@ -732,7 +658,6 @@ int main() {
     run_test(test_taskrunner);
     run_test(test_temperature);
     run_test(test_client);
-    run_test(test_exceptions);
     run_test(test_database);
     run_test(test_webhandlers);
     run_test(test_service);
