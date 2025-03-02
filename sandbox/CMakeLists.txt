@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 project(tests)
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -14,6 +14,39 @@ include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/../include/vendor)
 find_package(nlohmann_json REQUIRED)
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
+
+include(CheckCXXCompilerFlag)
+CHECK_CXX_COMPILER_FLAG("-std=c++23" COMPILER_SUPPORTS_CXX23)
+if(NOT COMPILER_SUPPORTS_CXX23)
+    message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++23 support.")
+endif()
+
+# Define source and include directories
+# MacOS universal binary setup
+if(APPLE)
+    execute_process(
+            COMMAND uname -m
+            OUTPUT_VARIABLE HOST_ARCHITECTURE
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+    )
+
+    if(HOST_ARCHITECTURE STREQUAL "arm64")
+        set(CMAKE_OSX_ARCHITECTURES "arm64")
+    else()
+        set(CMAKE_OSX_ARCHITECTURES "x86_64")
+    endif()
+    list(APPEND DEPENDENT_LIBRARIES
+            "-framework CoreFoundation"
+            "-framework Security"
+    )
+    message(STATUS "osx arch: ${CMAKE_OSX_ARCHITECTURES}")
+elseif(UNIX AND NOT APPLE)
+    set(PLATFORM_SPECIFIC_LIBS
+        # Ubuntu-specific libraries if needed
+    )
+    message(STATUS "linux")
+endif()
+
 
 # Brotli (assumes installation via Homebrew or similar package manager)
 if(APPLE AND EXISTS "/opt/homebrew")
