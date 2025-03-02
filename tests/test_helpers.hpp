@@ -7,6 +7,7 @@
 #include <app/cli.hpp>
 #include <filesystem>
 #include <fstream>
+#include <random>
 #include <spdlog/spdlog.h>
 
 namespace helpers {
