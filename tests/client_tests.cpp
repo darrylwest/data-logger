@@ -19,6 +19,8 @@ struct ClientTestSetup {
     }
 };
 
+// TODO create mock client node to test fetch_temps, put_temps, fetch_status
+
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
     const Str json = helpers::mock_client_status;
     const auto status = client::parse_status(json);

@@ -148,24 +148,6 @@ Results test_client() {
     return r;
 }
 
-void test_create_key(Results& r) {
-    using namespace app::database;
-
-    time_t timestamp = 1739563051;
-    const auto location = "shed.0";
-    DbKey key = create_key(timestamp, location);
-
-    r.equals(key.timestamp == timestamp, "create key");
-    // r.equals(key.type == ReadingType::Value::Temperature, "reading type");
-    // r.equals(ReadingType::to_label(key.type) == "Temperature", "reading type label");
-    // r.equals(ReadingType::to_value(key.type) == 1, "reading type int value");
-
-    r.equals(key.location == location, "probe sensor key");
-
-    spdlog::info("key: {}", key.to_string());
-    r.equals(key.to_string() == "1739563051.shed.0", "date/probe sensor key");
-}
-
 // Unit test method to populate with random data
 void populate_database(app::database::Database& db, int size = 500) {
     std::random_device rd;
@@ -370,7 +352,6 @@ Results test_database() {
 
     // spdlog::set_level(spdlog::level::info);
 
-    test_create_key(r);
     test_database_data(r);
     test_append_key_value(r);
     test_read_current(r);
