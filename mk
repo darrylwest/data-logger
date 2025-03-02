@@ -84,6 +84,11 @@ do
 
             exit 0
         ;;
+        unsync)
+            git co include/app/*.hpp src/*.cpp tests/*.hpp tests/*.cpp
+
+            exit 0
+        ;;
         shutdown)
             curl -X DELETE "http://localhost:${port}/api/shutdown"
             shift
