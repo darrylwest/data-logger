@@ -25,11 +25,11 @@ namespace app {
         }
 
         // append the key/value to the file; throws on error; returns the number of bytes written
-        void append_key_value(const Str& filename, const DbKey& key, const Str& value) {
-            std::ofstream file(filename, std::ios::app);
+        void append_key_value(const FilePath& path, const DbKey& key, const Str& value) {
+            std::ofstream file(path, std::ios::app);
 
             if (!file.is_open()) {
-                const auto msg = "Error in database::append_key_value(); can't open file: " + filename;
+                const auto msg = "Error in database::append_key_value(); can't open file: " + path.string();
                 spdlog::error(msg);
                 throw app::FileException(msg);
             }
@@ -41,10 +41,10 @@ namespace app {
         bool read_current_data(Database& db) {
             // TODO read from configuration, all database files
             Str location = "cottage";
-            Str filename = "data/temperature/current." + location + ".db";
+            const FilePath path = "data/temperature/current." + location + ".db";
 
-            spdlog::info("read current data from {}", filename);
-            db.read(filename, false);
+            spdlog::info("read current data from {}", path.string());
+            db.read(path, false);
             spdlog::info("db size: {}", db.size());
 
             return true;
@@ -107,9 +107,9 @@ namespace app {
         size_t Database::size() const { return data.size(); }
 
         // Thread-safe read from file
-        bool Database::read(const Str& filename, bool clear) {
+        bool Database::read(const FilePath& path, bool clear) {
             std::lock_guard<std::mutex> lock(mtx);
-            std::ifstream infile(filename);
+            std::ifstream infile(path);
             if (!infile.is_open()) {
                 return false;
             }
@@ -131,9 +131,9 @@ namespace app {
         }
 
         // Thread-safe dump/save to file
-        bool Database::save(const Str& filename) const {
+        bool Database::save(const FilePath& path) const {
             std::lock_guard<std::mutex> lock(mtx);
-            std::ofstream outfile(filename);
+            std::ofstream outfile(path);
             if (!outfile.is_open()) {
                 return false;
             }

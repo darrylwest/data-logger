@@ -36,14 +36,6 @@ namespace app {
         Task create_temps_task(ClientNode& node, int period) {
             auto worker = [&]() mutable {
                 try {
-                    // read from config on each iteration
-                    // const auto jfile = app::config::find_config_filename();
-                    // const auto jcfg = app::config::parse_config(jfile);
-                    // if (!is_node_active(node.location, jcfg)) {
-                    //     spdlog::info("skipping node {}; currently inactive...", node.location);
-                    //     return;
-                    // }
-
                     // read config for this node
                     auto data = app::client::fetch_temps(node);
 
@@ -56,8 +48,8 @@ namespace app {
                     const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                     const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
 
-                    // TODO get filename from config; use the client location, not the probe
-                    const auto filename = "data/temperature/current." + node.location + ".db";
+                    // TODO get file path from config; use the client location, not the probe
+                    const FilePath path = "data/temperature/current." + node.location + ".db";
 
                     for (const auto& probe : data.probes) {
                         // can be disabled by the remote client
@@ -72,9 +64,9 @@ namespace app {
                         auto key = app::database::create_key(data.reading_at,
                                                              fmt::format("{}.{}", node.location, probe.sensor));
 
-                        spdlog::info("file: {}, {}={}", filename, key.to_string(), probe.tempC);
+                        spdlog::info("file: {}, {}={}", path.string(), key.to_string(), probe.tempC);
 
-                        app::database::append_key_value(filename, key, std::to_string(probe.tempC));
+                        app::database::append_key_value(path, key, std::to_string(probe.tempC));
 
                         spdlog::info("put data to webserver: {}", url);
                         if (!app::client::put_temps(url, key, probe)) {
@@ -115,10 +107,10 @@ namespace app {
                                  status.access_count, status.errors);
 
                     auto key = app::database::create_key(status.timestamp, node.location);
-                    const auto filename = "data/status/current." + node.location + ".db";
-                    spdlog::info("file: {}, k/v: {}={}", filename, key.to_string(), status.to_string());
+                    const FilePath path = "data/status/current." + node.location + ".db";
+                    spdlog::info("file: {}, k/v: {}={}", path.string(), key.to_string(), status.to_string());
 
-                    app::database::append_key_value(filename, key, status.to_string());
+                    app::database::append_key_value(path, key, status.to_string());
                 } catch (const std::exception& e) {
                     spdlog::error("worker: {} data access failed: {}", node.location, e.what());
                 }

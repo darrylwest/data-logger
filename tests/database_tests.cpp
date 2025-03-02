@@ -5,7 +5,8 @@
 #include <app/types.hpp>
 #include <app/database.hpp>
 #include <random>
-#include "test_helpers.hpp"
+#include <filesystem>
+// #include "test_helpers.hpp"
 
 using namespace app;
 
@@ -42,24 +43,31 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_value]") {
     DatabaseTestSetup setup;
 
-    const auto filename = "/tmp/append.db";
+    const std::filesystem::path path = "/tmp/test-append.db";
     const time_t ts = datetimelib::timestamp_seconds();
     const auto key = app::database::create_key(ts, "tmp.0");
 
     const auto value = randomFloat(setup.gen, -10.0, 40.0);
     const Str sval = std::to_string(value);
-    spdlog::info("file: {} {} {}", filename, key.to_string(), sval);
+    spdlog::info("file: {} {} {}", path.c_str(), key.to_string(), sval);
 
     INFO("will throw if this operation failed");
 
     try {
-        database::append_key_value(filename, key, sval);
+        database::append_key_value(path, key, sval);
         REQUIRE(true);
     } catch (const std::exception& e) {
         REQUIRE(false);
     }
 
     // TODO delete the file
+    INFO("remove the test file");
+    try {
+        std::filesystem::remove(path);
+        REQUIRE(true);
+    } catch (const std::exception& e) {
+        REQUIRE(false);
+    }
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_file]") {

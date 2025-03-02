@@ -72,7 +72,7 @@ namespace app::database {
     DbKey create_key(const time_t& timestamp, const Str& location);
 
     // append the key/value to the file; throws FileException on error
-    void append_key_value(const Str& filename, const DbKey& key, const Str& value);
+    void append_key_value(const FilePath& filename, const DbKey& key, const Str& value);
 
     // a lambda to pass to Database::keys() (the default)
     static FilterFunc all_keys = [](const Str&) { return true; };
@@ -108,10 +108,10 @@ namespace app::database {
         size_t size() const;
 
         // read from file to populate database; optionally clear the db first
-        bool read(const Str& filename, const bool clear = false);
+        bool read(const FilePath& path, const bool clear = false);
 
-        // save the current database to filename
-        bool save(const Str& filename) const;
+        // save the current database to file
+        bool save(const FilePath& path) const;
 
     };  // struct database
 
