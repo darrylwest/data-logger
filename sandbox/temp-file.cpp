@@ -2,13 +2,19 @@
 #include <iostream>
 #include <filesystem>
 #include <fstream>
+#include <random>
 
 std::filesystem::path getTempFilename() {
     // Get the system's temporary directory
     std::filesystem::path tempDir = std::filesystem::temp_directory_path();
 
+    // Create a random device and a random number generator
+    std::random_device rd;  // Obtain a random number from hardware
+    std::mt19937 gen(rd()); // Seed the generator
+
     // Generate a unique filename
-    std::string filename = "tempfile_" + std::to_string(std::rand()) + ".tmp"; // Simple unique filename
+    std::uniform_int_distribution<int> distr(1'000'000, 9'999'999); // Random number between 100000 and 999999
+    std::string filename = "tempfile_" + std::to_string(distr(gen)) + ".tmp"; // Unique filename
 
     // Create a temporary file path
     std::filesystem::path tempFilePath = tempDir / filename;
