@@ -85,7 +85,12 @@ do
             exit 0
         ;;
         unsync)
-            git co include/app/*.hpp src/*.cpp tests/*.hpp tests/*.cpp
+            git status -s | egrep '.hpp|.cpp' | while read f
+            do
+                fn=`echo $f | cut -c 3-200`
+                echo $fn
+                git co $fn
+            done
 
             exit 0
         ;;
