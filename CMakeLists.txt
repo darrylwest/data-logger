@@ -30,8 +30,8 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # Add version checks for system requirements
 include(CheckCXXCompilerFlag)
-CHECK_CXX_COMPILER_FLAG("-std=c++23" COMPILER_SUPPORTS_CXX20)
-if(NOT COMPILER_SUPPORTS_CXX20)
+CHECK_CXX_COMPILER_FLAG("-std=c++23" COMPILER_SUPPORTS_CXX23)
+if(NOT COMPILER_SUPPORTS_CXX23)
     message(FATAL_ERROR "The compiler ${CMAKE_CXX_COMPILER} has no C++23 support.")
 endif()
 
