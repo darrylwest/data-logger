@@ -20,6 +20,20 @@ struct DatabaseTestSetup {
     }
 };
 
+void populate_database(database::Database& db, const int size = 100) {
+    time_t t0 = datetimelib::timestamp_seconds() - (size * 10);
+    Str location = "shed.0";
+
+    for (int i = 0; i < size; ++i) {
+        auto key = database::create_key(t0, location);
+        auto value = helpers::random_float(20.0, 30.0);
+
+        db.set(key.to_string(), std::to_string(value));
+
+        t0 += 10;
+    }
+}
+
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") {
 
     time_t timestamp = 1739563051;
@@ -32,7 +46,6 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") 
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_value]") {
-    DatabaseTestSetup setup;
 
     const std::filesystem::path path = "/tmp/test-append.db";
     const time_t ts = datetimelib::timestamp_seconds();
@@ -55,7 +68,6 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_val
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_file]") {
-    DatabaseTestSetup setup;
 
     const auto filename = "bad-file/folder/temps/bad.db";
     const time_t ts = datetimelib::timestamp_seconds();
@@ -75,7 +87,21 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_fil
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
-    REQUIRE(1 == 1);
+    // create some data and store in a temp file
+    database::Database db;
+    REQUIRE(db.size() == 0);
+
+    const size_t size = 250;
+    populate_database(db, size);
+    // open the database and read the file
+    REQUIRE(db.size() == size);
+
+    auto keys = db.keys();
+
+    Str key = keys.at(25);
+    REQUIRE(key.size() > 6);
+    Str value = db.get(key);
+    REQUIRE(value.size() > 3);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_data]") {

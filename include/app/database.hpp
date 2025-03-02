@@ -7,7 +7,6 @@
 #include <app/types.hpp>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <map>
 #include <mutex>
 #include <sstream>
@@ -41,9 +40,9 @@ namespace app::database {
                     return "proximity";
                 case Value::Distance:
                     return "distance";
-                default:
-                    return "unknown";
             }
+
+            return "unknown";
         }
 
         // return the numeric value
