@@ -172,13 +172,18 @@ namespace app {
             client.ip = jclient[IP];
             client.port = jclient[PORT].template get<int>();
             client.active = jclient[ACTIVE].template get<bool>();
+            if (jclient.contains("last_access")) {
+                client.last_access = jclient["last_access"].template get<int>();
+            } else {
+                client.last_access = 0;
+            }
 
             for (const auto& sensor : jclient[SENSORS]) {
                 if (sensor[TYPE] != TEMPERATURE) continue;
 
                 for (const auto& probe : sensor[PROBES]) {
-                    int sensor = probe[SENSOR].template get<int>();
-                    client.probes[sensor] = probe[LOCATION];
+                    int snr = probe[SENSOR].template get<int>();
+                    client.probes[snr] = probe[LOCATION];
                 }
             }
 

@@ -30,3 +30,25 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
     REQUIRE(status.access_count == 8247);
     REQUIRE(status.errors == 0);
 }
+
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][create_nodes]") {
+    const auto nodes = client::create_nodes();
+    REQUIRE(nodes.size() == 3);
+
+    for (const auto& node : nodes) {
+        spdlog::info("node: {}", node.to_string());
+        REQUIRE(node.port == 2030);
+        REQUIRE(node.ip.starts_with("10.0.1."));
+        REQUIRE(node.probes.size() == 2);
+        REQUIRE(node.last_access == 0);
+        REQUIRE(node.probes.size() == 2);
+        REQUIRE(node.active == true);
+
+        const auto status = node.status;
+        REQUIRE(status.version == "");
+        REQUIRE(status.timestamp == 0);
+        REQUIRE(status.uptime == "");
+        REQUIRE(status.access_count == 0);
+        REQUIRE(status.errors == 0);
+    }
+}

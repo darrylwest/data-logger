@@ -17,12 +17,12 @@ namespace app::client {
     using json = nlohmann::json;
 
     struct ClientStatus {
-        Str version;
-        int timestamp;
-        int started;
-        Str uptime;
-        int access_count;
-        int errors;
+        Str version = "";
+        int timestamp = 0;
+        int started = 0;
+        Str uptime = "";
+        int access_count = 0;
+        int errors = 0;
 
         friend std::ostream& operator<<(std::ostream& os, const ClientStatus v) {
             os << "version: " << v.version << ", ts: " << v.timestamp << ", started: " << v.started

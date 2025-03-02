@@ -89,26 +89,6 @@ const app::client::ClientNode create_test_client() {
     return node;
 }
 
-void test_parse_client_status(Results& r) {
-    // spdlog::set_level(spdlog::level::info);
-
-    const Str json_text
-        = R"({"status":{"version":"0.6.28-139","ts":1738453678,"started":1738012925,"uptime":"5 days, 02:25:53","access":8247,"errors":0}})";
-
-    spdlog::info("parse client status from {}", json_text);
-    app::client::ClientStatus status = app::client::parse_status(json_text);
-    spdlog::info("status: {}", status.to_string());
-
-    r.equals(status.version.starts_with("0.6.28"), "the esp32 client version");
-    r.equals(status.timestamp == 1738453678, "the timestamp");
-    r.equals(status.started == 1738012925, "started");
-    r.equals(status.uptime == "5 days, 02:25:53", "uptime");
-    r.equals(status.access_count == 8247, "access");
-    r.equals(status.errors == 0, "errors");
-
-    spdlog::set_level(spdlog::level::off);
-}
-
 // this really needs a mock
 void test_fetch_client_status(Results& r) {
     // spdlog::set_level(spdlog::level::info);
@@ -151,8 +131,6 @@ Results test_client() {
     Results r = {.name = "Client Tests"};
 
     // spdlog::set_level(spdlog::level::info);
-
-    test_parse_client_status(r);
 
     // TODO : create mock node and data for this
     // skip these two if client node is dead...
