@@ -52,6 +52,32 @@ namespace helpers {
         ]
     })";
 
+    const Str mock_client_status = R"(
+        {"status":
+            {"version":"0.6.28-139",
+            "ts":1738453678,
+            "started":1738012925,
+            "uptime":"5 days, 02:25:53",
+            "access":8247,
+            "errors":0}
+        }
+    )";
+
+    inline app::client::ClientNode create_test_client() {
+        app::client::ClientStatus status = app::client::parse_status(mock_client_status);
+        const auto node = app::client::ClientNode{
+            .location = "test",
+            .ip = "10.0.1.115",
+            .port = 2030,
+            .active = true,
+            .last_access = 0,
+            .probes = {},
+            .status = status,
+        };
+
+        return node;
+    }
+
     const Str full_config_json_text = R"(
     {
         "config-version": "0.6.1-106",
