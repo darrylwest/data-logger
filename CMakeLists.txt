@@ -26,6 +26,8 @@ endif()
 # Useful for IDE integration and static analysis tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+
 # Add version checks for system requirements
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++23" COMPILER_SUPPORTS_CXX20)

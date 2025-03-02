@@ -126,7 +126,7 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[parse_cli][he
     });
 
     INFO(output);
-    REQUIRE(output.find("this help"));
+    REQUIRE(output.find("this help") != Str::npos);
 }
 
 TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][version]") {
@@ -143,7 +143,7 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][versi
     });
 
     INFO(output);
-    REQUIRE(output.find("ersion:"));
+    REQUIRE(output.find("Version:") != Str::npos);
 }
 
 TEST_CASE_METHOD(CLITestSetup, "parse_cli with bad flag", "[parse_cli][bad]") {
