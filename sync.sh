@@ -5,6 +5,14 @@
 
 set -eu
 
+if `uname -m != "x86_64"`
+then
+    echo "ERROR! must run on plaza..."
+    exit 1
+fi
+
+echo "running on plaza..."
+
 # Define source directories
 SRC_DIRS=("include/app" "src" "tests")
 
