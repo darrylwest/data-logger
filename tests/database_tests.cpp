@@ -5,7 +5,6 @@
 #include <app/types.hpp>
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 #include <filesystem>
-#include <random>
 
 #include "test_helpers.hpp"
 
