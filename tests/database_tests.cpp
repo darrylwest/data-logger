@@ -1,33 +1,25 @@
 //
 // Created by Darryl West on 2/27/25.
 //
-#include <catch2/catch_all.hpp>  // For Catch2 v3
-#include <app/types.hpp>
 #include <app/database.hpp>
-#include <random>
+#include <app/types.hpp>
+#include <catch2/catch_all.hpp>  // For Catch2 v3
 #include <filesystem>
-// #include "test_helpers.hpp"
+#include <random>
+
+#include "test_helpers.hpp"
 
 using namespace app;
 
 struct DatabaseTestSetup {
     DatabaseTestSetup() {
-        std::random_device rd;
-        gen = std::mt19937(rd());
         spdlog::set_level(spdlog::level::info);
     }
 
     ~DatabaseTestSetup() {
         spdlog::set_level(spdlog::level::off);
     }
-
-    std::mt19937 gen;
 };
-
-float randomFloat(std::mt19937& gen, float min, float max) {
-    std::uniform_real_distribution<float> distr(min, max);
-    return distr(gen);
-}
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") {
 
@@ -47,7 +39,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_val
     const time_t ts = datetimelib::timestamp_seconds();
     const auto key = app::database::create_key(ts, "tmp.0");
 
-    const auto value = randomFloat(setup.gen, -10.0, 40.0);
+    const auto value = helpers::random_float(-10.0, 40.0);
     const Str sval = std::to_string(value);
     spdlog::info("file: {} {} {}", path.c_str(), key.to_string(), sval);
 
@@ -60,14 +52,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_val
         REQUIRE(false);
     }
 
-    // TODO delete the file
-    INFO("remove the test file");
-    try {
-        std::filesystem::remove(path);
-        REQUIRE(true);
-    } catch (const std::exception& e) {
-        REQUIRE(false);
-    }
+    helpers::remove_temp_path(path);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_file]") {
@@ -88,16 +73,18 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_fil
     } catch (const std::exception& e) {
         REQUIRE(true);
     }
-
-    // TODO delete the file
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
     REQUIRE(1 == 1);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_current]") {
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_data]") {
+    const FilePath path = helpers::create_temp_path("tmpdb_");
+    spdlog::info("file: {}", path.string());
     REQUIRE(1 == 1);
+
+    helpers::remove_temp_path(path);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][reading_types]") {

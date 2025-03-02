@@ -219,27 +219,6 @@ void test_database_data(Results& r) {
     r.equals(ok, "save the database");
 }
 
-void test_append_key_value(Results& r) {
-    // spdlog::set_level(spdlog::level::info);
-
-    const FilePath path = "/tmp/append.db";
-    const auto key = app::database::create_key(1739563051, "tmp.0");
-    const auto value = "7.553";
-    app::database::append_key_value(path, key, value);
-
-    r.equals(true, "didn't throw");
-    // TODO read the file back and verify key/value
-
-    try {
-        const FilePath badfile = "bad-file/folder/temps/bad.db";
-        app::database::append_key_value(badfile, key, value);
-        r.equals(false, "fail: should throw on filename: bad-file/...");
-    } catch (const app::FileException& e) {
-        r.equals(true, "should throw");
-        spdlog::error("bad file: {}", e.what());
-    }
-}
-
 void test_read_current(Results& r) {
     spdlog::set_level(spdlog::level::err);
 
@@ -353,7 +332,6 @@ Results test_database() {
     // spdlog::set_level(spdlog::level::info);
 
     test_database_data(r);
-    test_append_key_value(r);
     test_read_current(r);
 
     spdlog::set_level(spdlog::level::off);

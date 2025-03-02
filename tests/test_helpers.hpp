@@ -1,11 +1,62 @@
-
+//
+// dpw
+//
 #pragma once
 
 #include <app/types.hpp>
 #include <app/cli.hpp>
+#include <filesystem>
+#include <fstream>
+#include <spdlog/spdlog.h>
 
 namespace helpers {
     constexpr double EPSILON = 1e-5;
+
+    inline std::random_device random_device;  // Obtain a random number from hardware
+    inline std::mt19937 generator(random_device());
+
+    inline auto random_int(int min = 1'000'000, int max = 9'999'999) {
+        std::uniform_int_distribution<int> distr(min, max);
+        return distr(generator);
+    }
+
+    inline float random_float(float min = -20.0, float max = 100.0) {
+        std::uniform_real_distribution<float> distr(min, max);
+        return distr(generator);
+    }
+
+
+    // create a random filename
+    inline auto create_temp_path(const Str& name = "tmp-file_") {
+        // Get the system's temporary directory
+        std::filesystem::path tempDir = std::filesystem::temp_directory_path();
+
+        // Generate a unique filename
+        Str filename = name + std::to_string(random_int()) + ".tmp"; // Simple unique filename
+
+        // Create a temporary file path
+        FilePath path = tempDir / filename;
+
+        // Create the temporary file
+        std::ofstream ofs(path);
+        if (!ofs) {
+            throw std::runtime_error("Failed to create temporary file");
+        }
+
+        // Close the file (optional, as it will be closed when the ofstream goes out of scope)
+        ofs.close();
+
+        return path;
+    }
+
+    inline auto remove_temp_path(const FilePath& path) {
+        try {
+            std::filesystem::remove_all(path);
+        } catch (const std::exception& e) {
+            spdlog::error("Failed to remove temporary file {}", e.what());
+        }
+    }
+
 
     inline std::string capture_stdout(Func<void()> func) {
         std::ostringstream oss;
