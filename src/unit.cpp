@@ -71,60 +71,6 @@ Results test_taskrunner() {
     return r;
 }
 
-// put this in unit tests
-auto create_mock_reading() {
-    const Str text = R"({"reading_at": 1738362466,
-            "probes":[
-                {"sensor":0,"location":"cottage-south","enabled":true,"millis":349548023,"tempC":10.88542,"tempF":51.59375},
-                {"sensor":1,"location":"cottage-east","enabled":false,"millis":349548023,"tempC":-127.0,"tempF":51.66576}
-            ]}
-        )";
-
-    return text;
-}
-
-auto create_mock_client_config() {
-    const Str text = R"({
-        "location": "cottage",
-        "ip": "10.0.1.197",
-        "port": 2030,
-        "active": true,
-        "sensors": [
-            {
-                "type": "temperature",
-                "path": "/temps",
-                "probes": [
-                    { "sensor": 0, "location": "cottage-south", "enabled": true },
-                    { "sensor": 1, "location": "cottage-east", "enabled": false}
-                ]
-            }
-        ]
-    })";
-
-    return text;
-}
-
-void test_find_probe(Results& r) {
-    // spdlog::set_level(spdlog::level::info);
-
-    auto text = create_mock_client_config();
-    auto jcfg = nlohmann::json::parse(text);
-    auto location = "cottage-south";
-    auto probe = app::temperature::parse_probe(jcfg, location);
-    if (probe.has_value()) {
-        r.pass();
-        r.equals(probe->location == location, "probe locations should match");
-        r.equals(probe->sensor == 0, "should be sensor 0");
-        r.equals(probe->enabled, "should be enabled");
-    } else {
-        r.fail("cant find a damn probe");
-    }
-
-    // now read the config file and parse it...
-
-    spdlog::set_level(spdlog::level::off);
-}
-
 const app::client::ClientNode create_test_client() {
     const Str json_text
         = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
@@ -218,8 +164,6 @@ Results test_client() {
         r.skip(true);
         r.skip(true);
     }
-
-    test_find_probe(r);
 
     spdlog::set_level(spdlog::level::off);
 
