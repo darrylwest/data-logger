@@ -19,7 +19,7 @@ namespace app::client {
     constexpr time_t TIMEOUT_MILLIS = 6000;
     using json = nlohmann::json;
 
-    auto create_http_client(const Str& url) {
+    Func<httplib::Client(const Str& url)> http_client_creator = [](const Str& url) {
         httplib::Client client(url);
 
         // set the timeouts
@@ -29,7 +29,7 @@ namespace app::client {
         client.set_write_timeout(timeout);
 
         return client;
-    }
+    };
 
     ClientStatus parse_status(const Str& json_text) {
         json jsn = json::parse(json_text);
@@ -55,7 +55,7 @@ namespace app::client {
     // fetch status data from the node client
     ClientStatus fetch_status(ClientNode& node) {
         const auto url = fmt::format("http://{}:{}", node.ip, node.port);
-        auto client = create_http_client(url);
+        auto client = http_client_creator(url);
 
         const auto path = "/status";
         spdlog::info("fetch from url: {}{}", url, path);
@@ -82,7 +82,7 @@ namespace app::client {
     // fetch temperature data from the node client
     temperature::TemperatureData fetch_temps(ClientNode& node) {
         const auto url = fmt::format("http://{}:{}", node.ip, node.port);
-        auto client = create_http_client(url);
+        auto client = http_client_creator(url);
         const auto path = "/temps";
 
         spdlog::info("fetch from url: {}{}", url, path);
@@ -113,7 +113,7 @@ namespace app::client {
     // send/put client node reading to web server (if server is available) else return false
     bool put_temps(const Str& url, const database::DbKey& key, const temperature::Probe& probe) {
         spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC, probe.tempF);
-        auto client = create_http_client(url);
+        auto client = http_client_creator(url);
 
         const auto path = "/api/temperature";
 
@@ -149,7 +149,7 @@ namespace app::client {
                 nodes.push_back(parse_client_node(jclient));
             }
         } catch (const std::exception& e) {
-            Str msg = "error parsing config file: ";
+            Str msg = fmt::format("error parsing config file: {}", e.what());
             spdlog::error(msg);
             throw app::ParseException(msg);
         }

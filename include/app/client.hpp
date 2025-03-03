@@ -8,7 +8,6 @@
 #include <app/database.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
-#include <iostream>
 #include <map>
 #include <nlohmann/json.hpp>
 #include <sstream>
