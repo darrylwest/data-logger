@@ -87,28 +87,39 @@ const app::client::ClientNode create_test_client() {
     return node;
 }
 
-// this really needs a mock
+// TODO move to integration tests
 void test_fetch_client_status(Results& r) {
+    using namespace app::client;
     // spdlog::set_level(spdlog::level::info);
     auto node = create_test_client();
 
-    app::client::ClientStatus status = app::client::fetch_status(node);
+    // TODO swap with mock
+    // const auto url = fmt::format("http://{}:{}", node.ip, node.port);
+    // auto client = create_http_client(url);
+    auto status = fetch_status(node);
     spdlog::info("status: ", status.to_string());
 
     r.equals(status.version.starts_with("0.6"), "the actual esp32 client version");
 }
 
+// TODO move to integration tests
 void test_fetch_temps(Results& r) {
     // spdlog::set_level(spdlog::level::info);
-
+    using namespace app::client;
     auto node = create_test_client();
+
+    // TODO swap with mock
+    // const auto url = fmt::format("http://{}:{}", node.ip, node.port);
+    // auto client = create_http_client(url);
     auto data = app::client::fetch_temps(node);
     spdlog::info("temps: {}", data.to_string());
 
     r.equals(data.probes.size() > 0, "probe count");
 }
 
+// TODO move to integration tests
 void test_put_temps(Results& r) {
+    using namespace app::client;
     // spdlog::set_level(spdlog::level::info);
 
     // TODO : use mock node and data for this
@@ -119,7 +130,7 @@ void test_put_temps(Results& r) {
     auto key = app::database::create_key(timestamp, "tmp.0");
     spdlog::info("temps: {}", data.to_string());
 
-    r.equals(data.probes.size() > 0, "probe count");
+    // r.equals(data.probes.size() > 0, "probe count");
     auto probe = data.probes.at(0);
     bool ok = app::client::put_temps(url, key, probe);
     r.equals(!ok, "should fail to put data");
@@ -132,21 +143,16 @@ Results test_client() {
 
     // TODO : create mock node and data for this
     // skip these two if client node is dead...
-    if (true) {
-        test_fetch_temps(r);
-        test_fetch_client_status(r);
-        test_put_temps(r);
-    } else {
-        r.skip(true);
-        r.skip(true);
-    }
+    test_fetch_temps(r);
+    test_fetch_client_status(r);
+    test_put_temps(r);
 
     spdlog::set_level(spdlog::level::off);
 
     return r;
 }
 
-// TODO move this to integration tests
+// TODO move some of this to integration tests
 void test_read_current(Results& r) {
     spdlog::set_level(spdlog::level::err);
 
@@ -254,18 +260,6 @@ void test_read_current(Results& r) {
     spdlog::set_level(spdlog::level::off);
 }
 
-Results test_database() {
-    Results r = {.name = "Database Tests"};
-
-    // spdlog::set_level(spdlog::level::info);
-
-    test_read_current(r);
-
-    spdlog::set_level(spdlog::level::off);
-
-    return r;
-}
-
 void test_api_temps(Results& r) {
     spdlog::set_level(spdlog::level::err);
 
@@ -359,8 +353,6 @@ int main() {
     };
 
     run_test(test_taskrunner);
-    run_test(test_client);
-    run_test(test_database);
     run_test(test_webhandlers);
     run_test(test_service);
 

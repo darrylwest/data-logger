@@ -42,7 +42,7 @@ namespace app::database {
                     return "distance";
             }
 
-            return "unknown";
+            throw std::invalid_argument("unknown value type");
         }
 
         // return the numeric value
