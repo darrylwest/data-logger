@@ -5,9 +5,6 @@
 #pragma once
 
 #include <app/types.hpp>
-#include <atomic>
-#include <chrono>
-#include <mutex>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <thread>

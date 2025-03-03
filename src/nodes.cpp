@@ -99,7 +99,6 @@ namespace app::nodes {
                     return;
                 }
 
-                // const auto url = fmt::format("http://{}:{}", node.ip, node.port);
                 const auto status = app::client::fetch_status(node);
 
                 const auto isodate = datetimelib::ts_to_local_isodate(status.timestamp);
