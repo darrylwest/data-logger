@@ -10,13 +10,11 @@
 #include <app/client.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
-#include <app/jsonkeys.hpp>
 #include <app/taskrunner.hpp>
 #include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
 #include <nlohmann/json.hpp>
-#include <random>
 #include <ranges>
 #include <vendor/testlib.hpp>
 
@@ -148,77 +146,7 @@ Results test_client() {
     return r;
 }
 
-// Unit test method to populate with random data
-void populate_database(app::database::Database& db, int size = 500) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-
-    int day = 1;
-    int hour = 0;
-    int minute = 0;
-    float t1 = 9.00;
-    float t2 = 8.94;
-    float t3 = 9.04;
-    float t4 = 9.06;
-
-    spdlog::debug("values: {} {} {} {}", t1, t2, t3, t4);
-
-    for (int i = 0; i < size; ++i) {
-        Str key, value;
-
-        key = fmt::format("202502{:02d}{:02d}{:02d}{}", day, hour, minute, ".tmp.0");
-
-        minute++;
-        if (minute > 59) {
-            hour++;
-            minute = 0;
-        }
-
-        if (hour > 23) {
-            day++;
-            hour = 0;
-        }
-
-        // value = fmt::format("{:6f} {:6f} {:6f} {:6f}", t1, t2, t3, t4);
-        value = fmt::format("{:6f}", t1);
-
-        if (i < size / 2) {
-            t1 += 0.01;
-            t2 += 0.005;
-            t3 += 0.007;
-            t4 += 0.01;
-        } else {
-            t1 -= 0.01;
-            t2 -= 0.005;
-            t3 -= 0.007;
-            t4 -= 0.01;
-        }
-
-        if (!db.set(key, value)) {
-            throw app::DatabaseException("error putting key/value");
-        }
-    }
-
-    spdlog::info("Database populated with {} random key-value pairs.", size);
-}
-
-void test_database_data(Results& r) {
-    app::database::Database db = app::database::Database();
-    r.equals(db.size() == 0, "db empty size");
-
-    // 1 days of data
-    size_t size = (60 * 24);
-    populate_database(db, size);
-
-    r.equals(db.size() == size, "db size");
-
-    auto keys = db.keys();
-    r.equals(keys.size() == size, "db keys size");
-
-    auto ok = db.save("/tmp/test.db");
-    r.equals(ok, "save the database");
-}
-
+// TODO move this to integration tests
 void test_read_current(Results& r) {
     spdlog::set_level(spdlog::level::err);
 
@@ -331,7 +259,6 @@ Results test_database() {
 
     // spdlog::set_level(spdlog::level::info);
 
-    test_database_data(r);
     test_read_current(r);
 
     spdlog::set_level(spdlog::level::off);

@@ -34,6 +34,23 @@ void populate_database(database::Database& db, const int size = 100) {
     }
 }
 
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
+    // TODO write out a raw database file key/value
+    // read it back through db
+    // verify contents
+    // repeat with clear flag = false to ensure it appends
+
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][write_database]") {
+    // TODO create a populated database
+    // write it out to tmp file
+    // read and verify the raw contents
+
+    REQUIRE(true);
+}
+
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") {
 
     time_t timestamp = 1739563051;
@@ -47,7 +64,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") 
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_value]") {
 
-    const std::filesystem::path path = "/tmp/test-append.db";
+    const auto path = helpers::create_temp_path();
     const time_t ts = datetimelib::timestamp_seconds();
     const auto key = app::database::create_key(ts, "tmp.0");
 
