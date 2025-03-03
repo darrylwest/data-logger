@@ -19,7 +19,7 @@ namespace app::client {
     constexpr time_t TIMEOUT_MILLIS = 6000;
     using json = nlohmann::json;
 
-    httplib::Client create_http_client(const Str& url) {
+    auto create_http_client(const Str& url) {
         httplib::Client client(url);
 
         // set the timeouts

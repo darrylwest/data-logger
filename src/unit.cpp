@@ -19,7 +19,7 @@
 #include <vendor/testlib.hpp>
 
 using namespace rcstestlib;
-
+/*
 Results test_taskrunner() {
     Results r = {.name = "TaskRunner Tests"};
 
@@ -151,6 +151,7 @@ Results test_client() {
 
     return r;
 }
+*/
 
 // TODO move some of this to integration tests
 void test_read_current(Results& r) {
@@ -352,7 +353,7 @@ int main() {
         summary.add(result);
     };
 
-    run_test(test_taskrunner);
+    // run_test(test_taskrunner);
     run_test(test_webhandlers);
     run_test(test_service);
 

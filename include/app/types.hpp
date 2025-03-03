@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <httplib.h>
 
 #include <filesystem>
 #include <functional>
@@ -26,5 +25,3 @@ template <typename T> using Func = std::function<T>;
 template <typename K, typename V> using HashMap = std::unordered_map<K, V>;
 
 template <typename T> using Optional = std::optional<T>;
-
-using HttpClient = httplib::ClientImpl;
