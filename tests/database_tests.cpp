@@ -36,11 +36,31 @@ void populate_database(database::Database& db, const int size = 100) {
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
     // TODO write out a raw database file key/value
-    // read it back through db
-    // verify contents
-    // repeat with clear flag = false to ensure it appends
+    const Str data = helpers::create_raw_data();
+    spdlog::info("raw data: {}", data);
+    const auto path = helpers::create_temp_path("db-test_");
 
-    REQUIRE(true);
+    spdlog::info("write to: {}", path.string());
+
+    std::ofstream os(path);
+    os << data;
+    os.close();
+
+    database::Database db;
+    REQUIRE(db.size() == 0);
+
+    bool ok = db.read(path);
+    REQUIRE(ok);
+    REQUIRE(db.size() == 12);
+
+    for (const auto& key : db.keys()) {
+        auto value = db.get(key);
+        float v = std::stof(value);
+        REQUIRE(v < 17.0);
+        REQUIRE(v > 15.0);
+    }
+
+    helpers::remove_temp_path(path);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][write_database]") {

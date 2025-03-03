@@ -69,6 +69,24 @@ namespace helpers {
         return oss.str();
     }
 
+    const Str create_raw_data() {
+        Str ss = "1740422400.cottage.0=15.343750\n";
+        ss.append("1740422700.cottage.0=15.458330\n");
+        ss.append("1740423000.cottage.0=15.651040\n");
+        ss.append("1740423300.cottage.0=15.739580\n");
+        ss.append("1740423600.cottage.0=16.010420\n");
+        ss.append("1740423900.cottage.0=16.192711\n");
+        ss.append("1740424200.cottage.0=16.244789\n");
+        ss.append("1740424500.cottage.0=16.062500\n");
+        ss.append("1740424800.cottage.0=16.041670\n");
+        ss.append("1740425100.cottage.0=15.833330\n");
+        ss.append("1740425400.cottage.0=15.812500\n");
+        ss.append("1740425700.cottage.0=16.234381\n");
+
+        return ss;
+    }
+
+
     inline app::config::WebConfig default_web_config = {
         .scheme = "http",
         .host = "0.0.0.0",
