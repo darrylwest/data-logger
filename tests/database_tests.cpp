@@ -35,10 +35,10 @@ void populate_database(database::Database& db, const int size = 100) {
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
-    // TODO write out a raw database file key/value
+    // write out a raw database file key/value
     const Str data = helpers::create_raw_data();
     spdlog::info("raw data: {}", data);
-    const auto path = helpers::create_temp_path("db-test_");
+    const auto path = helpers::create_temp_path("db-read-test_");
 
     spdlog::info("write to: {}", path.string());
 
@@ -64,11 +64,21 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][write_database]") {
-    // TODO create a populated database
-    // write it out to tmp file
-    // read and verify the raw contents
+    database::Database db;
+    REQUIRE(db.size() == 0);
+    size_t size = 20;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
 
-    REQUIRE(true);
+    const auto path = helpers::create_temp_path("db-write-test_");
+    bool ok = db.save(path);
+    REQUIRE(ok);
+
+    database::Database rdb;
+    rdb.read(path);
+    REQUIRE(rdb.size() == db.size());
+
+    helpers::remove_temp_path(path);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") {
