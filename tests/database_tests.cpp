@@ -12,7 +12,7 @@ using namespace app;
 
 struct DatabaseTestSetup {
     DatabaseTestSetup() {
-        spdlog::set_level(spdlog::level::info);
+        spdlog::set_level(spdlog::level::critical);
     }
 
     ~DatabaseTestSetup() {
