@@ -19,7 +19,20 @@ struct ClientTestSetup {
     }
 };
 
-// TODO create mock client node to test fetch_temps, put_temps, fetch_status
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
+    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
+    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {
+    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
+    REQUIRE(true);
+}
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
     const Str json = helpers::mock_client_status;

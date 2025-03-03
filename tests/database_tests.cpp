@@ -34,6 +34,26 @@ void populate_database(database::Database& db, const int size = 100) {
     }
 }
 
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
+    // TODO implement
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
+    // TODO implement
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][last_n]") {
+    // TODO implement
+    REQUIRE(true);
+}
+
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][search]") {
+    // TODO implement
+    REQUIRE(true);
+}
+
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
     // write out a raw database file key/value
     const Str data = helpers::create_raw_data();
