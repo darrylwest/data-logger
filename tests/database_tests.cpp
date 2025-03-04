@@ -56,14 +56,13 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][search]") {
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
     // write out a raw database file key/value
-    const Str data = helpers::create_raw_data();
-    spdlog::info("raw data: {}", data);
+    spdlog::info("raw data: {}", helpers::raw_temps_data);
     const auto path = helpers::create_temp_path("db-read-test_");
 
     spdlog::info("write to: {}", path.string());
 
     std::ofstream os(path);
-    os << data;
+    os << helpers::raw_temps_data;
     os.close();
 
     database::Database db;

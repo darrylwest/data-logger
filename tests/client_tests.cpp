@@ -23,7 +23,7 @@ const client::ClientNode create_test_client() {
     const Str json_text
         = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
 
-    app::client::ClientStatus status = app::client::parse_status(json_text);
+    client::ClientStatus status = client::parse_status(json_text);
     const auto node = app::client::ClientNode{
         .location = "test",
         .ip = "10.0.1.115",
