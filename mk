@@ -28,12 +28,12 @@ do
         build)
             clear
 
-            (cd build && time make -j8 || exit 1)
+            (cd build && time make -j16 || exit 1)
 
             shift
         ;;
         unit)
-            (cd build && make -j8)
+            # (cd build && time make -j16)
             $root/build/datalogger-unit
             $root/build/unit_tests
 
