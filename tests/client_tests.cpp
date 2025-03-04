@@ -48,7 +48,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
         return client;
     };
 
-    // use this to point to an altenate; a mock when it's ready
+    // use this to point to an alternate; a mock when it's ready
     app::client::http_client_creator = creator;
 
     using namespace app::client;
@@ -69,7 +69,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
         return client;
     };
 
-    // use this to point to an altenate; a mock when it's ready
+    // use this to point to an alternate; a mock when it's ready
     app::client::http_client_creator = creator;
 
     using namespace app::client;
@@ -88,7 +88,29 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-    REQUIRE(true);
+    auto creator= client::http_client_creator = [](const Str& url) {
+        Client client(url);
+        spdlog::warn("not a mock {}", url);
+        return client;
+    };
+
+    // use this to point to an alternate; a mock when it's ready
+    app::client::http_client_creator = creator;
+
+    using namespace app::client;
+
+    auto url = "http://badhost:9090";
+    auto node = create_test_client();
+    auto data = app::client::fetch_temps(node);
+    time_t timestamp = 1739563051;
+    auto key = app::database::create_key(timestamp, "tmp.0");
+    spdlog::info("temps: {}", data.to_string());
+
+    // r.equals(data.probes.size() > 0, "probe count");
+    auto probe = data.probes.at(0);
+    bool ok = app::client::put_temps(url, key, probe);
+
+    REQUIRE(!ok);
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
