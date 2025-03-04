@@ -39,6 +39,18 @@ const client::ClientNode create_test_client() {
 
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
+    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
+    // ok, this is kind of stupid because it does the same as the default
+    // but, it could be modified to point to a test server by modifying the url
+    auto creator= client::http_client_creator = [](const Str& url) {
+        auto nurl = "http://10.0.1.197:2030";
+        Client client(url);
+        spdlog::warn("ok I might just change this {} to this {}...", url, nurl);
+        return client;
+    };
+
+    // use this to point to an altenate; a mock when it's ready
+    app::client::http_client_creator = creator;
 
     using namespace app::client;
     auto node = create_test_client();
