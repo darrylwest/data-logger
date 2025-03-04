@@ -6,6 +6,7 @@
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 
 #include "test_helpers.hpp"
+#include "mock_http_client.hpp"
 
 using namespace app;
 

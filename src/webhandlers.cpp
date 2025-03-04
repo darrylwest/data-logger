@@ -156,11 +156,8 @@ namespace app::webhandlers {
         data.reserve(chart.temps.size());
 
         for (const auto& [key, values] : chart.temps) {
-            const json sensor = {{"sensor_id", key},
-                                 {"label", key},
-                                 {"data", values},
-                                 {"borderColor", next_color()},
-                                 {"fill", false}};
+            const json sensor = {
+                {"sensor_id", key}, {"label", key}, {"data", values}, {"borderColor", next_color()}, {"fill", false}};
             data.push_back(sensor);
         }
 

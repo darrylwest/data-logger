@@ -60,8 +60,8 @@ namespace app::nodes {
                     // can be disabled by through configuration
                     // TODO - find the probe from jcfg to get enabled
 
-                    auto key = app::database::create_key(data.reading_at,
-                                                         fmt::format("{}.{}", node.location, probe.sensor));
+                    auto key
+                        = app::database::create_key(data.reading_at, fmt::format("{}.{}", node.location, probe.sensor));
 
                     spdlog::info("file: {}, {}={}", path.string(), key.to_string(), probe.tempC);
 

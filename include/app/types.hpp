@@ -4,7 +4,6 @@
 
 #pragma once
 
-
 #include <filesystem>
 #include <functional>
 #include <optional>
