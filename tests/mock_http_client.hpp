@@ -11,12 +11,16 @@
 
 class MockHttpClient : public httplib::Client {
 public:
-    explicit MockHttpClient(const Str& host) : Client(host) {}
+    explicit MockHttpClient(const Str& host) : Client(host) { }
 
     // GET
     Result Get(const char* path) {
-        spdlog::debug("get: {}", path);
-        return std::move(expected_response);
+        spdlog::info("get: {}", path);
+        auto result = Result{};
+        // result->body = "bad";
+        // result->status = 401;
+
+        return result;
     }
 
     // POST
@@ -37,10 +41,13 @@ public:
         return std::move(expected_response);
     }
 
+    /*
     void set_expected_response(const Str& body, const int status) {
-        expected_response->body = body;
-        expected_response->status = status;
+        // expected_response = Result{};
+        // expected_response->body = body;
+        // expected_response->status = status;
     }
+    */
 private:
     Result expected_response;
 };

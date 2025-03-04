@@ -20,7 +20,7 @@ struct ClientTestSetup {
     }
 };
 
-const app::client::ClientNode create_test_client() {
+const client::ClientNode create_test_client() {
     const Str json_text
         = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
 
@@ -40,17 +40,28 @@ const app::client::ClientNode create_test_client() {
 
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
-    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-    client::http_client_creator = [](const Str& url) -> httplib::Client {
-        httplib::Client client(url);
+    auto creator = [](const Str& url) {
+        auto client = MockHttpClient(url);
+        /*
+        const Str body
+            = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
+
+        client.set_expected_response(body, 200);
+        */
 
         return client;
-    };
+   };
+
+    // auto test = creator("http://test:2020");
+    // auto r = test.Get("/test");
+    // spdlog::info("{} {}", r->body, r->status);
+
+    client::http_client_creator = creator;
 
     using namespace app::client;
     auto node = create_test_client();
 
-    auto status = app::client::fetch_status(node);
+    auto status = fetch_status(node);
     spdlog::info("errors: {}", status.to_string());
 
     REQUIRE(true);
