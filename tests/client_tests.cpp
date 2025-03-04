@@ -11,7 +11,7 @@ using namespace app;
 
 struct ClientTestSetup {
     ClientTestSetup() {
-        spdlog::set_level(spdlog::level::info);
+        spdlog::set_level(spdlog::level::critical);
     }
 
     ~ClientTestSetup() {
