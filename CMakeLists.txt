@@ -128,7 +128,7 @@ set(COMMON_SOURCES
 add_executable(data-logger
     ${COMMON_SOURCES}
     ${SRC_DIR}/main.cpp
-        tests/version_tests.cpp)
+    tests/version_tests.cpp)
 
 add_executable(data-tasks
     ${COMMON_SOURCES}
@@ -142,21 +142,20 @@ add_executable(datalogger-integration
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/integration.cpp)
 
-
 add_executable(unit_tests
-        ${COMMON_SOURCES}
-        tests/database_tests.cpp
-        tests/taskrunner_tests.cpp
-        tests/temperature_tests.cpp
-        tests/main_unit.cpp
-        tests/cfgsvc_tests.cpp
-        tests/client_tests.cpp
-        tests/cli_tests.cpp
-        tests/exceptions_tests.cpp
-        tests/webhandlers_tests.cpp
-        tests/service_tests.cpp
-        tests/datetimelib_tests.cpp
-        tests/version_tests.cpp
+    ${COMMON_SOURCES}
+    tests/database_tests.cpp
+    tests/taskrunner_tests.cpp
+    tests/temperature_tests.cpp
+    tests/main_unit.cpp
+    tests/cfgsvc_tests.cpp
+    tests/client_tests.cpp
+    tests/cli_tests.cpp
+    tests/exceptions_tests.cpp
+    tests/webhandlers_tests.cpp
+    tests/service_tests.cpp
+    tests/datetimelib_tests.cpp
+    tests/version_tests.cpp
 )
 
 # Add optimization flags based on build type
@@ -169,6 +168,7 @@ endif()
 # Specify include directories for tests
 # target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
 # target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
+
 # Configure all targets
 # Create a function for setting up common target properties
 function(setup_target_properties target)
@@ -180,6 +180,8 @@ function(setup_target_properties target)
     target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
     target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
     set_target_properties(${target} PROPERTIES UNITY_BUILD ON)
+    # Add precompiled header support
+    target_precompile_headers(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include/precompiled.hpp)
 endfunction()
 
 # Use the function for each target
@@ -230,3 +232,4 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/
             PATTERN "*.hpp"
             PATTERN "*.h"
 )
+
