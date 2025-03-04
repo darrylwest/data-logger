@@ -47,7 +47,7 @@ find_package(OpenSSL 3.0 REQUIRED)
 find_package(ZLIB 1.2.11 REQUIRED)
 
 # Add datetimelib as a subdirectory
-add_subdirectory(../datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
+add_subdirectory(datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
 
 # MacOS universal binary setup
 if(APPLE)
