@@ -22,11 +22,11 @@ namespace app::webhandlers {
     using namespace app::database;
 
     struct TempsData {
-        std::time_t ts;
-        Str label;
-        float tempC;
-        float tempF;
-        Str location;
+        std::time_t ts{};
+        Str label{};
+        float tempC{};
+        float tempF{};
+        Str location{};
     };
 
     auto map_temps_data(const std::map<Str, Str>& temps) {
