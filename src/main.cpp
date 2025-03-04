@@ -50,7 +50,8 @@ int main(int argc, char* argv[]) {
     const auto jconf = app::cfgsvc::webservice();
     const auto webconfig = app::config::webconfig_from_json(jconf);
 
-    const auto params = app::config::CliParams{.argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
+    const auto params = app::config::CliParams{
+        .argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
     auto config = app::config::parse_cli(params);
     spdlog::info("DataLogger Version: {}", vers.to_string());
 

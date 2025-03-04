@@ -60,8 +60,8 @@ namespace app::nodes {
                     // can be disabled by through configuration
                     // TODO - find the probe from jcfg to get enabled
 
-                    auto key
-                        = app::database::create_key(data.reading_at, fmt::format("{}.{}", node.location, probe.sensor));
+                    auto key = app::database::create_key(
+                        data.reading_at, fmt::format("{}.{}", node.location, probe.sensor));
 
                     spdlog::info("file: {}, {}={}", path.string(), key.to_string(), probe.tempC);
 
@@ -102,12 +102,13 @@ namespace app::nodes {
                 const auto status = app::client::fetch_status(node);
 
                 const auto isodate = datetimelib::ts_to_local_isodate(status.timestamp);
-                spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp, status.uptime,
-                             status.access_count, status.errors);
+                spdlog::info("ts: {}, uptime: {}, access: {}, errors: {}", status.timestamp,
+                             status.uptime, status.access_count, status.errors);
 
                 auto key = app::database::create_key(status.timestamp, node.location);
                 const FilePath path = "data/status/current." + node.location + ".db";
-                spdlog::info("file: {}, k/v: {}={}", path.string(), key.to_string(), status.to_string());
+                spdlog::info("file: {}, k/v: {}={}", path.string(), key.to_string(),
+                             status.to_string());
 
                 app::database::append_key_value(path, key, status.to_string());
             } catch (const std::exception& e) {

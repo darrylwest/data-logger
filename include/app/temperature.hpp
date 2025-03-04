@@ -31,8 +31,9 @@ namespace app::temperature {
             os << "reading_at: " << v.reading_at;
 
             for (const auto& probe : v.probes)
-                os << ", sensor: " << probe.sensor << ", location: " << probe.location << ", enabled: " << probe.enabled
-                   << ", tempC: " << probe.tempC << ", tempF: " << probe.tempF;
+                os << ", sensor: " << probe.sensor << ", location: " << probe.location
+                   << ", enabled: " << probe.enabled << ", tempC: " << probe.tempC
+                   << ", tempF: " << probe.tempF;
 
             return os;
         }

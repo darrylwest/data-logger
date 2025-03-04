@@ -30,7 +30,8 @@ namespace app {
             try {
                 return instance().app_config.at(node_name);
             } catch (const std::exception& e) {
-                const auto msg = fmt::format("key not found in config: {}: {}", node_name, e.what());
+                const auto msg
+                    = fmt::format("key not found in config: {}: {}", node_name, e.what());
                 spdlog::error(msg);
                 throw KeyException("key exception: " + msg);
             }
@@ -122,7 +123,8 @@ namespace app {
                 try {
                     data = json::parse(fin);
                 } catch (const json::parse_error& e) {
-                    Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename, e.what());
+                    Str msg = fmt::format("JSON parse error on config: {}, {}", ctx.cfg_filename,
+                                          e.what());
                     spdlog::error(msg);
                     throw app::ParseException(msg);
                 }
@@ -177,13 +179,17 @@ namespace app {
         }
 
         // Public interface implementations
-        json get_node(const StrView& node_name) { return ConfigService::instance().get_node(node_name); }
+        json get_node(const StrView& node_name) {
+            return ConfigService::instance().get_node(node_name);
+        }
 
         json webservice() { return ConfigService::instance().webservice(); }
 
         json clients() { return ConfigService::instance().clients(); }
 
-        json client(const std::string& client_name) { return ConfigService::instance().client(client_name); }
+        json client(const std::string& client_name) {
+            return ConfigService::instance().client(client_name);
+        }
 
         void configure(const ServiceContext& config) { ConfigService::configure(config); }
 

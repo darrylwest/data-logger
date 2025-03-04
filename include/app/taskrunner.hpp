@@ -27,8 +27,8 @@ namespace app::taskrunner {
 
         friend std::ostream& operator<<(std::ostream& os, const Task v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
-            os << v.name << ", started_at: " << v.started_at << ", last_run: " << v.last_run << ", period: " << v.period
-               << ", run_count: " << v.run_count;
+            os << v.name << ", started_at: " << v.started_at << ", last_run: " << v.last_run
+               << ", period: " << v.period << ", run_count: " << v.run_count;
 
             return os;
         }

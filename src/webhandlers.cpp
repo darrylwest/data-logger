@@ -93,7 +93,8 @@ namespace app::webhandlers {
         // create the labels
         if (false) {
             for (const auto& d : data) {
-                spdlog::info("{} {} {:.2f}°C {:.2f}°F {}", d.ts, d.label, d.tempC, d.tempF, d.location);
+                spdlog::info("{} {} {:.2f}°C {:.2f}°F {}", d.ts, d.label, d.tempC, d.tempF,
+                             d.location);
             }
         }
 
@@ -156,8 +157,11 @@ namespace app::webhandlers {
         data.reserve(chart.temps.size());
 
         for (const auto& [key, values] : chart.temps) {
-            const json sensor = {
-                {"sensor_id", key}, {"label", key}, {"data", values}, {"borderColor", next_color()}, {"fill", false}};
+            const json sensor = {{"sensor_id", key},
+                                 {"label", key},
+                                 {"data", values},
+                                 {"borderColor", next_color()},
+                                 {"fill", false}};
             data.push_back(sensor);
         }
 

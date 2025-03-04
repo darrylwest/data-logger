@@ -75,8 +75,8 @@ int main(int argc, char* argv[]) {
 
     const auto vers = app::Version();
     Str logfile = "logs/data-tasks.log";
-    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan, vers.to_string(), logfile, pid,
-               reset);
+    fmt::print("{}Starting data-tasks, Version: {}, logging at {}, PID: {}{}\n", cyan,
+               vers.to_string(), logfile, pid, reset);
 
     const auto shutdown = [](int code) { exit(code); };
     configure_logging(logfile, !testing);
@@ -85,7 +85,8 @@ int main(int argc, char* argv[]) {
     const auto jconf = app::cfgsvc::webservice();
     const auto webconfig = app::config::webconfig_from_json(jconf);
 
-    const auto params = app::config::CliParams{.argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
+    const auto params = app::config::CliParams{
+        .argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
 
     auto config = app::config::parse_cli(params);
     spdlog::info("DataTasks Version: {}", vers.to_string());

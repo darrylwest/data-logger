@@ -36,7 +36,8 @@ namespace app::webhandlers {
     };
 
     // compatible with Chart.js
-    const std::array<Str, 8> common_colors = {"red", "green", "blue", "yellow", "black", "cyan", "magenta", "orange"};
+    const std::array<Str, 8> common_colors
+        = {"red", "green", "blue", "yellow", "black", "cyan", "magenta", "orange"};
 
     // read the temperature database and create the chart data
     ChartData create_chart_data(const Database& db, const ChartConfig& cfg);

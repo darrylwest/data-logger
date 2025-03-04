@@ -67,7 +67,8 @@ namespace app::client {
                 return parse_status(res->body);
             } else {
                 auto err = httplib::to_string(res.error());
-                error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
+                error_message
+                    = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
                 spdlog::error(error_message);
             }
         } else {
@@ -96,7 +97,8 @@ namespace app::client {
                 // spdlog::info("body: {}", res->body);
                 return temperature::parse_reading(res->body);
             } else {
-                error_message = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
+                error_message
+                    = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
             }
         } else {
             auto err = httplib::to_string(res.error());
@@ -112,7 +114,8 @@ namespace app::client {
 
     // send/put client node reading to web server (if server is available) else return false
     bool put_temps(const Str& url, const database::DbKey& key, const temperature::Probe& probe) {
-        spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC, probe.tempF);
+        spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC,
+                     probe.tempF);
         auto client = http_client_creator(url);
 
         const auto path = "/api/temperature";
@@ -156,7 +159,8 @@ namespace app::client {
 
         spdlog::info("created {} client nodes", nodes.size());
         for (const auto& client : nodes) {
-            spdlog::info("Client: {}, {}:{}, active: {}", client.location, client.ip, client.port, client.active);
+            spdlog::info("Client: {}, {}:{}, active: {}", client.location, client.ip, client.port,
+                         client.active);
         }
 
         return nodes;

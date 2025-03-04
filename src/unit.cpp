@@ -106,7 +106,8 @@ void test_read_current(Results& r) {
         }
         const auto t1 = std::chrono::high_resolution_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("selection of {} keys from {} took {} µs", kylist.size(), keys.size(), duration);
+        spdlog::info("selection of {} keys from {} took {} µs", kylist.size(), keys.size(),
+                     duration);
 
         spdlog::info("kylist size: {}", kylist.size());
         r.equals(kylist.size() > 20, "kylist should be at least 20 element long");
