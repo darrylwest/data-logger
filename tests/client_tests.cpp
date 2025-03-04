@@ -6,7 +6,6 @@
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 
 #include "test_helpers.hpp"
-#include "mock_http_client.hpp"
 
 using namespace app;
 
@@ -40,23 +39,6 @@ const client::ClientNode create_test_client() {
 
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
-    auto creator = [](const Str& url) {
-        auto client = MockHttpClient(url);
-        /*
-        const Str body
-            = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
-
-        client.set_expected_response(body, 200);
-        */
-
-        return client;
-   };
-
-    // auto test = creator("http://test:2020");
-    // auto r = test.Get("/test");
-    // spdlog::info("{} {}", r->body, r->status);
-
-    client::http_client_creator = creator;
 
     using namespace app::client;
     auto node = create_test_client();
