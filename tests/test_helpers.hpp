@@ -69,20 +69,8 @@ namespace helpers {
         return oss.str();
     }
 
-    constexpr StrView raw_temps_data = R"(
-1740422400.cottage.0=15.343750
-1740422700.cottage.0=15.458330
-1740423000.cottage.0=15.651040
-1740423300.cottage.0=15.739580
-1740423600.cottage.0=16.010420
-1740423900.cottage.0=16.192711
-1740424200.cottage.0=16.244789
-1740424500.cottage.0=16.062500
-1740424800.cottage.0=16.041670
-1740425100.cottage.0=15.833330
-1740425400.cottage.0=15.812500
-1740425700.cottage.0=16.234381
-)";
+    // sample data
+    constexpr StrView raw_temps_data = "1740422400.cottage.0=15.343750\n1740422700.cottage.0=15.458330\n1740423000.cottage.0=15.651040\n1740423300.cottage.0=15.739580\n1740423600.cottage.0=16.010420\n1740423900.cottage.0=16.192711\n1740424200.cottage.0=16.244789\n1740424500.cottage.0=16.062500\n1740424800.cottage.0=16.041670\n1740425100.cottage.0=15.833330\n1740425400.cottage.0=15.812500\n1740425700.cottage.0=16.234381";
 
     inline app::config::WebConfig default_web_config = {
         .scheme = "http",
