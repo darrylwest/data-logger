@@ -125,8 +125,7 @@ set(COMMON_SOURCES
 add_executable(data-logger
     ${COMMON_SOURCES}
     ${SRC_DIR}/main.cpp
-        tests/version_tests.cpp
-        tests/mock_http_client.hpp)
+        tests/version_tests.cpp)
 
 add_executable(data-tasks
     ${COMMON_SOURCES}
