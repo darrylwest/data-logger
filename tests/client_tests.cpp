@@ -43,9 +43,8 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     // ok, this is kind of stupid because it does the same as the default
     // but, it could be modified to point to a test server by modifying the url
     auto creator= client::http_client_creator = [](const Str& url) {
-        auto nurl = "http://10.0.1.197:2030";
         Client client(url);
-        spdlog::warn("ok I might just change this {} to this {}...", url, nurl);
+        spdlog::warn("not a mock {}", url);
         return client;
     };
 
@@ -58,12 +57,33 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     auto status = fetch_status(node);
     spdlog::info("errors: {}", status.to_string());
 
-    REQUIRE(true);
+    REQUIRE(status.errors == 0);
+    REQUIRE(status.version.starts_with("0.6."));
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-    REQUIRE(true);
+    auto creator= client::http_client_creator = [](const Str& url) {
+        Client client(url);
+        spdlog::warn("not a mock {}", url);
+        return client;
+    };
+
+    // use this to point to an altenate; a mock when it's ready
+    app::client::http_client_creator = creator;
+
+    using namespace app::client;
+    auto node = create_test_client();
+
+    auto data = fetch_temps(node);
+    spdlog::info("errors: {}", data.to_string());
+
+    REQUIRE(data.probes.size() == 2);
+
+    auto probe = data.probes[0];
+    REQUIRE(probe.enabled == false);
+    REQUIRE(probe.location == "deck-west");
+    REQUIRE(probe.tempC < -100);
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {
