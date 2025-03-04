@@ -11,7 +11,7 @@ using namespace app;
 
 struct ClientTestSetup {
     ClientTestSetup() {
-        spdlog::set_level(spdlog::level::err);
+        spdlog::set_level(spdlog::level::info);
     }
 
     ~ClientTestSetup() {
@@ -19,8 +19,39 @@ struct ClientTestSetup {
     }
 };
 
+const app::client::ClientNode create_test_client() {
+    const Str json_text
+        = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
+
+    app::client::ClientStatus status = app::client::parse_status(json_text);
+    const auto node = app::client::ClientNode{
+        .location = "test",
+        .ip = "10.0.1.115",
+        .port = 2030,
+        .active = true,
+        .last_access = 0,
+        .probes = {},
+        .status = status,
+    };
+
+    return node;
+}
+
+
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
+    client::http_client_creator = [](const Str& url) -> httplib::Client {
+        httplib::Client client(url);
+
+        return client;
+    };
+
+    using namespace app::client;
+    auto node = create_test_client();
+
+    auto status = app::client::fetch_status(node);
+    spdlog::info("errors: {}", status.to_string());
+
     REQUIRE(true);
 }
 
