@@ -30,23 +30,23 @@ public:
 class IHttpClient {
 public:
     virtual ~IHttpClient() = default;
-    virtual HttpResponse Get(const std::string& path) = 0;
-    virtual HttpResponse Post(const std::string& path,
-                            const std::string& body,
-                            const std::string& contentType) = 0;
+    virtual HttpResponse Get(const Str& path) = 0;
+    virtual HttpResponse Post(const Str& path, const Str& body, const Str& contentType) = 0;
+    virtual HttpResponse Put(const Str& path, const Str& body, const Str& contentType) = 0;
+    virtual HttpResponse Delete(const Str& path) = 0;
     // Add other methods as needed
 };
 
 // Production implementation
 class HttpClient : public IHttpClient {
 public:
-    explicit HttpClient(std::string baseUrl,
-                       std::optional<std::string> apiKey = std::nullopt);
+    explicit HttpClient(Str baseUrl, std::optional<Str> apiKey = std::nullopt);
 
-    HttpResponse Get(const std::string& path) override;
-    HttpResponse Post(const std::string& path,
-                     const std::string& body,
-                     const std::string& contentType) override;
+    HttpResponse Get(const Str& path) override;
+    HttpResponse Post(const Str& path, const Str& body, const Str& contentType) override;
+    // HttpResponse Put(const Str& path, const Str& body) override;
+    HttpResponse Put(const std::string& path, const std::string& body, const std::string& content_type) override;
+    HttpResponse Delete(const std::string& path) override;
 
 private:
     std::string baseUrl_;
@@ -69,6 +69,8 @@ public:
 
     HttpResponse Get(const Str& path) override;
     HttpResponse Post(const Str& path, const Str& body, const Str& contentType) override;
+    HttpResponse Put(const Str& path, const Str& body, const Str& contentType) override;
+    HttpResponse Delete(const Str& path) override;
 
 private:
     ResponseHandler getHandler_;

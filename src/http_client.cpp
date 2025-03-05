@@ -65,7 +65,25 @@ HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& conte
     });
 }
 
-template<typename F>
+HttpResponse HttpClient::Put(const Str& path, const Str& body, const Str& contentType) {
+    return WithRetry([&]() {
+        LogRequest("PUT", path);
+        auto result = client_->Put(path.c_str(), body, contentType);
+        LogResponse(result);
+        return HttpResponse(result);
+    });
+}
+
+HttpResponse HttpClient::Delete(const Str& path) {
+    return WithRetry([&]() {
+        LogRequest("DELETE", path);
+        auto result = client_->Delete(path.c_str());
+        LogResponse(result);
+        return HttpResponse(result);
+    });
+}
+
+template <typename F>
 HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
     for (int i = 0; i < maxRetries; ++i) {
         try {
