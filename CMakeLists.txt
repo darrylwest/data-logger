@@ -122,6 +122,8 @@ set(COMMON_SOURCES
     ${SRC_DIR}/client.cpp
     ${SRC_DIR}/service.cpp
     ${SRC_DIR}/webhandlers.cpp
+        include/app/http_client.hpp
+        src/http_client.cpp
 )
 
 # Create executables
