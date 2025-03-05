@@ -20,7 +20,14 @@ HttpResponse::HttpResponse(const httplib::Result& result) {
         for (const auto& [key, value] : result->headers) {
             headers[key] = value;
         }
+
+        if (headers.size() != result->headers.size()) {
+            spdlog::error("missing headers from map (multi-map not installed!)");
+        }
+
     } else {
+        // TODO fix this to set the body to httplib::to_string(err)
+        // httplib::to_string()
         status = 500;
         body = "Request failed";
     }

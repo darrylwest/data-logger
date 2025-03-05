@@ -45,10 +45,8 @@ class HttpClient : public IHttpClient {
 
     HttpResponse Get(const Str& path) override;
     HttpResponse Post(const Str& path, const Str& body, const Str& contentType) override;
-    // HttpResponse Put(const Str& path, const Str& body) override;
-    HttpResponse Put(const std::string& path, const std::string& body,
-                     const std::string& content_type) override;
-    HttpResponse Delete(const std::string& path) override;
+    HttpResponse Put(const Str& path, const Str& body, const Str& content_type) override;
+    HttpResponse Delete(const Str& path) override;
 
   private:
     std::string baseUrl_;
