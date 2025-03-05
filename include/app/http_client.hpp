@@ -5,22 +5,25 @@
 #pragma once
 
 #include <vendor/httplib.h>
-#include <memory>
 #include <functional>
 #include <string>
 #include <optional>
-#include <unordered_map>
+#include <app/types.hpp>
+
+// using Headers = std::unordered_multimap<std::string, std::string>;
+using Headers = std::unordered_map<std::string, std::string>;
+
+//, detail::case_ignore::hash, detail::case_ignore::equal_to>;
 
 // Response wrapper
 class HttpResponse {
 public:
     int status;
-    std::string body;
-    std::unordered_map<std::string, std::string> headers;
+    Str body;
+    Headers headers;
 
     explicit HttpResponse(const httplib::Result& result);
-    HttpResponse(int s, std::string b,
-                std::unordered_map<std::string, std::string> h = {});
+    HttpResponse(int s, Str b, Headers h = {});
 };
 
 // Interface for HTTP client

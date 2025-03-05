@@ -5,12 +5,16 @@
 #include <app/http_client.hpp>
 #include <thread>
 #include <spdlog/spdlog.h>
-#include <chrono>
 
 HttpResponse::HttpResponse(const httplib::Result& result) {
     if (result) {
         status = result->status;
         body = result->body;
+
+        // TODO to compensate for multi-map
+        // headers = result->headers;
+
+        // TODO remove when multi-map is installed
         headers.clear();
         for (const auto& [key, value] : result->headers) {
             headers[key] = value;
@@ -21,14 +25,12 @@ HttpResponse::HttpResponse(const httplib::Result& result) {
     }
 }
 
-HttpResponse::HttpResponse(int s, std::string b,
-                         std::unordered_map<std::string, std::string> h)
+HttpResponse::HttpResponse(int s, Str b, Headers h)
     : status(s)
     , body(std::move(b))
     , headers(std::move(h)) {}
 
-HttpClient::HttpClient(std::string baseUrl,
-                      std::optional<std::string> apiKey)
+HttpClient::HttpClient(Str baseUrl, std::optional<Str> apiKey)
     : baseUrl_(std::move(baseUrl))
     , apiKey_(std::move(apiKey)) {
 
@@ -54,9 +56,7 @@ HttpResponse HttpClient::Get(const std::string& path) {
     });
 }
 
-HttpResponse HttpClient::Post(const std::string& path,
-                            const std::string& body,
-                            const std::string& contentType) {
+HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& contentType) {
     return WithRetry([&]() {
         LogRequest("POST", path);
         auto result = client_->Post(path.c_str(), body, contentType);
@@ -78,7 +78,7 @@ HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
     throw std::runtime_error("Max retries exceeded");
 }
 
-void HttpClient::LogRequest(const std::string& method, const std::string& path) {
+void HttpClient::LogRequest(const Str& method, const Str& path) {
     // Add your logging logic here
     spdlog::debug("Requesting method: {}/{}", method, path);
 }
