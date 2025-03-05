@@ -11,9 +11,9 @@
 #include <app/types.hpp>
 
 // using Headers = std::unordered_multimap<std::string, std::string>;
-using Headers = std::unordered_map<std::string, std::string>;
-
 //, detail::case_ignore::hash, detail::case_ignore::equal_to>;
+
+using Headers = std::unordered_map<Str, Str>;
 
 // Response wrapper
 class HttpResponse {
@@ -62,15 +62,13 @@ private:
 // Mock implementation for testing
 class MockHttpClient : public IHttpClient {
 public:
-    using ResponseHandler = std::function<HttpResponse(const std::string&)>;
+    using ResponseHandler = std::function<HttpResponse(const Str&)>;
 
     void SetGetHandler(ResponseHandler handler);
     void SetPostHandler(ResponseHandler handler);
 
-    HttpResponse Get(const std::string& path) override;
-    HttpResponse Post(const std::string& path,
-                     const std::string& body,
-                     const std::string& contentType) override;
+    HttpResponse Get(const Str& path) override;
+    HttpResponse Post(const Str& path, const Str& body, const Str& contentType) override;
 
 private:
     ResponseHandler getHandler_;
