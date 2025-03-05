@@ -16,10 +16,10 @@ namespace app::client {
     using json = nlohmann::json;
 
     struct ClientStatus {
-        Str version = "";
+        Str version;
         int timestamp = 0;
         int started = 0;
-        Str uptime = "";
+        Str uptime;
         int access_count = 0;
         int errors = 0;
 
@@ -31,7 +31,7 @@ namespace app::client {
             return os;
         }
 
-        Str to_string() const {
+        [[nodiscard]] Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 
