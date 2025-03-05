@@ -2,9 +2,10 @@
 // Created by Darryl West on 3/5/25.
 //
 
+#include <spdlog/spdlog.h>
+
 #include <app/http_client.hpp>
 #include <thread>
-#include <spdlog/spdlog.h>
 
 HttpResponse::HttpResponse(const httplib::Result& result) {
     if (result) {
@@ -26,21 +27,15 @@ HttpResponse::HttpResponse(const httplib::Result& result) {
 }
 
 HttpResponse::HttpResponse(int s, Str b, Headers h)
-    : status(s)
-    , body(std::move(b))
-    , headers(std::move(h)) {}
+    : status(s), body(std::move(b)), headers(std::move(h)) {}
 
 HttpClient::HttpClient(Str baseUrl, std::optional<Str> apiKey)
-    : baseUrl_(std::move(baseUrl))
-    , apiKey_(std::move(apiKey)) {
-
+    : baseUrl_(std::move(baseUrl)), apiKey_(std::move(apiKey)) {
     client_ = std::make_unique<httplib::Client>(baseUrl_);
 
     if (apiKey_) {
-        client_->set_default_headers({
-            {"Authorization", "Bearer " + *apiKey_},
-            {"Content-Type", "application/json"}
-        });
+        client_->set_default_headers(
+            {{"Authorization", "Bearer " + *apiKey_}, {"Content-Type", "application/json"}});
     }
 
     client_->set_connection_timeout(30);
@@ -83,8 +78,7 @@ HttpResponse HttpClient::Delete(const Str& path) {
     });
 }
 
-template <typename F>
-HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
+template <typename F> HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
     for (int i = 0; i < maxRetries; ++i) {
         try {
             return func();

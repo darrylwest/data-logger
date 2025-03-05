@@ -4,18 +4,11 @@
 
 #include <spdlog/spdlog.h>
 
-#include <app/cli.hpp>
-#include <app/logging.hpp>
-#include <app/service.hpp>
-#include <app/types.hpp>
-#include <app/version.hpp>
-
-// special
 #include <app/cfgsvc.hpp>
-#include <app/client.hpp>
-#include <app/exceptions.hpp>
+#include <app/cli.hpp>
 #include <app/nodes.hpp>
-#include <thread>
+#include <app/service.hpp>
+#include <app/version.hpp>
 
 using namespace app::taskrunner;
 

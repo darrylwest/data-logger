@@ -4,17 +4,13 @@
 
 #include <httplib.h>
 #include <spdlog/fmt/fmt.h>
-#include <spdlog/spdlog.h>
 #include <unistd.h>
 
 #include <app/database.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <atomic>
-#include <chrono>
-#include <csignal>
 #include <cstdio>
-#include <cstdlib>
 #include <datetimelib/datetimelib.hpp>
 #include <nlohmann/json.hpp>
 #include <thread>

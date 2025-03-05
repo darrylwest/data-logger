@@ -5,6 +5,7 @@
 //
 
 #include <spdlog/spdlog.h>
+#include <vendor/httplib.h>
 
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>

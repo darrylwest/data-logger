@@ -7,14 +7,11 @@
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
-#include <app/jsonkeys.hpp>
-#include <app/logging.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
 #include <cstdio>
-#include <datetimelib/datetimelib.hpp>
 #include <iostream>
 #include <nlohmann/json.hpp>
 
@@ -22,6 +19,31 @@ namespace app {
     using namespace httplib;
     using json = nlohmann::json;
     // using handler = app::webhandlers;
+
+    void show_headers(const httplib::Headers &headers) {
+        for (const auto &x : headers) {
+            spdlog::debug("{}:{}", x.first.c_str(), x.second.c_str());
+        }
+    }
+
+    void log_request(const httplib::Request &req, const httplib::Response &res) {
+        spdlog::info("{} {} {}", req.method.c_str(), req.version.c_str(), req.path.c_str());
+
+        for (auto it = req.params.begin(); it != req.params.end(); ++it) {
+            const auto &x = *it;
+            spdlog::info("{}={}", x.first.c_str(), x.second.c_str());
+        }
+
+        show_headers(req.headers);
+
+        if (res.status > 299) {
+            spdlog::error("Response status: {}", res.status);
+        } else {
+            spdlog::info("Response status: {}", res.status);
+        }
+
+        show_headers(res.headers);
+    }
 
     // Function to set up the server and apply configurations
     bool setup_service(Server &svr, const config::WebConfig &config, database::Database &db) {

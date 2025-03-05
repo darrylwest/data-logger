@@ -114,7 +114,6 @@ set(DEPENDENT_LIBRARIES
 set(COMMON_SOURCES
     ${SRC_DIR}/cli.cpp
     ${SRC_DIR}/cfgsvc.cpp
-    ${SRC_DIR}/logging.cpp
     ${SRC_DIR}/temperature.cpp
     ${SRC_DIR}/database.cpp
     ${SRC_DIR}/nodes.cpp

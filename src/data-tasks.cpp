@@ -13,8 +13,6 @@
 #include <unistd.h>
 
 #include <app/cli.hpp>
-#include <app/logging.hpp>
-#include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <cstdlib>
