@@ -124,9 +124,10 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_val
     INFO("will throw if this operation failed");
 
     try {
-        database::append_key_value(path, key, sval);
+        append_key_value(path, key, sval);
         REQUIRE(true);
     } catch (const std::exception& e) {
+        spdlog::error("{}", e.what());
         REQUIRE(false);
     }
 
@@ -148,8 +149,8 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_fil
         database::append_key_value(filename, key, sval);
         REQUIRE(false);
     } catch (const std::exception& e) {
+        spdlog::error("{}", e.what());}
         REQUIRE(true);
-    }
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
