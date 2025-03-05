@@ -5,12 +5,13 @@
 //
 
 #include <spdlog/spdlog.h>
-#include <vendor/httplib.h>
+// #include <vendor/httplib.h>
 
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
+#include <app/http_client.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
@@ -20,14 +21,14 @@ namespace app::client {
     constexpr time_t TIMEOUT_MILLIS = 6000;
     using json = nlohmann::json;
 
-    Func<httplib::Client(const Str& url)> http_client_creator = [](const Str& url) {
-        httplib::Client client(url);
+    Func<HttpClient(const Str& url)> http_client_creator = [](const Str& url) {
+        HttpClient client(url);
 
         // set the timeouts
-        constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
-        client.set_connection_timeout(timeout);
-        client.set_read_timeout(timeout);
-        client.set_write_timeout(timeout);
+        // constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
+        // client.set_connection_timeout(timeout);
+        // client.set_read_timeout(timeout);
+        // client.set_write_timeout(timeout);
 
         return client;
     };
@@ -61,24 +62,14 @@ namespace app::client {
         const auto path = "/status";
         spdlog::info("fetch from url: {}{}", url, path);
 
-        Str error_message;
-
-        if (auto res = client.Get(path)) {
-            if (res->status == 200) {
-                return parse_status(res->body);
-            } else {
-                auto err = httplib::to_string(res.error());
-                error_message
-                    = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
-                spdlog::error(error_message);
-            }
-        } else {
-            auto err = httplib::to_string(res.error());
-            error_message = fmt::format("2: status request failed to {}{}, {}", url, path, err);
-            spdlog::error(error_message);
+        auto res = client.Get(path);
+        if (res.status == 200) {
+            return parse_status(res.body);
         }
 
-        throw app::ServiceException(error_message);
+        Str msg = fmt::format("request to {}/{}, status: {}", url, path, res.status);
+        spdlog::error(msg);
+        throw app::ServiceException(msg);
     }
 
     // fetch temperature data from the node client
@@ -89,34 +80,25 @@ namespace app::client {
 
         spdlog::info("fetch from url: {}{}", url, path);
 
-        Str error_message;
         auto t0 = datetimelib::timestamp_millis();
-        if (auto res = client.Get(path)) {
-            if (res->status == 200) {
-                auto t1 = datetimelib::timestamp_millis();
-                spdlog::info("data fetched in {} millis", t1 - t0);
-                // spdlog::info("body: {}", res->body);
-                return temperature::parse_reading(res->body);
-            } else {
-                error_message
-                    = fmt::format("1: request failed to {}/{}, status: {}", url, path, res->status);
-            }
-        } else {
-            auto err = httplib::to_string(res.error());
-            error_message = fmt::format("2: request failed to {}{}, err: {}", url, path, err);
-            spdlog::error(error_message);
+        auto res = client.Get(path);
+        auto t1 = datetimelib::timestamp_millis();
+        if (res.status == 200) {
+            spdlog::info("data fetched in {} millis", t1 - t0);
+            return temperature::parse_reading(res.body);
         }
 
-        auto t1 = datetimelib::timestamp_millis();
+        auto msg = fmt::format("to {}/{}, status: {}", url, path, res.status);
         spdlog::info("data fetch failed after {} millis", t1 - t0);
 
-        throw app::ServiceException(error_message);
+        throw app::ServiceException(msg);
     }
 
     // send/put client node reading to web server (if server is available) else return false
     bool put_temps(const Str& url, const database::DbKey& key, const temperature::Probe& probe) {
         spdlog::info("put temps: to {}, {} {}C {}F", url, key.to_string(), probe.tempC,
                      probe.tempF);
+
         auto client = http_client_creator(url);
 
         const auto path = "/api/temperature";
@@ -125,17 +107,12 @@ namespace app::client {
         const auto body = jdata.dump();
 
         auto res = client.Put(path, body, "application/json");
-        if (res) {
-            if (res->status == 200) {
-                spdlog::info("put data to {}{}", url, path);
-                return true;
-            } else {
-                spdlog::error("put data to {}{} failed, status: {}", url, path, res->status);
-            }
-        } else {
-            auto err = httplib::to_string(res.error());
-            spdlog::warn("put data to {}{} failed, status: {}", url, path, err);
+        if (res.status == 200) {
+            spdlog::info("put data to {}{}", url, path);
+            return true;
         }
+
+        spdlog::error("put data to {}{} failed, status: {}", url, path, res.status);
 
         return false;
     }

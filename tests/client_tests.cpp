@@ -43,10 +43,11 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     // ok, this is kind of stupid because it does the same as the default
     // but, it could be modified to point to a test server by modifying the url
     auto creator= client::http_client_creator = [](const Str& url) {
-        Client client(url);
+        HttpClient client(url);
         spdlog::warn("not a mock {}", url);
         return client;
     };
+
 
     // use this to point to an alternate; a mock when it's ready
     app::client::http_client_creator = creator;
@@ -64,7 +65,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
     auto creator= client::http_client_creator = [](const Str& url) {
-        Client client(url);
+        HttpClient client(url);
         spdlog::warn("not a mock {}", url);
         return client;
     };
@@ -89,7 +90,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
     auto creator= client::http_client_creator = [](const Str& url) {
-        Client client(url);
+        HttpClient client(url);
         spdlog::warn("not a mock {}", url);
         return client;
     };

@@ -57,7 +57,7 @@ namespace app::client {
             return os;
         }
 
-        Str to_string() const {
+        [[nodiscard]] Str to_string() const {
             std::ostringstream oss;
             oss << *this;
 
