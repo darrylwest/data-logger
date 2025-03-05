@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.3)
 project(data-logger VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 20)
