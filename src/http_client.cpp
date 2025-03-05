@@ -4,13 +4,17 @@
 
 #include <app/http_client.hpp>
 #include <thread>
+#include <spdlog/spdlog.h>
 #include <chrono>
 
 HttpResponse::HttpResponse(const httplib::Result& result) {
     if (result) {
         status = result->status;
         body = result->body;
-        headers = result->headers;
+        headers.clear();
+        for (const auto& [key, value] : result->headers) {
+            headers[key] = value;
+        }
     } else {
         status = 500;
         body = "Request failed";
@@ -76,12 +80,15 @@ HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
 
 void HttpClient::LogRequest(const std::string& method, const std::string& path) {
     // Add your logging logic here
+    spdlog::debug("Requesting method: {}/{}", method, path);
 }
 
 void HttpClient::LogResponse(const httplib::Result& result) {
     // Add your logging logic here
+    spdlog::debug("Response: {}", result->body);
 }
 
+/*
 // Mock implementation
 void MockHttpClient::SetGetHandler(ResponseHandler handler) {
     getHandler_ = std::move(handler);
@@ -102,3 +109,4 @@ HttpResponse MockHttpClient::Post(const std::string& path,
     return postHandler_ ? postHandler_(body)
                        : HttpResponse(200, "Mock Response");
 }
+*/
