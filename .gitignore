@@ -9,3 +9,4 @@ ai-prompts
 .ssh/*.pem
 logs/*.log
 datetimelib
+soxlib
