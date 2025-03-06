@@ -28,12 +28,8 @@ namespace soxlib {
             }
 
         } else {
-            // TODO fix this to set the body to httplib::to_string(err)
-            auto err = httplib::to_string(result.error());
-
-            spdlog::error("result failed: {}", err);
             status = 500;
-            body = "Request failed";
+            body = to_string(result.error());
         }
     }
 
