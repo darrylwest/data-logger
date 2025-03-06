@@ -17,7 +17,6 @@
 #include <datetimelib/datetimelib.hpp>
 
 namespace app::client {
-    constexpr time_t TIMEOUT_MILLIS = 6000;
     using json = nlohmann::json;
     using namespace soxlib;
 

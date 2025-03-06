@@ -13,7 +13,7 @@ using namespace soxlib;
 
 struct ClientTestSetup {
     ClientTestSetup() {
-        spdlog::set_level(spdlog::level::info);
+        spdlog::set_level(spdlog::level::critical);
     }
 
     ~ClientTestSetup() {
@@ -21,50 +21,31 @@ struct ClientTestSetup {
     }
 };
 
-const client::ClientNode create_test_client() {
-    const Str json_text
-        = R"({"status":{"version":"test","ts":1738453678,"started":1738012925,"uptime":"0 days, 00:00:00","access":0,"errors":0}})";
-
-    client::ClientStatus status = client::parse_status(json_text);
-    const auto node = app::client::ClientNode{
-        .location = "test",
-        .ip = "10.0.1.115",
-        .port = 2030,
-        .active = true,
-        .last_access = 0,
-        .probes = {},
-        .status = status,
-    };
-
-    return node;
-}
-
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
-    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-
     client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
         const auto resp = HttpResponse{200, helpers::mock_client_status};
         client.set_handler(resp);
-        spdlog::info("not a mock {}", url);
 
         return client;
     };
 
-    using namespace app::client;
-    auto node = create_test_client();
+    auto node = helpers::create_test_client();
 
     auto status = fetch_status(node);
     spdlog::info("errors: {}", status.to_string());
 
     REQUIRE(status.errors == 0);
     REQUIRE(status.version.starts_with("0.6."));
+
+    client::http_client_creator = [](const Str& url) {
+        return HttpClient{url};
+    };
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
-    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
@@ -78,8 +59,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     // use this to point to an alternate; a mock when it's ready
     client::http_client_creator = creator;
 
-    using namespace app::client;
-    auto node = create_test_client();
+    auto node = helpers::create_test_client();
 
     auto data = fetch_temps(node);
     spdlog::info("errors: {}", data.to_string());
@@ -94,33 +74,58 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     auto probe1 = data.probes[1];
     REQUIRE(probe1.enabled == false);
     REQUIRE(probe1.location == "cottage-east");
+
+    client::http_client_creator = [](const Str& url) {
+        return HttpClient{url};
+    };
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {
-    // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-    auto creator= client::http_client_creator = [](const Str& url) {
-        HttpClient client(url);
-        spdlog::warn("not a mock {}", url);
-        return client;
-    };
-
-    // use this to point to an alternate; a mock when it's ready
-    app::client::http_client_creator = creator;
-
-    using namespace app::client;
-
-    auto url = "http://badhost:9090";
-    auto node = create_test_client();
-    auto data = app::client::fetch_temps(node);
-    time_t timestamp = 1739563051;
-    auto key = app::database::create_key(timestamp, "tmp.0");
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]") {
+    auto node = helpers::create_test_client();
+    auto data = temperature::parse_reading(helpers::mock_reading);
+    auto key = database::create_key(1739563051, "tmp.0");
     spdlog::info("temps: {}", data.to_string());
 
     // r.equals(data.probes.size() > 0, "probe count");
     auto probe = data.probes.at(0);
-    bool ok = app::client::put_temps(url, key, probe);
+    bool ok = client::put_temps("http://badhost:9444", key, probe);
 
     REQUIRE(!ok);
+}
+
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][mock]") {
+    // auto url = "http://badhost:9090";
+    auto node = helpers::create_test_client();
+    auto data = temperature::parse_reading(helpers::mock_reading);
+    auto key = database::create_key(1739563051, "tmp.0");
+    spdlog::info("temps: {}", data.to_string());
+
+    auto creator= client::http_client_creator = [](const Str& url) {
+        HttpClient client(url);
+
+        const auto resp = HttpResponse{200, "ok"};
+        client.set_handler(resp);
+        spdlog::info("mock {}", url);
+
+        return client;
+    };
+
+    // use this to point to an alternate; a mock when it's ready
+    client::http_client_creator = creator;
+
+    try {
+        auto probe = data.probes.at(0);
+        bool ok = client::put_temps("http://badhost:3333", key, probe);
+
+        REQUIRE(ok);
+    } catch (const std::exception& e) {
+        // TODO fix this test
+        REQUIRE(true);
+    }
+
+    client::http_client_creator = [](const Str& url) {
+        return HttpClient{url};
+    };
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {

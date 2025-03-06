@@ -13,6 +13,8 @@
 
 namespace soxlib {
 
+    constexpr time_t TIMEOUT_MILLIS = 6000;
+
     // using Headers = std::unordered_multimap<std::string, std::string>;
     //, detail::case_ignore::hash, detail::case_ignore::equal_to>;
     using Headers = std::unordered_map<Str, Str>;
@@ -54,8 +56,12 @@ namespace soxlib {
 
         httplib::Client create_client() {
             httplib::Client cli(base_url);
-            cli.set_connection_timeout(10);
-            cli.set_read_timeout(10);
+
+            // set the timeouts
+            constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
+            cli.set_connection_timeout(timeout);
+            cli.set_read_timeout(timeout);
+            cli.set_write_timeout(timeout);
 
             return cli;
         }

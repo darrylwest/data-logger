@@ -37,15 +37,16 @@ namespace soxlib {
         : status(s), body(std::move(b)), headers(std::move(h)) {}
 
     HttpClient::HttpClient(Str url, Optional<Str> api_key)
-        : base_url(std::move(url)), auth_key(std::move(api_key)) {
-    }
+        : base_url(std::move(url)), auth_key(std::move(api_key)) {}
 
     HttpResponse HttpClient::Get(const Str& path) {
         LogRequest("GET", path);
 
         if (mock_response) {
-            spdlog::info("-------------- mock {} ", mock_response->body);
-            return *mock_response;
+            spdlog::info("-------------- mock get {} ", mock_response->body);
+            auto resp = *mock_response;
+            mock_response.reset();
+            return resp;
         }
 
         httplib::Client cli(base_url);
@@ -58,6 +59,13 @@ namespace soxlib {
     HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& contentType) {
         LogRequest("POST", path);
 
+        if (mock_response) {
+            spdlog::info("-------------- mock post {} ", mock_response->body);
+            auto resp = *mock_response;
+            mock_response.reset();
+            return resp;
+        }
+
         auto cli = create_client();
         auto result = cli.Post(path.c_str(), body, contentType);
         LogResponse(result);
@@ -66,6 +74,14 @@ namespace soxlib {
 
     HttpResponse HttpClient::Put(const Str& path, const Str& body, const Str& contentType) {
         LogRequest("PUT", path);
+
+        if (mock_response) {
+            spdlog::info("-------------- mock put {} ", mock_response->body);
+            auto resp = *mock_response;
+            mock_response.reset();
+            return resp;
+        }
+
         auto cli = create_client();
         auto result = cli.Put(path.c_str(), body, contentType);
         LogResponse(result);
@@ -74,6 +90,12 @@ namespace soxlib {
 
     HttpResponse HttpClient::Delete(const Str& path) {
         LogRequest("DELETE", path);
+
+        if (mock_response) {
+            spdlog::info("-------------- mock delete {} ", mock_response->body);
+            return *mock_response;
+        }
+
         auto cli = create_client();
         auto result = cli.Delete(path.c_str());
         LogResponse(result);
@@ -101,8 +123,8 @@ namespace soxlib {
         if (result) {
             spdlog::debug("Response: {}", result->body);
         } else {
-           auto e = result.error();
-           spdlog::error("Response: {}", httplib::to_string(e));
+            auto e = result.error();
+            spdlog::error("Response: {}", httplib::to_string(e));
         }
     }
 

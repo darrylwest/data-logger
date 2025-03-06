@@ -20,13 +20,6 @@ namespace app::client {
     Func<HttpClient(const Str&)> http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
-        // TODO restore these in http_client impl
-        // set the timeouts
-        // constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
-        // client.set_connection_timeout(timeout);
-        // client.set_read_timeout(timeout);
-        // client.set_write_timeout(timeout);
-
         return client;
     };
 
