@@ -14,6 +14,7 @@
 namespace soxlib {
 
     constexpr time_t TIMEOUT_MILLIS = 6000;
+    const Str APP_JSON = "application/json";
 
     // using Headers = std::unordered_multimap<std::string, std::string>;
     //, detail::case_ignore::hash, detail::case_ignore::equal_to>;
@@ -36,9 +37,16 @@ namespace soxlib {
       public:
         explicit HttpClient(Str url, Optional<Str> api_key = std::nullopt);
 
+        // get with specified path using base_url
         HttpResponse Get(const Str& path);
-        HttpResponse Post(const Str& path, const Str& body, const Str& contentType);
-        HttpResponse Put(const Str& path, const Str& body, const Str& content_type);
+
+        // post with specified path using base_url and body and content type  defaults to application/json
+        HttpResponse Post(const Str& path, const Str& body, const Str& content_type = APP_JSON);
+
+        // put with specified path using base_url and body;  defaults to application/json
+        HttpResponse Put(const Str& path, const Str& body, const Str& content_type = APP_JSON);
+
+        // get with specified path using base_url
         HttpResponse Delete(const Str& path);
 
         void set_handler(const HttpResponse& response_handler);

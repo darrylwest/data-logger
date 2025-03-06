@@ -117,8 +117,7 @@ namespace soxlib {
         if (result) {
             spdlog::debug("Response: {}", result->body);
         } else {
-            auto e = result.error();
-            spdlog::error("Response: {}", httplib::to_string(e));
+            spdlog::error("Response: {}", to_string(result.error()));
         }
     }
 
