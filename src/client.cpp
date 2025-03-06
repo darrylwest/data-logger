@@ -5,7 +5,6 @@
 //
 
 #include <spdlog/spdlog.h>
-// #include <vendor/httplib.h>
 
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>
@@ -20,18 +19,7 @@
 namespace app::client {
     constexpr time_t TIMEOUT_MILLIS = 6000;
     using json = nlohmann::json;
-
-    Func<HttpClient(const Str& url)> http_client_creator = [](const Str& url) {
-        HttpClient client(url);
-
-        // set the timeouts
-        // constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
-        // client.set_connection_timeout(timeout);
-        // client.set_read_timeout(timeout);
-        // client.set_write_timeout(timeout);
-
-        return client;
-    };
+    using namespace soxlib;
 
     ClientStatus parse_status(const Str& json_text) {
         json jsn = json::parse(json_text);

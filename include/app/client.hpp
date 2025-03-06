@@ -6,6 +6,7 @@
 #pragma once
 
 #include <app/database.hpp>
+#include <app/http_client.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
 #include <map>
@@ -14,6 +15,20 @@
 
 namespace app::client {
     using json = nlohmann::json;
+    using namespace soxlib;
+
+    Func<HttpClient(const Str&)> http_client_creator = [](const Str& url) {
+        HttpClient client(url);
+
+        // TODO restore these in http_client impl
+        // set the timeouts
+        // constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
+        // client.set_connection_timeout(timeout);
+        // client.set_read_timeout(timeout);
+        // client.set_write_timeout(timeout);
+
+        return client;
+    };
 
     struct ClientStatus {
         Str version;
@@ -57,7 +72,7 @@ namespace app::client {
             return os;
         }
 
-        [[nodiscard]] Str to_string() const {
+        [[nodiscard]] auto to_string() const {
             std::ostringstream oss;
             oss << *this;
 
@@ -75,8 +90,7 @@ namespace app::client {
     temperature::TemperatureData fetch_temps(ClientNode& node);
 
     // send client node reading to web server, if server is available, else return false
-    bool put_temps(const Str& url, const app::database::DbKey& key,
-                   const app::temperature::Probe& probe);
+    bool put_temps(const Str& url, const database::DbKey& key, const temperature::Probe& probe);
 
     // create the client node list as read from config.json
     Vec<ClientNode> create_nodes();

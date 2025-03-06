@@ -4,10 +4,12 @@
 #include <app/client.hpp>
 #include <app/types.hpp>
 #include <catch2/catch_all.hpp>  // For Catch2 v3
+#include <app/http_client.hpp>
 
 #include "test_helpers.hpp"
 
 using namespace app;
+using namespace soxlib;
 
 struct ClientTestSetup {
     ClientTestSetup() {
@@ -40,17 +42,12 @@ const client::ClientNode create_test_client() {
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
-    // ok, this is kind of stupid because it does the same as the default
-    // but, it could be modified to point to a test server by modifying the url
-    auto creator= client::http_client_creator = [](const Str& url) {
+
+    client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
         spdlog::warn("not a mock {}", url);
         return client;
     };
-
-
-    // use this to point to an alternate; a mock when it's ready
-    app::client::http_client_creator = creator;
 
     using namespace app::client;
     auto node = create_test_client();
