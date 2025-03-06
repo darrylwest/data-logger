@@ -42,8 +42,7 @@ namespace soxlib {
       private:
         Str base_url;
         Optional<std::string> key;
-        std::unique_ptr<httplib::Client> cli;
-        // httplib::Client cli;
+        httplib::Client cli;
 
         template <typename F> HttpResponse WithRetry(F&& func, int maxRetries = 3);
         void LogRequest(const std::string& method, const std::string& path);
