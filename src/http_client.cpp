@@ -104,4 +104,8 @@ namespace soxlib {
         // Add your logging logic here
         spdlog::debug("Response: {}", result->body);
     }
+
+    void HttpClient::set_handler(const ResponseHandler& response_handler) {
+        this->handler = std::move(response_handler);
+    }
 }  // namespace soxlib

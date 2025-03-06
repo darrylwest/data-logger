@@ -28,7 +28,7 @@ namespace soxlib {
         HttpResponse(int s, Str b, Headers h = {});
     };
 
-    using ResponseHandler = std::function<HttpResponse(const Str& body, const int status_code)>;
+    using ResponseHandler = Func<HttpResponse(const Str& body, int status_code)>;
 
     class HttpClient {
       public:
@@ -38,6 +38,9 @@ namespace soxlib {
         HttpResponse Post(const Str& path, const Str& body, const Str& contentType);
         HttpResponse Put(const Str& path, const Str& body, const Str& content_type);
         HttpResponse Delete(const Str& path);
+
+        void set_handler(const ResponseHandler& response_handler);
+
 
       private:
         Str base_url;

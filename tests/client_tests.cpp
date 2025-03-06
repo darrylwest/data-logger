@@ -64,6 +64,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
         spdlog::warn("not a mock {}", url);
+
         return client;
     };
 
