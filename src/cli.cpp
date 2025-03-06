@@ -4,7 +4,6 @@
 
 #include <spdlog/spdlog.h>
 
-#include <app/cfgsvc.hpp>
 #include <app/cli.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/version.hpp>

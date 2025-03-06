@@ -6,6 +6,7 @@
 #include <app/types.hpp>
 #include <spdlog/spdlog.h>
 #include <app/cli.hpp>
+#include <app/jsonkeys.hpp>
 #include "test_helpers.hpp"
 
 struct CLITestSetup {
@@ -31,7 +32,7 @@ app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)> shutdown = 
         .argc = static_cast<int>(argv.size() - 1),
         .argv = argv.data(),
         .config = helpers::default_web_config,
-        .shutdown = shutdown,
+        .shutdown = std::move(shutdown),
     };
 
     return app::config::parse_cli(params);
@@ -159,6 +160,6 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli with bad flag", "[parse_cli][bad]") {
     });
 
     INFO(output);
-    REQUIRE(output == "");
+    REQUIRE(output.empty());
 }
 
