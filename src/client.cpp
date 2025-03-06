@@ -55,7 +55,7 @@ namespace app::client {
             return parse_status(res.body);
         }
 
-        Str msg = fmt::format("request to {}/{}, status: {}", url, path, res.status);
+        Str msg = fmt::format("request to {}{}, status: {}", url, path, res.status);
         spdlog::error(msg);
         throw app::ServiceException(msg);
     }
@@ -76,7 +76,7 @@ namespace app::client {
             return temperature::parse_reading(res.body);
         }
 
-        auto msg = fmt::format("to {}/{}, status: {}", url, path, res.status);
+        auto msg = fmt::format("to {}{}, status: {}", url, path, res.status);
         spdlog::info("data fetch failed after {} millis", t1 - t0);
 
         throw app::ServiceException(msg);

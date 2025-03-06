@@ -32,7 +32,7 @@ namespace soxlib {
 
     class HttpClient {
       public:
-        explicit HttpClient(Str baseUrl, std::optional<Str> apiKey = std::nullopt);
+        explicit HttpClient(Str url, Optional<Str> api_key = std::nullopt);
 
         HttpResponse Get(const Str& path);
         HttpResponse Post(const Str& path, const Str& body, const Str& contentType);
@@ -40,9 +40,10 @@ namespace soxlib {
         HttpResponse Delete(const Str& path);
 
       private:
-        std::string baseUrl_;
-        std::optional<std::string> apiKey_;
-        std::unique_ptr<httplib::Client> client_;
+        Str base_url;
+        Optional<std::string> key;
+        std::unique_ptr<httplib::Client> cli;
+        // httplib::Client cli;
 
         template <typename F> HttpResponse WithRetry(F&& func, int maxRetries = 3);
         void LogRequest(const std::string& method, const std::string& path);

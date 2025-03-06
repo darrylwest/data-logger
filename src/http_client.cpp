@@ -28,7 +28,9 @@ namespace soxlib {
 
         } else {
             // TODO fix this to set the body to httplib::to_string(err)
-            // httplib::to_string()
+            auto err = httplib::to_string(result.error());
+
+            spdlog::error("result failed: {}", err);
             status = 500;
             body = "Request failed";
         }
@@ -37,23 +39,23 @@ namespace soxlib {
     HttpResponse::HttpResponse(int s, Str b, Headers h)
         : status(s), body(std::move(b)), headers(std::move(h)) {}
 
-    HttpClient::HttpClient(Str baseUrl, std::optional<Str> apiKey)
-        : baseUrl_(std::move(baseUrl)), apiKey_(std::move(apiKey)) {
-        client_ = std::make_unique<httplib::Client>(baseUrl_);
+    HttpClient::HttpClient(Str url, std::optional<Str> api_key)
+        : base_url(std::move(url)), key(std::move(api_key)) {
+        cli = std::make_unique<httplib::Client>(url);
 
-        if (apiKey_) {
-            client_->set_default_headers(
-                {{"Authorization", "Bearer " + *apiKey_}, {"Content-Type", "application/json"}});
+        if (key) {
+            cli->set_default_headers(
+                {{"Authorization", "Bearer " + *key}, {"Content-Type", "application/json"}});
         }
 
-        client_->set_connection_timeout(30);
-        client_->set_read_timeout(30);
+        cli->set_connection_timeout(10);
+        cli->set_read_timeout(10);
     }
 
     HttpResponse HttpClient::Get(const std::string& path) {
         return WithRetry([&]() {
             LogRequest("GET", path);
-            auto result = client_->Get(path.c_str());
+            auto result = cli->Get(path.c_str());
             LogResponse(result);
             return HttpResponse(result);
         });
@@ -62,7 +64,7 @@ namespace soxlib {
     HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& contentType) {
         return WithRetry([&]() {
             LogRequest("POST", path);
-            auto result = client_->Post(path.c_str(), body, contentType);
+            auto result = cli->Post(path.c_str(), body, contentType);
             LogResponse(result);
             return HttpResponse(result);
         });
@@ -71,7 +73,7 @@ namespace soxlib {
     HttpResponse HttpClient::Put(const Str& path, const Str& body, const Str& contentType) {
         return WithRetry([&]() {
             LogRequest("PUT", path);
-            auto result = client_->Put(path.c_str(), body, contentType);
+            auto result = cli->Put(path.c_str(), body, contentType);
             LogResponse(result);
             return HttpResponse(result);
         });
@@ -80,7 +82,7 @@ namespace soxlib {
     HttpResponse HttpClient::Delete(const Str& path) {
         return WithRetry([&]() {
             LogRequest("DELETE", path);
-            auto result = client_->Delete(path.c_str());
+            auto result = cli->Delete(path.c_str());
             LogResponse(result);
             return HttpResponse(result);
         });
@@ -100,7 +102,7 @@ namespace soxlib {
 
     void HttpClient::LogRequest(const Str& method, const Str& path) {
         // Add your logging logic here
-        spdlog::debug("Requesting method: {}/{}", method, path);
+        spdlog::info("method: {}, path: {}", method, path);
     }
 
     void HttpClient::LogResponse(const httplib::Result& result) {

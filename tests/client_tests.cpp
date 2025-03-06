@@ -13,7 +13,7 @@ using namespace soxlib;
 
 struct ClientTestSetup {
     ClientTestSetup() {
-        spdlog::set_level(spdlog::level::critical);
+        spdlog::set_level(spdlog::level::info);
     }
 
     ~ClientTestSetup() {
@@ -68,7 +68,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     };
 
     // use this to point to an alternate; a mock when it's ready
-    app::client::http_client_creator = creator;
+    client::http_client_creator = creator;
 
     using namespace app::client;
     auto node = create_test_client();
