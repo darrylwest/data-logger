@@ -245,9 +245,24 @@ Results test_database() {
 }
 
 Results test_clients() {
-    Results r = {.name = "Clients Tests"};
+    using namespace app;
 
-    r.pass("");
+    Results r = {.name = "Clients Tests"};
+    auto nodes = client::create_nodes();
+
+    r.equals(nodes.size() == 3, "should be 3 client nodes from config");
+
+    for (const auto& node : nodes) {
+        auto client = client::parse_client_node( cfgsvc::client(node.location));
+        auto status = client::fetch_status(client);
+        r.equals(status.access_count > 0, "should have access counts");
+        r.equals(status.errors == 0, "should have zero errors");
+        const auto ts = status.timestamp;
+
+        auto temps = client::fetch_temps(client);
+        r.equals(temps.probes.size() >= 2, "should have probes");
+        r.equals(temps.reading_at >= ts, "should have reading at timestamp");
+    }
 
     return r;
 }
@@ -262,6 +277,10 @@ Results test_service() {
     // create tests
     r.pass();
 
+    // test_fetch_status
+    // test_fetch_temps
+    // test_put_temps
+
     spdlog::set_level(spdlog::level::off);
     return r;
 }
@@ -269,6 +288,10 @@ Results test_service() {
 int main() {
     using namespace colors;
     spdlog::set_level(spdlog::level::critical);
+    app::cfgsvc::ServiceContext ctx;
+    ctx.sleep_duration = std::chrono::seconds(0); // don't start the loop
+
+    app::cfgsvc::configure(ctx);
 
     const auto vers = app::Version().to_string();
     fmt::print("\nUnit/Integration Tests, Version: {}{}{}\n\n", cyan, vers, reset);
@@ -286,10 +309,11 @@ int main() {
     run_test(test_webhandlers);
     run_test(test_database);
     run_test(test_service);
+    run_test(test_clients);
 
     fmt::print("\n{}", summary.to_string());
-    auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
-    fmt::print("\nUnit Test Results: {}{}{}\n\n", cyan, msg, reset);
+    auto msg = (summary.failed == 0) ? bright::green + "Ok" : "\n" + bright::red + "Tests failed!";
+    fmt::print("\nUnit/Integration Test Results: {}{}{}\n\n", cyan, msg, reset);
 
     return 0;
 }
