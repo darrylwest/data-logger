@@ -43,12 +43,12 @@ namespace soxlib {
     HttpResponse HttpClient::Get(const Str& path) {
         LogRequest("GET", path);
 
-        if (handler != nullptr) {
-            spdlog::info("-------------- http client get called");
+        if (mock_response) {
+            spdlog::info("-------------- mock {} ", mock_response->body);
+            return *mock_response;
         }
+
         httplib::Client cli(base_url);
-        cli.set_connection_timeout(10);
-        cli.set_read_timeout(10);
         auto result = cli.Get(path.c_str());
         LogResponse(result);
 
@@ -58,7 +58,7 @@ namespace soxlib {
     HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& contentType) {
         LogRequest("POST", path);
 
-        httplib::Client cli(base_url);
+        auto cli = create_client();
         auto result = cli.Post(path.c_str(), body, contentType);
         LogResponse(result);
         return HttpResponse(result);
@@ -66,7 +66,7 @@ namespace soxlib {
 
     HttpResponse HttpClient::Put(const Str& path, const Str& body, const Str& contentType) {
         LogRequest("PUT", path);
-        httplib::Client cli(base_url);
+        auto cli = create_client();
         auto result = cli.Put(path.c_str(), body, contentType);
         LogResponse(result);
         return HttpResponse(result);
@@ -74,7 +74,7 @@ namespace soxlib {
 
     HttpResponse HttpClient::Delete(const Str& path) {
         LogRequest("DELETE", path);
-        httplib::Client cli(base_url);
+        auto cli = create_client();
         auto result = cli.Delete(path.c_str());
         LogResponse(result);
         return HttpResponse(result);
@@ -93,16 +93,20 @@ namespace soxlib {
     }
 
     void HttpClient::LogRequest(const Str& method, const Str& path) {
-        // Add your logging logic here
-        spdlog::info("method: {}, path: {}", method, path);
+        spdlog::info("request: {} : {}", method, path);
     }
 
     void HttpClient::LogResponse(const httplib::Result& result) {
         // Add your logging logic here
-        spdlog::debug("Response: {}", result->body);
+        if (result) {
+            spdlog::debug("Response: {}", result->body);
+        } else {
+           auto e = result.error();
+           spdlog::error("Response: {}", httplib::to_string(e));
+        }
     }
 
-    void HttpClient::set_handler(const ResponseHandler& response_handler) {
-        this->handler = std::move(response_handler);
+    void HttpClient::set_handler(const HttpResponse& response_handler) {
+        mock_response = response_handler;
     }
 }  // namespace soxlib

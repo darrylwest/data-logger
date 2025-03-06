@@ -45,7 +45,11 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
 
     client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
-        spdlog::warn("not a mock {}", url);
+
+        const auto resp = HttpResponse{200, helpers::mock_client_status};
+        client.set_handler(resp);
+        spdlog::info("not a mock {}", url);
+
         return client;
     };
 
@@ -63,10 +67,10 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
-        // TODO configure the response
 
-        // TODO set the response
-        spdlog::warn("not a mock {}", url);
+        const auto resp = HttpResponse{200, helpers::mock_reading};
+        client.set_handler(resp);
+        spdlog::info("mock {}", url);
 
         return client;
     };
@@ -82,10 +86,14 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
 
     REQUIRE(data.probes.size() == 2);
 
-    auto probe = data.probes[0];
-    REQUIRE(probe.enabled == false);
-    REQUIRE(probe.location == "deck-west");
-    REQUIRE(probe.tempC < -100);
+    auto probe0 = data.probes[0];
+    REQUIRE(probe0.enabled);
+    REQUIRE(probe0.location == "cottage-south");
+    REQUIRE(std::abs(probe0.tempC - 10.88542) < helpers::EPSILON);
+
+    auto probe1 = data.probes[1];
+    REQUIRE(probe1.enabled == false);
+    REQUIRE(probe1.location == "cottage-east");
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps]") {

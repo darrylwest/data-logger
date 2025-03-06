@@ -28,7 +28,7 @@ namespace soxlib {
         HttpResponse(int s, Str b, Headers h = {});
     };
 
-    using ResponseHandler = Func<HttpResponse(const Str& body, int status_code)>;
+    // using ResponseHandler = Func<HttpResponse(const Str& body, int status_code)>;
 
     class HttpClient {
       public:
@@ -39,17 +39,25 @@ namespace soxlib {
         HttpResponse Put(const Str& path, const Str& body, const Str& content_type);
         HttpResponse Delete(const Str& path);
 
-        void set_handler(const ResponseHandler& response_handler);
-
+        void set_handler(const HttpResponse& response_handler);
 
       private:
         Str base_url;
         Optional<std::string> auth_key;
 
         template <typename F> HttpResponse WithRetry(F&& func, int maxRetries = 3);
-        void LogRequest(const std::string& method, const std::string& path);
+        void LogRequest(const Str& method, const std::string& path);
         void LogResponse(const httplib::Result& result);
 
-        Optional<ResponseHandler> handler = nullptr;
+        // nothing here yet
+        Optional<HttpResponse> mock_response;
+
+        httplib::Client create_client() {
+            httplib::Client cli(base_url);
+            cli.set_connection_timeout(10);
+            cli.set_read_timeout(10);
+
+            return cli;
+        }
     };
 }  // namespace soxlib
