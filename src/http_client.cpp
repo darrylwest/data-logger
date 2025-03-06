@@ -37,50 +37,47 @@ namespace soxlib {
         : status(s), body(std::move(b)), headers(std::move(h)) {}
 
     HttpClient::HttpClient(Str url, Optional<Str> api_key)
-        : base_url(std::move(url)), key(std::move(api_key)), cli(base_url) {
-        if (api_key) {
-            cli.set_default_headers(
-                {{"Authorization", "Bearer " + *key}, {"Content-Type", "application/json"}});
-        }
-
-        cli.set_connection_timeout(10);
-        cli.set_read_timeout(10);
+        : base_url(std::move(url)), auth_key(std::move(api_key)) {
     }
 
-    HttpResponse HttpClient::Get(const std::string& path) {
-        return WithRetry([&]() {
-            LogRequest("GET", path);
-            auto result = cli.Get(path.c_str());
-            LogResponse(result);
-            return HttpResponse(result);
-        });
+    HttpResponse HttpClient::Get(const Str& path) {
+        LogRequest("GET", path);
+
+        if (handler != nullptr) {
+            spdlog::info("-------------- http client get called");
+        }
+        httplib::Client cli(base_url);
+        cli.set_connection_timeout(10);
+        cli.set_read_timeout(10);
+        auto result = cli.Get(path.c_str());
+        LogResponse(result);
+
+        return HttpResponse(result);
     }
 
     HttpResponse HttpClient::Post(const Str& path, const Str& body, const Str& contentType) {
-        return WithRetry([&]() {
-            LogRequest("POST", path);
-            auto result = cli.Post(path.c_str(), body, contentType);
-            LogResponse(result);
-            return HttpResponse(result);
-        });
+        LogRequest("POST", path);
+
+        httplib::Client cli(base_url);
+        auto result = cli.Post(path.c_str(), body, contentType);
+        LogResponse(result);
+        return HttpResponse(result);
     }
 
     HttpResponse HttpClient::Put(const Str& path, const Str& body, const Str& contentType) {
-        return WithRetry([&]() {
-            LogRequest("PUT", path);
-            auto result = cli.Put(path.c_str(), body, contentType);
-            LogResponse(result);
-            return HttpResponse(result);
-        });
+        LogRequest("PUT", path);
+        httplib::Client cli(base_url);
+        auto result = cli.Put(path.c_str(), body, contentType);
+        LogResponse(result);
+        return HttpResponse(result);
     }
 
     HttpResponse HttpClient::Delete(const Str& path) {
-        return WithRetry([&]() {
-            LogRequest("DELETE", path);
-            auto result = cli.Delete(path.c_str());
-            LogResponse(result);
-            return HttpResponse(result);
-        });
+        LogRequest("DELETE", path);
+        httplib::Client cli(base_url);
+        auto result = cli.Delete(path.c_str());
+        LogResponse(result);
+        return HttpResponse(result);
     }
 
     template <typename F> HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {

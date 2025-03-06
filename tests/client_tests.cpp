@@ -63,6 +63,9 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     // TODO create mock client node to test fetch_temps, put_temps, fetch_status
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
+        // TODO configure the response
+
+        // TODO set the response
         spdlog::warn("not a mock {}", url);
 
         return client;
