@@ -51,6 +51,6 @@ namespace soxlib {
         void LogRequest(const std::string& method, const std::string& path);
         void LogResponse(const httplib::Result& result);
 
-        ResponseHandler handler;
+        Optional<ResponseHandler> handler = nullptr;
     };
 }  // namespace soxlib
