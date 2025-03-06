@@ -17,7 +17,7 @@ namespace app::client {
     using json = nlohmann::json;
     using namespace soxlib;
 
-    Func<HttpClient(const Str&)> http_client_creator = [](const Str& url) {
+    inline Func<HttpClient(const Str&)> http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
         return client;
@@ -39,7 +39,7 @@ namespace app::client {
             return os;
         }
 
-        [[nodiscard]] Str to_string() const {
+        [[nodiscard]] auto to_string() const {
             std::ostringstream oss;
             oss << *this;
 

@@ -34,7 +34,7 @@ namespace app::config {
             return os;
         }
 
-        Str to_string() const {
+        [[nodiscard]] auto to_string() const {
             std::ostringstream oss;
             oss << *this;
 
@@ -51,12 +51,6 @@ namespace app::config {
 
     // parse the CLI and return web config
     WebConfig parse_cli(const CliParams& params);
-
-    // parse and return the config file from filename
-    // json parse_config(const Str filename);
-
-    // locate and return the config filename
-    // Str find_config_filename();
 
     // use config.json to set webservice defaults
     WebConfig webconfig_from_json(const json& wscfg);

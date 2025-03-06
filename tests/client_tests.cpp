@@ -21,6 +21,11 @@ struct ClientTestSetup {
     }
 };
 
+void reset_creator() {
+    client::http_client_creator = [](const Str& url) {
+        return HttpClient{url};
+    };
+}
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     client::http_client_creator = [](const Str& url) {
@@ -40,9 +45,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     REQUIRE(status.errors == 0);
     REQUIRE(status.version.starts_with("0.6."));
 
-    client::http_client_creator = [](const Str& url) {
-        return HttpClient{url};
-    };
+    reset_creator();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
@@ -75,9 +78,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     REQUIRE(probe1.enabled == false);
     REQUIRE(probe1.location == "cottage-east");
 
-    client::http_client_creator = [](const Str& url) {
-        return HttpClient{url};
-    };
+    reset_creator();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]") {
@@ -113,19 +114,12 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][mock]") {
     // use this to point to an alternate; a mock when it's ready
     client::http_client_creator = creator;
 
-    try {
-        auto probe = data.probes.at(0);
-        bool ok = client::put_temps("http://badhost:3333", key, probe);
+    auto probe = data.probes.at(0);
+    bool ok = client::put_temps("http://ok.host:8080", key, probe);
 
-        REQUIRE(ok);
-    } catch (const std::exception& e) {
-        // TODO fix this test
-        REQUIRE(true);
-    }
+    REQUIRE(ok);
 
-    client::http_client_creator = [](const Str& url) {
-        return HttpClient{url};
-    };
+    reset_creator();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {

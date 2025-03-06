@@ -33,7 +33,7 @@ namespace app::taskrunner {
             return os;
         }
 
-        Str to_string() const {
+        [[nodiscard]] auto to_string() const {
             std::ostringstream oss;
             oss << *this;
 

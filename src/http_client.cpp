@@ -44,9 +44,7 @@ namespace soxlib {
 
         if (mock_response) {
             spdlog::info("-------------- mock get {} ", mock_response->body);
-            auto resp = *mock_response;
-            mock_response.reset();
-            return resp;
+            return *mock_response;
         }
 
         httplib::Client cli(base_url);
@@ -61,9 +59,7 @@ namespace soxlib {
 
         if (mock_response) {
             spdlog::info("-------------- mock post {} ", mock_response->body);
-            auto resp = *mock_response;
-            mock_response.reset();
-            return resp;
+            return *mock_response;
         }
 
         auto cli = create_client();
@@ -77,9 +73,7 @@ namespace soxlib {
 
         if (mock_response) {
             spdlog::info("-------------- mock put {} ", mock_response->body);
-            auto resp = *mock_response;
-            mock_response.reset();
-            return resp;
+            return *mock_response;
         }
 
         auto cli = create_client();

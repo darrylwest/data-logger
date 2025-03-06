@@ -17,7 +17,7 @@ namespace app {
         int major = 0;
         int minor = 6;
         int patch = 5;
-        int build = 242;
+        int build = 244;
 
         friend std::ostream& operator<<(std::ostream& os, const Version v) {
             // better to use <format> but it breaks on linux and fmt broken on darwin
@@ -25,7 +25,7 @@ namespace app {
             return os;
         }
 
-        Str to_string() const {
+        auto to_string() const {
             std::ostringstream oss;
             oss << *this;
 

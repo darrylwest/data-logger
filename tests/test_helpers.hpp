@@ -92,8 +92,8 @@ namespace helpers {
 
     const Str mock_client_config = R"({
         "location": "cottage",
-        "ip": "10.0.1.197",
-        "port": 2030,
+        "ip": "10.0.1.198",
+        "port": 2031,
         "active": true,
         "sensors": [
             {
