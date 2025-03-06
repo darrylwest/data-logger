@@ -15,10 +15,9 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 
-namespace app {
+namespace app::service {
     using namespace httplib;
     using json = nlohmann::json;
-    // using handler = app::webhandlers;
 
     void show_headers(const httplib::Headers &headers) {
         for (const auto &x : headers) {
@@ -64,7 +63,7 @@ namespace app {
         });
 
         // Logger
-        svr.set_logger([](const Request &req, const Response &res) { app::log_request(req, res); });
+        svr.set_logger([](const Request &req, const Response &res) { log_request(req, res); });
 
         // Mount point
         if (!svr.set_mount_point("/", config.www)) {
@@ -143,7 +142,7 @@ namespace app {
         });
 
         svr.Get("/api/version", [](const Request &, Response &res) {
-            auto vers = app::Version().to_string();
+            auto vers = Version().to_string();
             res.set_content(vers, "text/plain");
             spdlog::warn("Version Request: {}", vers);
         });
@@ -175,7 +174,7 @@ namespace app {
         database::read_current_data(db);
 
         // Set up the server
-        if (!app::setup_service(svr, config, db)) {
+        if (!setup_service(svr, config, db)) {
             return false;
         }
 
@@ -185,4 +184,4 @@ namespace app {
         return svr.listen(config.host, config.port);
     }
 
-}  // namespace app
+}  // namespace app::service

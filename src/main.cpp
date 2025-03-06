@@ -53,7 +53,7 @@ int main(int argc, char* argv[]) {
     // or figure out how to use std::terminate with hooks
 
     // now start the web/http listener
-    auto ok = app::run_service(config);
+    auto ok = app::service::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
 
     // ok, not clean but it works;

@@ -10,7 +10,11 @@
 #include <app/cli.hpp>
 #include <app/database.hpp>
 
-namespace app {
+namespace app::service {
+
+    constexpr auto ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+    constexpr auto ACCESS_CONTROL_ALLOW_METHODS = "Access-Control-Allow-Methods";
+    constexpr auto ACCESS_CONTROL_ALLOW_HEADERS = "Access-Control-Allow-Headeres";
 
     // Function to set up the server and apply configurations
     bool setup_service(httplib::Server &svr, const config::WebConfig &config,
@@ -19,4 +23,4 @@ namespace app {
     // Function to run the server
     bool run_service(const config::WebConfig &config);
 
-}  // namespace app
+}  // namespace app::service

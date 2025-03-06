@@ -40,7 +40,8 @@ namespace soxlib {
         // get with specified path using base_url
         HttpResponse Get(const Str& path);
 
-        // post with specified path using base_url and body and content type  defaults to application/json
+        // post with specified path using base_url and body and content type  defaults to
+        // application/json
         HttpResponse Post(const Str& path, const Str& body, const Str& content_type = APP_JSON);
 
         // put with specified path using base_url and body;  defaults to application/json

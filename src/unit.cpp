@@ -7,14 +7,11 @@
 
 #include <algorithm>
 #include <app/cfgsvc.hpp>
-#include <app/client.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/taskrunner.hpp>
-#include <app/temperature.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
-#include <nlohmann/json.hpp>
 #include <ranges>
 #include <vendor/testlib.hpp>
 
@@ -230,12 +227,28 @@ void test_create_chart_data(Results& r) {
 }
 
 Results test_webhandlers() {
-    Results r = {.name = "Service Tests"};
+    Results r = {.name = "WebHandlers Tests"};
 
     test_api_temps(r);
     test_create_chart_data(r);
 
     spdlog::set_level(spdlog::level::off);
+    return r;
+}
+
+Results test_database() {
+    Results r = {.name = "Database Tests"};
+
+    test_read_current(r);
+
+    return r;
+}
+
+Results test_clients() {
+    Results r = {.name = "Clients Tests"};
+
+    r.pass("");
+
     return r;
 }
 
@@ -255,13 +268,12 @@ Results test_service() {
 
 int main() {
     using namespace colors;
-    // spdlog::set_level(spdlog::level::error); // or off
-    spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::critical);
 
     const auto vers = app::Version().to_string();
-    fmt::print("\nExample Unit Tests, Version: {}{}{}\n\n", cyan, vers, reset);
+    fmt::print("\nUnit/Integration Tests, Version: {}{}{}\n\n", cyan, vers, reset);
 
-    Results summary = Results{.name = "Unit Test Summary"};
+    Results summary = Results{.name = "Unit/Integration Test Summary"};
 
     // lambda to run a test and add its result to the summary
     auto run_test = [&summary](auto test_func) {
@@ -272,11 +284,12 @@ int main() {
 
     // run_test(test_taskrunner);
     run_test(test_webhandlers);
+    run_test(test_database);
     run_test(test_service);
 
     fmt::print("\n{}", summary.to_string());
     auto msg = (summary.failed == 0) ? green + "Ok" : "\n" + red + "Tests failed!";
-    fmt::print("\nUnit Test Results: {}{}{}\n", cyan, msg, reset);
+    fmt::print("\nUnit Test Results: {}{}{}\n\n", cyan, msg, reset);
 
     return 0;
 }

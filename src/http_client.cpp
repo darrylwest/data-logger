@@ -96,12 +96,12 @@ namespace soxlib {
         return HttpResponse(result);
     }
 
-    template <typename F> HttpResponse HttpClient::WithRetry(F&& func, int maxRetries) {
-        for (int i = 0; i < maxRetries; ++i) {
+    template <typename F> HttpResponse HttpClient::WithRetry(F&& func, const int max_retries) {
+        for (int i = 0; i < max_retries; ++i) {
             try {
                 return func();
             } catch (const std::exception& e) {
-                if (i == maxRetries - 1) throw;
+                if (i == max_retries - 1) throw;
                 std::this_thread::sleep_for(std::chrono::seconds(1 << i));
             }
         }

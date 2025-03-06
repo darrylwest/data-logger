@@ -21,7 +21,7 @@ struct ClientTestSetup {
     }
 };
 
-void reset_creator() {
+void cleanup() {
     client::http_client_creator = [](const Str& url) {
         return HttpClient{url};
     };
@@ -45,7 +45,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     REQUIRE(status.errors == 0);
     REQUIRE(status.version.starts_with("0.6."));
 
-    reset_creator();
+    cleanup();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
@@ -78,7 +78,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     REQUIRE(probe1.enabled == false);
     REQUIRE(probe1.location == "cottage-east");
 
-    reset_creator();
+    cleanup();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]") {
@@ -119,7 +119,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][mock]") {
 
     REQUIRE(ok);
 
-    reset_creator();
+    cleanup();
 }
 
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {

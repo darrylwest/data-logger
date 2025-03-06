@@ -7,6 +7,7 @@
 #include "test_helpers.hpp"
 
 using namespace app;
+using json = nlohmann::json;
 
 struct TemperatureTestSetup {
     TemperatureTestSetup() {
