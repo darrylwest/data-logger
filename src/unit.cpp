@@ -287,7 +287,9 @@ Results test_service() {
 
 int main() {
     using namespace colors;
+
     spdlog::set_level(spdlog::level::critical);
+
     app::cfgsvc::ServiceContext ctx;
     ctx.sleep_duration = std::chrono::seconds(0);  // don't start the loop
 
