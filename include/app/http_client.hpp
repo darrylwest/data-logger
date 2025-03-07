@@ -13,7 +13,10 @@
 
 namespace soxlib {
 
-    constexpr time_t TIMEOUT_MILLIS = 6000;
+    constexpr time_t CONNECT_TIMEOUT_SECONDS = 6;
+    constexpr time_t READ_TIMEOUT_SECONDS = 4;
+    constexpr time_t WRITE_TIMEOUT_SECONDS = 3;
+
     const Str APP_JSON = "application/json";
 
     // using Headers = std::unordered_multimap<std::string, std::string>;
@@ -67,10 +70,11 @@ namespace soxlib {
             httplib::Client cli(base_url);
 
             // set the timeouts
-            constexpr auto timeout = std::chrono::milliseconds{TIMEOUT_MILLIS};
-            cli.set_connection_timeout(timeout);
-            cli.set_read_timeout(timeout);
-            cli.set_write_timeout(timeout);
+            cli.set_connection_timeout(CONNECT_TIMEOUT_SECONDS);
+            cli.set_read_timeout(READ_TIMEOUT_SECONDS);
+            cli.set_write_timeout(WRITE_TIMEOUT_SECONDS);
+            constexpr auto max_timeout =  std::chrono::milliseconds(10'000);
+            cli.set_max_timeout(max_timeout);
 
             return cli;
         }

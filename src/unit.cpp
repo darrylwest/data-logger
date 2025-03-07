@@ -254,15 +254,28 @@ Results test_clients() {
 
     for (const auto& node : nodes) {
         auto client = client::parse_client_node(cfgsvc::client(node.location));
-        auto status = client::fetch_status(client);
-        r.equals(status.access_count > 0, "should have access counts");
-        r.equals(status.errors == 0, "should have zero errors");
-        const auto ts = status.timestamp;
+        if (!client.active) {
+            continue;
+        }
 
-        auto temps = client::fetch_temps(client);
-        r.equals(temps.probes.size() >= 2, "should have probes");
-        r.equals(temps.reading_at >= ts, "should have reading at timestamp");
+        try {
+            spdlog::set_level(spdlog::level::info);
+            // const auto t0 = std::chrono::high_resolution_clock::now();
+            auto status = client::fetch_status(client);
+            // const auto t1 = std::chrono::high_resolution_clock::now();
+            r.equals(status.access_count > 0, "should have access counts");
+            r.equals(status.errors == 0, "should have zero errors");
+            const auto ts = status.timestamp;
+
+            auto temps = client::fetch_temps(client);
+            r.equals(temps.probes.size() >= 2, "should have probes");
+            r.equals(temps.reading_at >= ts, "should have reading at timestamp");
+        } catch (const std::exception& e) {
+            r.fail(fmt::format("exception: ", e.what()));
+        }
     }
+
+    spdlog::set_level(spdlog::level::off);
 
     return r;
 }
