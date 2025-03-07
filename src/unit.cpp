@@ -253,7 +253,7 @@ Results test_clients() {
     r.equals(nodes.size() == 3, "should be 3 client nodes from config");
 
     for (const auto& node : nodes) {
-        auto client = client::parse_client_node( cfgsvc::client(node.location));
+        auto client = client::parse_client_node(cfgsvc::client(node.location));
         auto status = client::fetch_status(client);
         r.equals(status.access_count > 0, "should have access counts");
         r.equals(status.errors == 0, "should have zero errors");
@@ -289,7 +289,7 @@ int main() {
     using namespace colors;
     spdlog::set_level(spdlog::level::critical);
     app::cfgsvc::ServiceContext ctx;
-    ctx.sleep_duration = std::chrono::seconds(0); // don't start the loop
+    ctx.sleep_duration = std::chrono::seconds(0);  // don't start the loop
 
     app::cfgsvc::configure(ctx);
 

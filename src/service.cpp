@@ -28,8 +28,7 @@ namespace app::service {
     void log_request(const httplib::Request &req, const httplib::Response &res) {
         spdlog::info("{} {} {}", req.method.c_str(), req.version.c_str(), req.path.c_str());
 
-        for (auto it = req.params.begin(); it != req.params.end(); ++it) {
-            const auto &x = *it;
+        for (const auto &x : req.params) {
             spdlog::info("{}={}", x.first.c_str(), x.second.c_str());
         }
 
@@ -56,6 +55,7 @@ namespace app::service {
         svr.set_error_handler([](const Request &req, Response &res) {
             spdlog::error("ERROR! bad request {} {}", req.method.c_str(), req.path.c_str());
             // TODO : replace this with spdlog::fmt...
+            // TODO : if the request content is json, return plain text; else assume it's a browser
             const char *fmt = "<p>Error Status: <span style='color:red;'>%d</span></p>";
             char buf[BUFSIZ];
             snprintf(buf, sizeof(buf), fmt, res.status);
@@ -156,17 +156,17 @@ namespace app::service {
 
         // Add CORS headers to every response
         svr.set_pre_routing_handler([](const httplib::Request &, httplib::Response &res) {
-            res.set_header("Access-Control-Allow-Origin", "*");
-            res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            res.set_header(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            res.set_header(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_METHODS);
+            res.set_header(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization");
             return httplib::Server::HandlerResponse::Unhandled;  // Continue processing the request
         });
 
         // Handle preflight (OPTIONS) requests
         svr.Options(".*", [](const httplib::Request &, httplib::Response &res) {
-            res.set_header("Access-Control-Allow-Origin", "*");
-            res.set_header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-            res.set_header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+            res.set_header(ACCESS_CONTROL_ALLOW_ORIGIN, "*");
+            res.set_header(ACCESS_CONTROL_ALLOW_METHODS, ACCESS_METHODS);
+            res.set_header(ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type, Authorization");
             res.status = 204;  // No Content
         });
 
@@ -178,10 +178,9 @@ namespace app::service {
             return false;
         }
 
-        spdlog::info("Server starting at http://{}:{}", config.host, config.port);
+        spdlog::info("Server starting at {}://{}:{}", config.scheme, config.host, config.port);
 
         // Start the server
         return svr.listen(config.host, config.port);
     }
-
 }  // namespace app::service
