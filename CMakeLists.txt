@@ -40,8 +40,23 @@ set(SRC_DIR "src")
 set(INCLUDE_DIR "include")
 set(BIN_DIR "build")
 
+set(CPM_DOWNLOAD_VERSION 0.27.2)
+set(CPM_DOWNLOAD_LOCATION "${CMAKE_BINARY_DIR}/cmake/CPM_${CPM_DOWNLOAD_VERSION}.cmake")
+
+if(NOT (EXISTS ${CPM_DOWNLOAD_LOCATION}))
+    message(STATUS "Downloading CPM.cmake")
+    file(DOWNLOAD https://github.com/TheLartians/CPM.cmake/releases/download/v${CPM_DOWNLOAD_VERSION}/CPM.cmake ${CPM_DOWNLOAD_LOCATION})
+endif()
+
+include(${CPM_DOWNLOAD_LOCATION})
+
 # Find required packages
-find_package(spdlog 1.9.2 REQUIRED)
+CPMAddPackage(
+    NAME spdlog
+    GITHUB_REPOSITORY gabime/spdlog
+    VERSION 1.15.0)
+
+# find_package(spdlog 1.15.2 REQUIRED)
 find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL 3.0 REQUIRED)
 find_package(ZLIB 1.2.11 REQUIRED)

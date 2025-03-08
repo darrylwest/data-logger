@@ -77,7 +77,7 @@ do
         
             shift
         ;;
-        clobber)
+        clo*)
             /bin/rm -fr build/
 
             shift
