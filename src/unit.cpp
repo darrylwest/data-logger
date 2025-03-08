@@ -259,7 +259,7 @@ Results test_clients() {
         }
 
         try {
-            spdlog::set_level(spdlog::level::info);
+            // spdlog::set_level(spdlog::level::info);
             // const auto t0 = std::chrono::high_resolution_clock::now();
             auto status = client::fetch_status(client);
             // const auto t1 = std::chrono::high_resolution_clock::now();

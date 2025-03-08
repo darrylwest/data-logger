@@ -57,7 +57,7 @@
             "location": "shed",
             "ip": "10.0.1.115",
             "port": 2030,
-            "active": true,
+            "active": false,
             "sensors": [
                 {
                     "type": "temperature",
