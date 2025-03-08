@@ -73,7 +73,8 @@ namespace soxlib {
             cli.set_connection_timeout(CONNECT_TIMEOUT_SECONDS);
             cli.set_read_timeout(READ_TIMEOUT_SECONDS);
             cli.set_write_timeout(WRITE_TIMEOUT_SECONDS);
-            constexpr auto max_timeout =  std::chrono::milliseconds(10'000);
+
+            constexpr auto max_timeout = std::chrono::milliseconds(10'000);
             cli.set_max_timeout(max_timeout);
 
             return cli;

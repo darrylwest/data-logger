@@ -76,7 +76,7 @@ namespace app::client {
         }
 
         auto msg = fmt::format("to {}{}, status: {}", url, path, res.status);
-        spdlog::info("data fetch failed after {} millis", t1 - t0);
+        spdlog::warn("data fetch failed after {} millis", t1 - t0);
 
         throw app::ServiceException(msg);
     }

@@ -81,6 +81,33 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     cleanup();
 }
 
+TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps_404]") {
+    auto creator= client::http_client_creator = [](const Str& url) {
+        HttpClient client(url);
+
+        const auto resp = HttpResponse{404, "not found"};
+        client.set_handler(resp);
+        spdlog::info("mock {}", url);
+
+        return client;
+    };
+
+    INFO("this should throw an exception on mock 404");
+
+    try {
+        client::http_client_creator = creator;
+        auto node = helpers::create_test_client();
+        auto data = fetch_temps(node);
+
+        REQUIRE(false);
+    } catch (const std::exception& e) {
+        spdlog::info("errors: {}", e.what());
+        REQUIRE(true);
+    }
+
+    cleanup();
+}
+
 TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]") {
     auto node = helpers::create_test_client();
     auto data = temperature::parse_reading(helpers::mock_reading);
