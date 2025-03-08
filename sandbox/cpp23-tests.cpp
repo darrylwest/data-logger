@@ -3,7 +3,7 @@
 //
 
 #include <cstdio>
-// #include <print> dies on linux
+#include <print> // dies on linux
 #include <format>
 #include <spdlog/fmt/fmt.h>
 #include <vendor/ansi_colors.hpp>
