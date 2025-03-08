@@ -44,6 +44,7 @@ elseif(UNIX AND NOT APPLE)
     set(PLATFORM_SPECIFIC_LIBS
         # Ubuntu-specific libraries if needed
     )
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
     message(STATUS "linux")
 endif()
 
