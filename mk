@@ -14,6 +14,11 @@ export port=9090
 export os="$(uname -s)"
 export arch="$(uname -m)"
 
+[ $os == "Linux" ] && {
+    export CC=/usr/bin/clang
+    export CXX=/usr/bin/clang++
+}
+
 # parse the cli
 while [[ $# -gt 0 ]]
 do
