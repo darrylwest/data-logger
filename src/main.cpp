@@ -9,6 +9,7 @@
 #include <app/nodes.hpp>
 #include <app/service.hpp>
 #include <app/version.hpp>
+#include <print> // dies on osx?
 
 using namespace app::taskrunner;
 
