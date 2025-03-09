@@ -18,5 +18,7 @@ int main() {
     // what a pain!
     std::puts(std::format("{}format formatting {}{:.3f}{}", green, yellow, 10.876543, reset).c_str());
 
+    std::println("this is a std::println test {}", 42);
+
     return 0;
 }
