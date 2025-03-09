@@ -9,7 +9,6 @@
 #include <app/nodes.hpp>
 #include <app/service.hpp>
 #include <app/version.hpp>
-#include <print> // dies on osx?
 
 using namespace app::taskrunner;
 
@@ -29,7 +28,7 @@ int main(int argc, char* argv[]) {
     try {
         start_config_service();
     } catch (std::exception& e) {
-        std::cerr << "Configuration died on startup, " << e.what() << ", aborting..." << std::endl;
+        spdlog::error("Configuration died on startup, {}, aborting...", e.what());
         std::exit(1);
     }
 
@@ -37,7 +36,7 @@ int main(int argc, char* argv[]) {
 
     const auto shutdown = [](int code) {
         // spdlog::info("Shutdown code: {}", code);
-        // better to send a kill statement
+        // better to send a kill statement?
         exit(code);
     };
 
@@ -46,19 +45,13 @@ int main(int argc, char* argv[]) {
 
     const auto params = app::config::CliParams{
         .argc = argc, .argv = argv, .config = webconfig, .shutdown = shutdown};
+
     auto config = app::config::parse_cli(params);
     spdlog::info("DataLogger Version: {}", vers.to_string());
-
-    // implement a global shutdown flag to be read by threads
-    // clear it here, the set it when run service exits
-    // or figure out how to use std::terminate with hooks
 
     // now start the web/http listener
     auto ok = app::service::run_service(config);
     spdlog::info("Server shutdown, code: {}.", ok);
-
-    // ok, not clean but it works;
-    // std::terminate();
 
     return 0;
 }
