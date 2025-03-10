@@ -95,7 +95,7 @@ namespace app::database {
         }
 
         // return the last n number of k/v elements
-        SortedMap last(const size_t count = 1) const;
+        SortedMap last(size_t count = 1) const;
 
         // Thread-safe keys method with optional filter function
         Vec<Str> keys(const FilterFunc& filter = all_keys) const;
@@ -107,7 +107,7 @@ namespace app::database {
         size_t size() const;
 
         // read from file to populate database; optionally clear the db first
-        bool read(const FilePath& path, const bool clear = false);
+        bool read(const FilePath& path, bool clear = false);
 
         // save the current database to file
         bool save(const FilePath& path) const;

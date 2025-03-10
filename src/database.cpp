@@ -53,7 +53,11 @@ namespace app {
 
         bool Database::set(const Str& key, const Str& value) {
             std::lock_guard<std::mutex> lock(mtx);
-            data[key] = value;
+            if (data.contains(key)) {
+                data[key] = value;
+            } else {
+                data.emplace_hint(data.end(), key, value);
+            }
             return true;
         }
 
