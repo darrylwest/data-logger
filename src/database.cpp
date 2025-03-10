@@ -61,7 +61,6 @@ namespace app {
             return true;
         }
 
-        // returns the value for the key; returns empty string if not found
         Str Database::get(const Str& key) const {
             std::lock_guard<std::mutex> lock(mtx);
             auto it = data.find(key);

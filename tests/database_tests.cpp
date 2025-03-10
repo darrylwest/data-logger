@@ -20,11 +20,11 @@ struct DatabaseTestSetup {
     }
 };
 
-void populate_database(database::Database& db, const int size = 100) {
+void populate_database(database::Database& db, const size_t size = 100) {
     time_t t0 = datetimelib::timestamp_seconds() - (size * 10);
     Str location = "shed.0";
 
-    for (int i = 0; i < size; ++i) {
+    for (size_t i = 0; i < size; ++i) {
         auto key = database::create_key(t0, location);
         auto value = helpers::random_float(20.0, 30.0);
 
@@ -35,8 +35,38 @@ void populate_database(database::Database& db, const int size = 100) {
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
-    // TODO implement
-    REQUIRE(true);
+    database::Database db;
+    REQUIRE(db.size() == 0);
+    size_t size = 10;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
+
+    auto keys = db.keys();
+
+    for (const auto& key : keys) {
+        auto value = db.get(key);
+        auto new_value = helpers::random_float(30.0, 40.0);
+        db.set(key, std::to_string(new_value));
+        REQUIRE(db.get(key) == std::to_string(new_value));
+        REQUIRE(std::to_string(new_value) != value);
+    }
+}
+
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
+    database::Database db;
+    REQUIRE(db.size() == 0);
+    size_t size = 5;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
+
+    auto bad_key = "not-a-good-key";
+    auto value = db.get(bad_key);
+    REQUIRE(value.empty());
+
+    auto key = db.keys().at(0);
+    value = db.get(key);
+    REQUIRE(!value.empty());
+
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {

@@ -16,14 +16,15 @@ namespace app::cfgsvc {
         Str cfg_filename = "config/config.json";
         std::chrono::seconds sleep_duration{10};  // Sleep time between work
         Func<Vec<Str>(const json&)> validate = [](const json&) { return Vec<Str>(); };
-        Str json_text = "";
+        Str json_text = {};
     };
 
+    // TODO add typical use to show how to set the context and init/configure
     class ConfigService {
       public:
         static ConfigService& instance();
 
-        // configure and start (or restart) the service
+        // configure and start (or restart) the service with the context
         static void configure(const ServiceContext& ctx);
 
         // return true if the service is running, else false
@@ -35,12 +36,18 @@ namespace app::cfgsvc {
         json clients();
         json client(const std::string& client_name);
 
+        // TODO add methods to return known objects rather than json
+
         ~ConfigService();
+
+        // delete the copy constructor
+        ConfigService(const ConfigService&) = delete;
+
+        // delete the copy operator
+        ConfigService& operator=(const ConfigService&) = delete;
 
       private:
         ConfigService();
-        ConfigService(const ConfigService&) = delete;
-        ConfigService& operator=(const ConfigService&) = delete;
 
         void start_worker();
         void stop_worker();
