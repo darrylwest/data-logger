@@ -191,7 +191,7 @@ function(setup_target_properties target)
     target_include_directories(${target} PRIVATE
             ${CMAKE_SOURCE_DIR}/include
             ${CMAKE_SOURCE_DIR}/include/vendor
-            ${CMAKE_SOURCE_DIR}/../datetimelib/include
+            ${CMAKE_SOURCE_DIR}/datetimelib/include
     )
     target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
     target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
