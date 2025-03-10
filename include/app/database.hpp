@@ -82,10 +82,10 @@ namespace app::database {
         mutable std::mutex mtx;  // mutable to allow locking in const methods
 
       public:
-        // Thread-safe set method
+        // Thread-safe set method; inserts or updates the key/value pair; true if inserted
         bool set(const Str& key, const Str& value);
 
-        // Thread-safe get method
+        // Thread-safe get method; returns data for key or an empty string if not found
         Str get(const Str& key) const;
 
         // Thread-safe remove method
