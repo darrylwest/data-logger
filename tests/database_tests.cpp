@@ -67,11 +67,25 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
     value = db.get(key);
     REQUIRE(!value.empty());
 
+    // now delete the k/v and ensure that a read-back is empty
+    db.remove(key);
+    value = db.get(key);
+    REQUIRE(value.empty());
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
-    // TODO implement
-    REQUIRE(true);
+    database::Database db;
+    REQUIRE(db.size() == 0);
+    size_t size = 50;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
+    auto keys = db.keys();
+    REQUIRE(keys.size() == size);
+
+    for (const auto& key : keys) {
+        auto value = db.get(key);
+        REQUIRE(!value.empty());
+    }
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][last_n]") {
