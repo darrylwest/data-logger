@@ -61,11 +61,8 @@ find_package(nlohmann_json 3.2.0 REQUIRED)
 find_package(OpenSSL 3.0 REQUIRED)
 find_package(ZLIB 1.2.11 REQUIRED)
 
-# Add datetimelib as a subdirectory
-# add_subdirectory(datetimelib ${CMAKE_BINARY_DIR}/datetimelib)
 # Find datetimelib
 find_path(DATETIMELIB_INCLUDE_DIR NAMES datetimelib/include/datetimelib/datetime.hpp)
-# find_library(DATETIMELIB_LIBRARY NAMES datetimelib/build)
 
 # MacOS universal binary setup
 if(APPLE)

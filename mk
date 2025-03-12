@@ -19,6 +19,9 @@ export arch="$(uname -m)"
     # export CXX=/usr/bin/clang++
     export CC=/usr/local/bin/gcc
     export CXX=/usr/local/bin/g++
+    export FLAGS="-j8"
+} || {
+    export FLAGS="-j20"
 }
 
 # parse the cli
@@ -38,31 +41,31 @@ do
         build)
             clear
 
-            (cd build && time make -j16 || exit 1)
+            (cd build && time make $FLAGS || exit 1)
 
             shift
         ;;
         unit)
-            # (cd build && time make -j16)
+            # (cd build && time make $FLAGS)
             $root/build/datalogger-unit
             $root/build/unit_tests
 
             shift
         ;;
         test)
-            (cd build && make -j8)
+            (cd build && make $FLAGS)
             $root/build/datalogger-integration
 
             shift
         ;;
         run)
-            (cd build && make -j8)
+            (cd build && make $FLAGS)
             $root/build/$project
 
             shift
         ;;
         run-data)
-            (cd build && make -j8)
+            (cd build && make $FLAGS)
             export TESTING=true
             $root/build/data-tasks
 
