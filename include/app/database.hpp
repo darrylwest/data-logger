@@ -87,9 +87,7 @@ namespace app::database {
 
         // Thread-safe get method; returns data for key or an empty string if not found
         // TODO replace the return with a std::expected rather than an empty string
-        Str get(const Str& key) const;
-
-        Optional<Str> find(const Str& key) ;
+        Optional<Str> get(const Str& key) const;
 
         // Thread-safe remove method
         bool remove(const Str& key) {

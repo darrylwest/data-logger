@@ -44,31 +44,32 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
     auto keys = db.keys();
 
     for (const auto& key : keys) {
-        auto value = db.get(key);
+        INFO("find for key: " << key);
+        auto ret = db.get(key);
+        if (ret) {
+            REQUIRE(true);
+        } else {
+            REQUIRE(false);
+            continue;
+        }
+
+        const auto value = *ret;
+
         auto new_value = helpers::random_float(30.0, 40.0);
         auto resp = db.set(key, std::to_string(new_value));
         INFO("replacing/updating a value should always return false");
         REQUIRE(resp == false);
-        auto return_value= db.get(key);
+        ret = db.get(key);
+        if (ret) {
+            REQUIRE(true);
+        } else {
+            REQUIRE(false);
+            continue;
+        }
+
+        const auto return_value = *ret;
         REQUIRE(return_value == std::to_string(new_value));
         REQUIRE(std::to_string(new_value) != value);
-    }
-    REQUIRE(true);
-}
-
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][find]") {
-    database::Database db;
-    REQUIRE(db.size() == 0);
-    size_t size = 10;
-    populate_database(db, size);
-    REQUIRE(db.size() == size);
-
-    auto keys = db.keys();
-
-    for (const auto& key : keys) {
-        auto ref = db.get(key);
-        auto value = db.find(key);
-        REQUIRE(*value == ref);
     }
     REQUIRE(true);
 }
@@ -82,16 +83,16 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
 
     auto bad_key = "not-a-good-key";
     auto value = db.get(bad_key);
-    REQUIRE(value.empty());
+    REQUIRE(!value);
 
     auto key = db.keys().at(0);
     value = db.get(key);
-    REQUIRE(!value.empty());
+    REQUIRE(value);
 
     // now delete the k/v and ensure that a read-back is empty
     db.remove(key);
     value = db.get(key);
-    REQUIRE(value.empty());
+    REQUIRE(!value);
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
@@ -105,7 +106,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
 
     for (const auto& key : keys) {
         auto value = db.get(key);
-        REQUIRE(!value.empty());
+        REQUIRE(value);
     }
 }
 
@@ -139,9 +140,13 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]
 
     for (const auto& key : db.keys()) {
         auto value = db.get(key);
-        float v = std::stof(value);
-        REQUIRE(v < 17.0);
-        REQUIRE(v > 15.0);
+        if (value) {
+            float v = std::stof(*value);
+            REQUIRE(v < 17.0);
+            REQUIRE(v > 15.0);
+        } else {
+            REQUIRE(false);
+        }
     }
 
     helpers::remove_temp_path(path);
@@ -232,8 +237,13 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
 
     Str key = keys.at(25);
     REQUIRE(key.size() > 6);
-    Str value = db.get(key);
-    REQUIRE(value.size() > 3);
+    auto ret = db.get(key);
+    if (ret) {
+        auto value = *ret;
+        REQUIRE(value.size() > 3);
+    } else {
+        REQUIRE(false);
+    }
 }
 
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_data]") {

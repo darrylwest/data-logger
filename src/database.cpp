@@ -58,17 +58,7 @@ namespace app {
             }
         }
 
-        Str Database::get(const Str& key) const {
-            std::lock_guard<std::mutex> lock(mtx);
-            auto it = data.find(key);
-            if (it != data.end()) {
-                return it->second;
-            } else {
-                return "";
-            }
-        }
-
-        Optional<Str> Database::find(const Str& key) {
+        Optional<Str> Database::get(const Str& key) const {
             std::lock_guard<std::mutex> lock(mtx);
             auto it = data.find(key);
             if (it != data.end()) {

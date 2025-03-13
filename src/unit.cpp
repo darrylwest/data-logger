@@ -121,9 +121,16 @@ void test_read_current(Results& r) {
         spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), dur);
 
         for (const auto& key : kylist) {
-            const auto value = db.get(key);
-            spdlog::debug("key: {} {}", key, value);
+            const auto ret = db.get(key);
+            if (ret) {
+                const auto value = *ret;
+                spdlog::debug("key: {} {}", key, value);
+            } else {
+                spdlog::warn("key: {} not found", key);
+                r.fail("not found for key");
+            }
         }
+
         r.equals(kylist.size() == 25, "should be exactly 25 keys");
     }
 
