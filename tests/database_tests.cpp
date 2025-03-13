@@ -5,17 +5,24 @@
 #include <app/types.hpp>
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 #include <filesystem>
+#include <datetimelib/perftimer.hpp>
 
 #include "test_helpers.hpp"
 
 using namespace app;
+using namespace datetimelib::perftimer;
+
+PerfTimer timer("Database test");
 
 struct DatabaseTestSetup {
     DatabaseTestSetup() {
         spdlog::set_level(spdlog::level::critical);
+        timer.start();
     }
 
     ~DatabaseTestSetup() {
+        timer.stop();
+        // timer.show_duration();
         spdlog::set_level(spdlog::level::off);
     }
 };
