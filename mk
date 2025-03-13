@@ -47,9 +47,12 @@ do
         ;;
         unit)
             # (cd build && time make $FLAGS)
-            $root/build/datalogger-unit
             $root/build/unit_tests
 
+            shift
+        ;;
+        string)
+            $root/build/datalogger-unit
             shift
         ;;
         test)
