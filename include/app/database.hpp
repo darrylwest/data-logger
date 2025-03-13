@@ -4,11 +4,9 @@
 
 #pragma once
 
-#include <__expected/expected.h>
-
-#include <app/types.hpp>
 #include <filesystem>
 #include <fstream>
+#include <app/types.hpp>
 #include <map>
 #include <mutex>
 #include <sstream>
@@ -90,6 +88,8 @@ namespace app::database {
         // Thread-safe get method; returns data for key or an empty string if not found
         // TODO replace the return with a std::expected rather than an empty string
         Str get(const Str& key) const;
+
+        Optional<Str> find(const Str& key) ;
 
         // Thread-safe remove method
         bool remove(const Str& key) {

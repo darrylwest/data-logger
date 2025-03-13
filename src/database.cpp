@@ -8,7 +8,7 @@
 #include <app/types.hpp>
 #include <datetimelib/datetimelib.hpp>
 #include <ranges>
-#include <expected>
+
 /*
  * create a k/v compatible with future redis integration
  */
@@ -65,6 +65,16 @@ namespace app {
                 return it->second;
             } else {
                 return "";
+            }
+        }
+
+        Optional<Str> Database::find(const Str& key) {
+            std::lock_guard<std::mutex> lock(mtx);
+            auto it = data.find(key);
+            if (it != data.end()) {
+                return it->second;
+            } else {
+                return std::nullopt;
             }
         }
 

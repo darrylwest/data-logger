@@ -56,6 +56,23 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
     REQUIRE(true);
 }
 
+TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][find]") {
+    database::Database db;
+    REQUIRE(db.size() == 0);
+    size_t size = 10;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
+
+    auto keys = db.keys();
+
+    for (const auto& key : keys) {
+        auto ref = db.get(key);
+        auto value = db.find(key);
+        REQUIRE(*value == ref);
+    }
+    REQUIRE(true);
+}
+
 TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
     database::Database db;
     REQUIRE(db.size() == 0);
