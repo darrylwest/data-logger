@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <__expected/expected.h>
+
 #include <app/types.hpp>
 #include <filesystem>
 #include <fstream>

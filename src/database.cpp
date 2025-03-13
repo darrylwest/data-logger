@@ -6,13 +6,9 @@
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/types.hpp>
-#include <chrono>
 #include <datetimelib/datetimelib.hpp>
-#include <iomanip>
-// #include <nlohmann/json.hpp>
-#include <algorithm>
 #include <ranges>
-
+#include <expected>
 /*
  * create a k/v compatible with future redis integration
  */
@@ -55,10 +51,11 @@ namespace app {
             std::lock_guard<std::mutex> lock(mtx);
             if (data.contains(key)) {
                 data[key] = value;
+                return false;
             } else {
                 data.emplace_hint(data.end(), key, value);
+                return true;
             }
-            return true;
         }
 
         Str Database::get(const Str& key) const {
@@ -66,8 +63,9 @@ namespace app {
             auto it = data.find(key);
             if (it != data.end()) {
                 return it->second;
+            } else {
+                return "";
             }
-            return "";  // Return an empty string if key is not found
         }
 
         SortedMap Database::last(const size_t count) const {

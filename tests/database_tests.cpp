@@ -46,7 +46,9 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
     for (const auto& key : keys) {
         auto value = db.get(key);
         auto new_value = helpers::random_float(30.0, 40.0);
-        db.set(key, std::to_string(new_value));
+        auto resp = db.set(key, std::to_string(new_value));
+        INFO("replacing/updating a value should always return false");
+        REQUIRE(resp == false);
         REQUIRE(db.get(key) == std::to_string(new_value));
         REQUIRE(std::to_string(new_value) != value);
     }
