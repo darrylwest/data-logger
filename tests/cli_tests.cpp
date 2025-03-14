@@ -9,16 +9,6 @@
 #include <app/jsonkeys.hpp>
 #include "test_helpers.hpp"
 
-struct CLITestSetup {
-    CLITestSetup() {
-        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
-    }
-
-    ~CLITestSetup() {
-        spdlog::set_level(spdlog::level::off); // Teardown: Restore logging
-    }
-};
-
 app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)> shutdown = [](int) {}) {
     Vec<char*> argv;
     argv.push_back(const_cast<char*>("test_binary")); // argv[0] is usually the program name
@@ -39,7 +29,7 @@ app::config::WebConfig call_parse_cli(Vec<Str> args, Func<void(int)> shutdown = 
 }
 
 // TODO modify this to pull Rstring from helper
-TEST_CASE_METHOD(CLITestSetup, "CLI::json format", "[cli][parse_json]") {
+TEST_CASE("CLI::json format", "[cli][parse_json]") {
     using namespace app::jsonkeys;
     using json = nlohmann::json;
 
@@ -56,7 +46,7 @@ TEST_CASE_METHOD(CLITestSetup, "CLI::json format", "[cli][parse_json]") {
     REQUIRE(cfg.contains(TLS_CERT_FILE));
     REQUIRE(cfg.contains(TLS_KEY_FILE));
 }
-TEST_CASE_METHOD(CLITestSetup, "CLI::webconfig_from_jsonTests", "[cli][parse_json]") {
+TEST_CASE("CLI::webconfig_from_jsonTests", "[cli][parse_json]") {
     using json = nlohmann::json;
 
     const Str jtext = R"({"headers":[],
@@ -80,7 +70,7 @@ TEST_CASE_METHOD(CLITestSetup, "CLI::webconfig_from_jsonTests", "[cli][parse_jso
     REQUIRE(config.verbose == false);
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parses basic arguments correctly", "[cli][parse_cli]") {
+TEST_CASE("parses basic arguments correctly", "[cli][parse_cli]") {
     spdlog::info("parse_cli with port host www");
     const app::config::WebConfig config = call_parse_cli({"--port", "8080", "--host", "127.0.0.1", "--www", "/var/www"});
 
@@ -89,7 +79,7 @@ TEST_CASE_METHOD(CLITestSetup, "parses basic arguments correctly", "[cli][parse_
     REQUIRE(config.www == "/var/www");
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli parses SSL certificate and key", "[cli][parse_cli]") {
+TEST_CASE("parse_cli parses SSL certificate and key", "[cli][parse_cli]") {
     spdlog::info("parse_cli with cert key");
     const app::config::WebConfig config = call_parse_cli({"--cert", "cert.pem", "--key", "key.pem"});
 
@@ -97,7 +87,7 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli parses SSL certificate and key", "[cli
     REQUIRE(config.key_file == "key.pem");
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles missing optional values", "[cli][parse_cli]") {
+TEST_CASE("parse_cli handles missing optional values", "[cli][parse_cli]") {
     spdlog::info("parse_cli with no flags");
     const app::config::WebConfig config = call_parse_cli({});
 
@@ -106,13 +96,13 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles missing optional values", "[cl
     REQUIRE(config.host == "0.0.0.0");
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles verbose flag", "[cli][parse_cli]") {
+TEST_CASE("parse_cli handles verbose flag", "[cli][parse_cli]") {
     const app::config::WebConfig config = call_parse_cli({"--verbose"});
 
     REQUIRE(config.verbose == true);  // Ensure WebConfig has a `verbose` flag
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[parse_cli][help]") {
+TEST_CASE("parse_cli handles version flag", "[parse_cli][help]") {
 
     const auto output = helpers::capture_stdout([]() {
         const Func<void(int code)>shutdown = [](int code) {
@@ -130,7 +120,7 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles version flag", "[parse_cli][he
     REQUIRE(output.find("this help") != Str::npos);
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][version]") {
+TEST_CASE("parse_cli handles help flag", "[parse_cli][version]") {
 
     const auto output = helpers::capture_stdout([]() {
         const Func<void(int code)>shutdown = [](int code) {
@@ -147,7 +137,7 @@ TEST_CASE_METHOD(CLITestSetup, "parse_cli handles help flag", "[parse_cli][versi
     REQUIRE(output.find("Version:") != Str::npos);
 }
 
-TEST_CASE_METHOD(CLITestSetup, "parse_cli with bad flag", "[parse_cli][bad]") {
+TEST_CASE("parse_cli with bad flag", "[parse_cli][bad]") {
     const auto output = helpers::capture_stdout([]() {
         const Func<void(int code)>shutdown = [](int code) {
             INFO("return code should be zero");
