@@ -9,17 +9,7 @@
 using namespace app;
 using json = nlohmann::json;
 
-struct TemperatureTestSetup {
-    TemperatureTestSetup() {
-        spdlog::set_level(spdlog::level::err);
-    }
-
-    ~TemperatureTestSetup() {
-        spdlog::set_level(spdlog::level::off);
-    }
-};
-
-TEST_CASE_METHOD(TemperatureTestSetup, "Temperature Tests", "[temperature][c2f]") {
+TEST_CASE("Temperature Tests", "[temperature][c2f]") {
     Vec<float> values = {0.0, 10.0, 15.0, 20.0, 25.0, 30.0};
 
     for (auto value : values) {
@@ -30,7 +20,7 @@ TEST_CASE_METHOD(TemperatureTestSetup, "Temperature Tests", "[temperature][c2f]"
     }
 }
 
-TEST_CASE_METHOD(TemperatureTestSetup, "Temperature Tests", "[temperature][parse_reading]") {
+TEST_CASE("Temperature Tests", "[temperature][parse_reading]") {
     const auto reading = helpers::mock_reading;
     const temperature::TemperatureData data = temperature::parse_reading(reading);
 
@@ -53,7 +43,7 @@ TEST_CASE_METHOD(TemperatureTestSetup, "Temperature Tests", "[temperature][parse
 
 }
 
-TEST_CASE_METHOD(TemperatureTestSetup, "Temperature Tests", "[temperature][parse_probe]") {
+TEST_CASE("Temperature Tests", "[temperature][parse_probe]") {
     const auto text = helpers::mock_client_config;
     json jcfg = json::parse(text);
     auto location = "cottage-south";
