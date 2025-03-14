@@ -4,24 +4,14 @@
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 #include <datetimelib/datetimelib.hpp>
 
-struct DateTimeLibTestSetup {
-    DateTimeLibTestSetup() {
-        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
-    }
-
-    ~DateTimeLibTestSetup() {
-        spdlog::set_level(spdlog::level::off); // Teardown: Restore logging
-    }
-};
-
-TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib::timestamp_seconds()", "[datetimelib][seconds]") {
+TEST_CASE("DateTimeLib::timestamp_seconds()", "[datetimelib][seconds]") {
     std::time_t tsz = 1738888855;
     auto unix_ts = datetimelib::timestamp_seconds();
     INFO("tsz is in the past, 2025-02-06");
     REQUIRE(tsz < unix_ts);
 }
 
-TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib::timestamp_millis()", "[datetimelib][millis]") {
+TEST_CASE("DateTimeLib::timestamp_millis()", "[datetimelib][millis]") {
     std::time_t tszl = 1738888855000;
     auto mts = datetimelib::timestamp_millis();
     spdlog::info("millis ts: {}", mts);
@@ -29,7 +19,7 @@ TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib::timestamp_millis()", "[date
     REQUIRE(mts > tszl);
 }
 
-TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib Timestamp Tests", "[datetimelib][seconds][millis]") {
+TEST_CASE("DateTimeLib Timestamp Tests", "[datetimelib][seconds][millis]") {
     std::time_t tms = datetimelib::timestamp_millis();
     std::time_t tss = datetimelib::timestamp_seconds();
     spdlog::info("tms: {}, tss: {}", tms, tss);
@@ -37,7 +27,7 @@ TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib Timestamp Tests", "[datetime
     REQUIRE(tms / 1000 == tss);
 }
 
-TEST_CASE_METHOD(DateTimeLibTestSetup, "DateTimeLib Format Tests", "[datetimelib][format]") {
+TEST_CASE("DateTimeLib Format Tests", "[datetimelib][format]") {
     // format with std::put_time
     std::time_t tsz = 1738888855;
     auto iso_dt = datetimelib::ts_to_local_isodate(tsz, "%F");

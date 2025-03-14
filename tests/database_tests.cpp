@@ -12,21 +12,6 @@
 using namespace app;
 using namespace datetimelib::perftimer;
 
-PerfTimer timer("Database test");
-
-struct DatabaseTestSetup {
-    DatabaseTestSetup() {
-        spdlog::set_level(spdlog::level::critical);
-        timer.start();
-    }
-
-    ~DatabaseTestSetup() {
-        timer.stop();
-        // timer.show_duration();
-        spdlog::set_level(spdlog::level::off);
-    }
-};
-
 void populate_database(database::Database& db, const size_t size = 100) {
     time_t t0 = datetimelib::timestamp_seconds() - (size * 10);
     Str location = "shed.0";
@@ -41,7 +26,7 @@ void populate_database(database::Database& db, const size_t size = 100) {
     }
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
+TEST_CASE("Database Tests", "[client][set_get]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 10;
@@ -81,7 +66,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][set_get]") {
     REQUIRE(true);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
+TEST_CASE("Database Tests", "[client][get_bad_key]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 5;
@@ -102,7 +87,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][get_bad_key]") {
     REQUIRE(!value);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
+TEST_CASE("Database Tests", "[client][keys]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 50;
@@ -117,17 +102,17 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][keys]") {
     }
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][last_n]") {
+TEST_CASE("Database Tests", "[client][last_n]") {
     // TODO implement
     REQUIRE(true);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[client][search]") {
+TEST_CASE("Database Tests", "[client][search]") {
     // TODO implement
     REQUIRE(true);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]") {
+TEST_CASE("Database Tests", "[database][read_database]") {
     // write out a raw database file key/value
     spdlog::info("raw data: {}", helpers::raw_temps_data);
     const auto path = helpers::create_temp_path("db-read-test_");
@@ -159,7 +144,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_database]
     helpers::remove_temp_path(path);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][write_database]") {
+TEST_CASE("Database Tests", "[database][write_database]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 20;
@@ -177,7 +162,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][write_database
     helpers::remove_temp_path(path);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") {
+TEST_CASE("Database Tests", "[database][create_key]") {
 
     time_t timestamp = 1739563051;
     const auto location = "shed.0";
@@ -188,7 +173,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][create_key]") 
     REQUIRE(key.to_string() == "1739563051.shed.0");
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_value]") {
+TEST_CASE("Database Tests", "[database][append_key_value]") {
 
     const auto path = helpers::create_temp_path();
     const time_t ts = datetimelib::timestamp_seconds();
@@ -211,7 +196,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][append_key_val
     helpers::remove_temp_path(path);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_file]") {
+TEST_CASE("Database Tests", "[database][bad_append_file]") {
 
     const auto filename = "bad-file/folder/temps/bad.db";
     const time_t ts = datetimelib::timestamp_seconds();
@@ -230,7 +215,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][bad_append_fil
         REQUIRE(true);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
+TEST_CASE("Database Tests", "[database][data]") {
     // create some data and store in a temp file
     database::Database db;
     REQUIRE(db.size() == 0);
@@ -242,18 +227,18 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][data]") {
 
     auto keys = db.keys();
 
-    Str key = keys.at(25);
+    const auto key = keys.at(25);
     REQUIRE(key.size() > 6);
     auto ret = db.get(key);
     if (ret) {
-        auto value = *ret;
+        const auto value = *ret;
         REQUIRE(value.size() > 3);
     } else {
         REQUIRE(false);
     }
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_data]") {
+TEST_CASE("Database Tests", "[database][read_data]") {
     const FilePath path = helpers::create_temp_path("tmpdb_");
     spdlog::info("file: {}", path.string());
     REQUIRE(1 == 1);
@@ -261,7 +246,7 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][read_data]") {
     helpers::remove_temp_path(path);
 }
 
-TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][reading_types]") {
+TEST_CASE("Database Tests", "[database][reading_types]") {
     using namespace app::database;
     Str label = ReadingType::to_label(ReadingType::Value::Temperature);
     REQUIRE(label == "temperature");
@@ -276,4 +261,3 @@ TEST_CASE_METHOD(DatabaseTestSetup, "Database Tests", "[database][reading_types]
     label = ReadingType::to_label(ReadingType::Value::Proximity);
     REQUIRE(label == "proximity");
 }
-

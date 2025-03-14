@@ -5,6 +5,7 @@
 #include <spdlog/spdlog.h>
 #include "test_helpers.hpp"
 
+// start the configuration service and the timer
 void start_config_service() {
     using namespace app::cfgsvc;
 
