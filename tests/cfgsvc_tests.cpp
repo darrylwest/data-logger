@@ -9,17 +9,7 @@
 #include "test_helpers.hpp"
 #include <nlohmann/json.hpp>
 
-struct CfgSrvTestSetup {
-    CfgSrvTestSetup() {
-        spdlog::set_level(spdlog::level::off); // Setup: Disable logging
-    }
-
-    ~CfgSrvTestSetup() {
-        spdlog::set_level(spdlog::level::off); // Teardown: Restore logging
-    }
-};
-
-TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][main]") {
+TEST_CASE("Config Service Tests", "[cfgsrv][main]") {
     spdlog::info("Config Service Tests: version");
 
     using namespace app;
@@ -32,7 +22,7 @@ TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][main]") {
     REQUIRE(vers.starts_with("0.6."));
 }
 
-TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][client]") {
+TEST_CASE("Config Service Tests", "[cfgsrv][client]") {
     spdlog::info("Config Service Tests: client");
 
     using namespace app;
@@ -47,7 +37,7 @@ TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][client]") {
 
 }
 
-TEST_CASE_METHOD(CfgSrvTestSetup, "Config Service Tests", "[cfgsrv][clients]") {
+TEST_CASE("Config Service Tests", "[cfgsrv][clients]") {
     spdlog::info("Config Service Tests: clients");
 
     using namespace app;
