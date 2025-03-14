@@ -11,23 +11,13 @@
 using namespace app;
 using namespace soxlib;
 
-struct ClientTestSetup {
-    ClientTestSetup() {
-        spdlog::set_level(spdlog::level::critical);
-    }
-
-    ~ClientTestSetup() {
-        spdlog::set_level(spdlog::level::off);
-    }
-};
-
 void cleanup() {
     client::http_client_creator = [](const Str& url) {
         return HttpClient{url};
     };
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
+TEST_CASE("Client Tests", "[client][fetch_status]") {
     client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
@@ -48,7 +38,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_status]") {
     cleanup();
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
+TEST_CASE("Client Tests", "[client][fetch_temps]") {
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
@@ -81,7 +71,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps]") {
     cleanup();
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps_404]") {
+TEST_CASE("Client Tests", "[client][fetch_temps_404]") {
     auto creator= client::http_client_creator = [](const Str& url) {
         HttpClient client(url);
 
@@ -108,7 +98,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][fetch_temps_404]") {
     cleanup();
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]") {
+TEST_CASE("Client Tests", "[client][put_temps][bad_host]") {
     auto node = helpers::create_test_client();
     auto data = temperature::parse_reading(helpers::mock_reading);
     auto key = database::create_key(1739563051, "tmp.0");
@@ -121,7 +111,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][bad_host]
     REQUIRE(!ok);
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][mock]") {
+TEST_CASE("Client Tests", "[client][put_temps][mock]") {
     // auto url = "http://badhost:9090";
     auto node = helpers::create_test_client();
     auto data = temperature::parse_reading(helpers::mock_reading);
@@ -149,7 +139,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][put_temps][mock]") {
     cleanup();
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
+TEST_CASE("Client Tests", "[client][parse_status]") {
     const Str json = helpers::mock_client_status;
     const auto status = client::parse_status(json);
 
@@ -161,7 +151,7 @@ TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][parse_status]") {
     REQUIRE(status.errors == 0);
 }
 
-TEST_CASE_METHOD(ClientTestSetup, "Client Tests", "[client][create_nodes]") {
+TEST_CASE("Client Tests", "[client][create_nodes]") {
     const auto nodes = client::create_nodes();
     REQUIRE(nodes.size() == 3);
 
