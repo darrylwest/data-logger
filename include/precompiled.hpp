@@ -1,7 +1,6 @@
 
 // include/precompiled.hpp
-#ifndef PRECOMPILED_HPP
-#define PRECOMPILED_HPP
+#pragma once
 
 #include <iostream>
 #include <vector>
@@ -15,4 +14,3 @@
 #include <condition_variable>
 #include <chrono>
 
-#endif // PRECOMPILED_HPP

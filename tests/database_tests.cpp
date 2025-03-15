@@ -26,7 +26,7 @@ void populate_database(database::Database& db, const size_t size = 100) {
     }
 }
 
-TEST_CASE("Database Tests", "[client][set_get]") {
+TEST_CASE("Database Tests", "[database][set_get]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 10;
@@ -66,7 +66,7 @@ TEST_CASE("Database Tests", "[client][set_get]") {
     REQUIRE(true);
 }
 
-TEST_CASE("Database Tests", "[client][get_bad_key]") {
+TEST_CASE("Database Tests", "[database][get_bad_key]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 5;
@@ -87,7 +87,7 @@ TEST_CASE("Database Tests", "[client][get_bad_key]") {
     REQUIRE(!value);
 }
 
-TEST_CASE("Database Tests", "[client][keys]") {
+TEST_CASE("Database Tests", "[database][keys]") {
     database::Database db;
     REQUIRE(db.size() == 0);
     size_t size = 50;
@@ -102,12 +102,12 @@ TEST_CASE("Database Tests", "[client][keys]") {
     }
 }
 
-TEST_CASE("Database Tests", "[client][last_n]") {
+TEST_CASE("Database Tests", "[database][last_n]") {
     // TODO implement
     REQUIRE(true);
 }
 
-TEST_CASE("Database Tests", "[client][search]") {
+TEST_CASE("Database Tests", "[database][search]") {
     // TODO implement
     REQUIRE(true);
 }
