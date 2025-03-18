@@ -23,7 +23,7 @@ Eventually it will gather and store other readings including light intensity, mo
 
 Starter uses...
 
-* basic cmake + cpm
+* basic cmake 3.4 + CPM
 * ansi_colors.hpp
 * cxxopts.hpp
 * spdlog for logging
@@ -53,5 +53,5 @@ _copy here with tests_
 
 ![Home Page](webapp/docs/datalogger-home.png)
 
-###### 2025.02.19 | dpw
+###### 2025.03.18 | dpw
 
