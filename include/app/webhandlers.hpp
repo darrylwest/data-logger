@@ -16,7 +16,7 @@ namespace app::webhandlers {
     struct ChartConfig {
         std::time_t end_ts;
         Vec<Str> locations;
-        int data_points = 25;
+        size_t data_points = 25;
     };
 
     struct ChartData {

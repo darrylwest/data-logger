@@ -7,20 +7,19 @@
 
 using namespace app;
 
-struct WebHandlersTestSetup {
-    WebHandlersTestSetup() {
-        spdlog::set_level(spdlog::level::info);
-    }
-
-    ~WebHandlersTestSetup() {
-        spdlog::set_level(spdlog::level::off);
-    }
-};
-
 TEST_CASE("WebHandlers Tests", "[webhandlers][chart_data]") {
-    // TODO implement
-    const Str ss = "test string";
-    REQUIRE(ss == "test string");
+
+    database::Database db;
+    size_t size = 350;
+    populate_database(db, size);
+    REQUIRE(db.size() == size);
+    const time_t ts = datetimelib::timestamp_seconds();
+    const Vec<Str> locations = {"shed.0"};
+
+    const webhandlers::ChartConfig cfg{ .end_ts = ts, .locations = locations };
+
+    const auto data = webhandlers::create_chart_data(db, cfg);
+    REQUIRE(data.labels.size() == cfg.data_points);
 }
 
 TEST_CASE("WebHandlers Tests", "[webhandlers][temps_response]") {
