@@ -68,3 +68,12 @@ TEST_CASE("WebHandlers Tests", "[webhandlers][temps_response]") {
     REQUIRE(j[END_DATE] == chart.end_date);
 
 }
+
+TEST_CASE("WebHandlers Tests", "[webhandlers][map_temps_data]") {
+    // TODO test this for bad data
+    REQUIRE(true);
+}
+
+TEST_CASE("WebHandlers Tests", "[webhandlers][bad_temps_response]") {
+    REQUIRE(true);
+}
