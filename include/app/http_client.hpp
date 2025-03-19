@@ -1,6 +1,9 @@
 //
 // Created by Darryl West on 3/5/25.
 //
+// http_client is a thin wrapper around httplib.  it provides a way to completely
+// mock out the real server for unit tests.
+//
 
 #pragma once
 
