@@ -54,11 +54,14 @@ TEST_CASE("WebHandlers Tests", "[webhandlers][temps_response]") {
     const auto jstr = webhandlers::create_temps_response(chart);
 
     const json j = json::parse(jstr);
-    std::println("{}", j.dump(4));
 
     REQUIRE(j[DATASETS].size() == 1); // one active probe
     const auto data = j[DATASETS].at(0);
     REQUIRE(data["sensor_id"] == "shed.0.F");
+    std::println("{}", data.dump(4));
+    REQUIRE(data["label"] == "shed.0.F");
+    REQUIRE(data["borderColor"] == "red");
+    REQUIRE(data["fill"] == false);
 
     const auto labels  = j[LABELS].get<Vec<Str>>();
     REQUIRE(labels.size() == cfg.data_points);
