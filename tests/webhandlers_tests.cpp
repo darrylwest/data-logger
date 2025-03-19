@@ -58,7 +58,7 @@ TEST_CASE("WebHandlers Tests", "[webhandlers][temps_response]") {
     REQUIRE(j[DATASETS].size() == 1); // one active probe
     const auto data = j[DATASETS].at(0);
     REQUIRE(data["sensor_id"] == "shed.0.F");
-    std::println("{}", data.dump(4));
+    // std::println("{}", data.dump(4));
     REQUIRE(data["label"] == "shed.0.F");
     REQUIRE(data["borderColor"] == "red");
     REQUIRE(data["fill"] == false);
