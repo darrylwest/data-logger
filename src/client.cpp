@@ -16,6 +16,8 @@
 #include <app/types.hpp>
 #include <datetimelib/datetimelib.hpp>
 
+#include "precompiled.hpp"
+
 namespace app::client {
     using json = nlohmann::json;
     using namespace soxlib;

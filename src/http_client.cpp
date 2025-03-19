@@ -8,6 +8,8 @@
 #include <app/types.hpp>
 #include <thread>
 
+#include "precompiled.hpp"
+
 namespace soxlib {
     HttpResponse::HttpResponse(const httplib::Result& result) {
         if (result) {

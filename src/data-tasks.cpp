@@ -19,6 +19,8 @@
 #include <datetimelib/datetimelib.hpp>
 #include <vendor/ansi_colors.hpp>
 
+#include "precompiled.hpp"
+
 // special
 #include <app/cfgsvc.hpp>
 #include <app/client.hpp>

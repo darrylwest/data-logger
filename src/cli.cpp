@@ -7,9 +7,10 @@
 #include <app/cli.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/version.hpp>
-#include <fstream>
 #include <nlohmann/json.hpp>
 #include <vendor/cxxopts.hpp>
+
+#include "precompiled.hpp"
 
 namespace app::config {
     using json = nlohmann::json;

@@ -7,9 +7,8 @@
 #include <vendor/httplib.h>
 
 #include <app/types.hpp>
-#include <functional>
-#include <optional>
-#include <string>
+
+#include "precompiled.hpp"
 
 namespace soxlib {
 

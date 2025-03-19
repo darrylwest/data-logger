@@ -11,6 +11,8 @@
 #include <app/nodes.hpp>
 #include <datetimelib/datetimelib.hpp>
 
+#include "precompiled.hpp"
+
 namespace app::nodes {
     using namespace app::taskrunner;
     using namespace app::client;
