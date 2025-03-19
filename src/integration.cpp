@@ -2,6 +2,7 @@
 // 2024-12-23 15:25:10 dpw
 //
 
+#include "precompiled.hpp"
 #include <httplib.h>
 #include <spdlog/fmt/fmt.h>
 #include <unistd.h>
