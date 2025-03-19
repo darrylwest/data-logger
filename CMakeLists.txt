@@ -168,16 +168,18 @@ add_executable(unit_tests
 target_precompile_headers(data-logger PRIVATE include/precompiled.hpp)
 
 # turn off optimization to speed compile times
-set(OPTIM_COMPILE_FLAGS "-O0")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(OPTIM_COMPILE_FLAGS "-O0")
+else()
+    set(OPTIM_COMPILE_FLAGS "-O0")
+endif()
 
 # Add optimization flags based on build type
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(data-logger PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(data-tasks PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(datalogger-unit PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(datalogger-integration PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(unit_tests PRIVATE ${OPTIM_COMPILE_FLAGS})
-endif()
+target_compile_options(data-logger PRIVATE ${OPTIM_COMPILE_FLAGS})
+target_compile_options(data-tasks PRIVATE ${OPTIM_COMPILE_FLAGS})
+target_compile_options(datalogger-unit PRIVATE -O0)
+target_compile_options(datalogger-integration PRIVATE -O0)
+target_compile_options(unit_tests PRIVATE -O0)
 
 # Specify include directories for tests
 # target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
