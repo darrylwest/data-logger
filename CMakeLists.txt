@@ -164,6 +164,9 @@ add_executable(unit_tests
     tests/version_tests.cpp
 )
 
+# Specify the precompiled header
+target_precompile_headers(data-logger PRIVATE include/precompiled.hpp)
+
 # Add optimization flags based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     target_compile_options(data-logger PRIVATE -O3)
