@@ -169,11 +169,11 @@ target_precompile_headers(data-logger PRIVATE include/precompiled.hpp)
 
 # Add optimization flags based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(data-logger PRIVATE -O1)
-    target_compile_options(data-tasks PRIVATE -O1)
-    target_compile_options(datalogger-unit PRIVATE -O1)
-    target_compile_options(datalogger-integration PRIVATE -O1)
-    target_compile_options(unit_tests PRIVATE -O1)
+    target_compile_options(data-logger PRIVATE -O0)
+    target_compile_options(data-tasks PRIVATE -O0)
+    target_compile_options(datalogger-unit PRIVATE -O0)
+    target_compile_options(datalogger-integration PRIVATE -O0)
+    target_compile_options(unit_tests PRIVATE -O0)
     # Add other optimization flags as needed
 endif()
 
