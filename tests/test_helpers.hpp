@@ -59,7 +59,7 @@ namespace helpers {
     }
 
 
-    inline std::string capture_stdout(Func<void()> func) {
+    inline std::string capture_stdout(const Func<void()>& func) {
         std::ostringstream oss;
         std::streambuf* old_cout = std::cout.rdbuf(oss.rdbuf());  // Redirect std::cout
 
