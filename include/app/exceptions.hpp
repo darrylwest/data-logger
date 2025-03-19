@@ -7,8 +7,8 @@
 #include <spdlog/spdlog.h>
 
 #include <app/types.hpp>
-#include <exception>
-#include <string>
+
+#include "precompiled.hpp"
 
 namespace app {
 

@@ -9,10 +9,8 @@
 #pragma once
 
 #include <app/types.hpp>
-#include <atomic>
-#include <iostream>
-#include <sstream>
-#include <thread>
+
+#include "precompiled.hpp"
 
 namespace app::taskrunner {
     extern std::atomic_flag halt_threads;

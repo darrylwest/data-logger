@@ -2,6 +2,7 @@
 // 2025-02-07 15:47:16 dpw
 //
 
+// #include "precompiled.hpp"
 #include <spdlog/spdlog.h>
 
 #include <app/cfgsvc.hpp>
@@ -9,6 +10,8 @@
 #include <app/nodes.hpp>
 #include <app/service.hpp>
 #include <app/version.hpp>
+
+#include "precompiled.hpp"
 
 using namespace app::taskrunner;
 

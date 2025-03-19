@@ -1,12 +1,11 @@
 //
 // Created by Darryl West on 2/27/25.
 //
+#include "precompiled.hpp"
 #include <app/database.hpp>
 #include <app/types.hpp>
 #include <catch2/catch_all.hpp>  // For Catch2 v3
-#include <filesystem>
 #include <datetimelib/perftimer.hpp>
-
 #include "test_helpers.hpp"
 
 using namespace app;

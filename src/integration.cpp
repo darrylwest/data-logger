@@ -17,6 +17,8 @@
 #include <vendor/ansi_colors.hpp>
 #include <vendor/testlib.hpp>
 
+#include "precompiled.hpp"
+
 using namespace colors;
 using namespace rcstestlib;
 

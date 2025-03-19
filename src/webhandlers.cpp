@@ -9,13 +9,10 @@
 #include <app/temperature.hpp>
 #include <app/types.hpp>
 #include <app/webhandlers.hpp>
-#include <ctime>
 #include <datetimelib/datetimelib.hpp>
-#include <map>
 #include <nlohmann/json.hpp>
-#include <ranges>
-#include <string>
-#include <vector>
+
+#include "precompiled.hpp"
 
 namespace app::webhandlers {
     using json = nlohmann::json;

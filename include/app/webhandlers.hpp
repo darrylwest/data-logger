@@ -6,7 +6,6 @@
 
 #include <app/database.hpp>
 #include <app/types.hpp>
-#include <iostream>
 #include <nlohmann/json.hpp>
 
 namespace app::webhandlers {

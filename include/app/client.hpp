@@ -9,9 +9,9 @@
 #include <app/http_client.hpp>
 #include <app/temperature.hpp>
 #include <app/types.hpp>
-#include <map>
 #include <nlohmann/json.hpp>
-#include <sstream>
+
+#include "precompiled.hpp"
 
 namespace app::client {
     using json = nlohmann::json;

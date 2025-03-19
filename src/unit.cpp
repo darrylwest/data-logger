@@ -2,18 +2,17 @@
 // 2024-12-24 12:51:24 dpw
 //
 
-#include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
-#include <algorithm>
 #include <app/cfgsvc.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/taskrunner.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
-#include <ranges>
 #include <vendor/testlib.hpp>
+
+#include "precompiled.hpp"
 
 using namespace rcstestlib;
 

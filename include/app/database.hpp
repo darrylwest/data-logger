@@ -5,11 +5,8 @@
 #pragma once
 
 #include <app/types.hpp>
-#include <filesystem>
-#include <fstream>
-#include <map>
-#include <mutex>
-#include <sstream>
+
+#include "precompiled.hpp"
 
 namespace app::database {
     using FilterFunc = std::function<bool(const Str&)>;

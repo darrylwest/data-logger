@@ -6,8 +6,8 @@
 
 #include <app/types.hpp>
 #include <nlohmann/json.hpp>
-#include <string>
-#include <thread>
+
+#include "precompiled.hpp"
 
 namespace app::cfgsvc {
     using json = nlohmann::json;

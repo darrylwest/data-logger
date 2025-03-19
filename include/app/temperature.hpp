@@ -7,7 +7,8 @@
 
 #include <app/types.hpp>
 #include <nlohmann/json.hpp>
-#include <sstream>
+
+#include "precompiled.hpp"
 
 namespace app::temperature {
     using json = nlohmann::json;

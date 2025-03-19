@@ -2,12 +2,12 @@
 // 2025-02-04 17:01:53 dpw
 //
 
-#include <algorithm>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/types.hpp>
 #include <datetimelib/datetimelib.hpp>
-#include <ranges>
+
+#include "precompiled.hpp"
 
 /*
  * create a k/v compatible with future redis integration

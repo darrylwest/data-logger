@@ -11,9 +11,9 @@
 #include <app/types.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
-#include <cstdio>
-#include <iostream>
 #include <nlohmann/json.hpp>
+
+#include "precompiled.hpp"
 
 namespace app::service {
     using namespace httplib;

@@ -5,10 +5,8 @@
 
 #include <app/types.hpp>
 #include <app/cli.hpp>
-#include <filesystem>
-#include <fstream>
-#include <random>
 #include <spdlog/spdlog.h>
+#include "precompiled.hpp"
 
 namespace helpers {
     constexpr double EPSILON = 1e-5;
