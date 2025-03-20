@@ -52,7 +52,7 @@ namespace app::client {
         Str ip;
         int port;
         bool active;
-        int last_access;
+        time_t last_access;
         std::map<int, Str> probes;
         ClientStatus status;
 
