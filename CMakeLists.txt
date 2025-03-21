@@ -174,17 +174,6 @@ else()
     set(OPTIM_COMPILE_FLAGS "-O0")
 endif()
 
-# Add optimization flags based on build type
-target_compile_options(data-logger PRIVATE ${OPTIM_COMPILE_FLAGS})
-target_compile_options(data-tasks PRIVATE ${OPTIM_COMPILE_FLAGS})
-target_compile_options(datalogger-unit PRIVATE -O0)
-target_compile_options(datalogger-integration PRIVATE -O0)
-target_compile_options(unit_tests PRIVATE -O0)
-
-# Specify include directories for tests
-# target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
-# target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
-
 # Configure all targets
 # Create a function for setting up common target properties
 function(setup_target_properties target)
@@ -194,7 +183,7 @@ function(setup_target_properties target)
             ${CMAKE_SOURCE_DIR}/datetimelib/include
     )
     target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
-    target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(${target} PRIVATE ${OPTIM_COMPILE_FLAGS} -Wall -Wpedantic -Wextra -Werror)
     set_target_properties(${target} PROPERTIES UNITY_BUILD ON)
     # Add precompiled header support
     target_precompile_headers(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include/precompiled.hpp)
