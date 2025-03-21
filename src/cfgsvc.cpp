@@ -2,6 +2,12 @@
 // 2025-02-21 02:51:00 dpw
 //
 
+#include "precompiled.hpp"
+
+// #include <filesystem>
+// #include <fstream>
+// #include <iostream>
+
 #include <spdlog/fmt/fmt.h>
 #include <spdlog/spdlog.h>
 
@@ -9,9 +15,6 @@
 #include <app/exceptions.hpp>
 #include <app/jsonkeys.hpp>
 #include <app/types.hpp>
-#include <filesystem>
-#include <fstream>
-#include <iostream>
 
 namespace app {
     namespace cfgsvc {

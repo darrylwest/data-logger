@@ -168,20 +168,11 @@ add_executable(unit_tests
 target_precompile_headers(data-logger PRIVATE include/precompiled.hpp)
 
 # turn off optimization to speed compile times
-set(OPTIM_COMPILE_FLAGS "-O0")
-
-# Add optimization flags based on build type
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    target_compile_options(data-logger PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(data-tasks PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(datalogger-unit PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(datalogger-integration PRIVATE ${OPTIM_COMPILE_FLAGS})
-    target_compile_options(unit_tests PRIVATE ${OPTIM_COMPILE_FLAGS})
+    set(OPTIM_COMPILE_FLAGS "-O0")
+else()
+    set(OPTIM_COMPILE_FLAGS "-O0")
 endif()
-
-# Specify include directories for tests
-# target_include_directories(unit_tests PRIVATE src include include/app include/vendor)
-# target_link_libraries(unit_tests PRIVATE Catch2::Catch2WithMain )
 
 # Configure all targets
 # Create a function for setting up common target properties
@@ -192,7 +183,7 @@ function(setup_target_properties target)
             ${CMAKE_SOURCE_DIR}/datetimelib/include
     )
     target_link_libraries(${target} PRIVATE ${DEPENDENT_LIBRARIES})
-    target_compile_options(${target} PRIVATE -Wall -Wextra -Werror)
+    target_compile_options(${target} PRIVATE ${OPTIM_COMPILE_FLAGS} -Wall -Wpedantic -Wextra -Werror)
     set_target_properties(${target} PROPERTIES UNITY_BUILD ON)
     # Add precompiled header support
     target_precompile_headers(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include/precompiled.hpp)
