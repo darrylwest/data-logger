@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.31)
 project(data-logger VERSION 1.0.0)
 
 set(CMAKE_CXX_STANDARD 23)
@@ -196,10 +196,6 @@ endforeach()
 
 # Output directories
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/${BIN_DIR})
-
-if(NOT APPLE)
-    set(CMAKE_EXE_LINKER_FLAGS "-static-libgcc -static-libstdc++")
-endif()
 
 message(STATUS "Compiler: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 
