@@ -30,9 +30,16 @@ namespace app::client {
         auto j = jsn[CLIENT_STATUS];
         Str version = j[VERSION];
 
+        // TODO remove this once all clients are on version 0.6.30-144
+        Str location = "unknown";
+        if (j.contains(LOCATION)) {
+            location = j[LOCATION];
+        }
+
         ClientStatus status = {
             .version = j[VERSION],
             .timestamp = j[TS],
+            .location = location,
             .started = j[STARTED],
             .uptime = j[UPTIME],
             .access_count = j[ACCESS],

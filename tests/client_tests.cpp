@@ -34,6 +34,9 @@ TEST_CASE("Client Tests", "[client][fetch_status]") {
 
     REQUIRE(status.errors == 0);
     REQUIRE(status.version.starts_with("0.6."));
+    REQUIRE(status.timestamp == 1738453678);
+    REQUIRE(status.location == "front-porch");
+    REQUIRE(status.access_count == 8247);
 
     cleanup();
 }

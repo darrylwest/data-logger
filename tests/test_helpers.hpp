@@ -109,6 +109,7 @@ namespace helpers {
         {"status":
             {"version":"0.6.28-139",
             "ts":1738453678,
+            "location": "front-porch",
             "started":1738012925,
             "uptime":"5 days, 02:25:53",
             "access":8247,
