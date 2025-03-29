@@ -83,8 +83,8 @@ namespace helpers {
     const Str mock_reading = R"(
         {"reading_at": 1738362466,
         "probes":[
-            {"sensor":0,"location":"cottage-south","enabled":true,"millis":349548023,"tempC":10.88542,"tempF":51.59375},
-            {"sensor":1,"location":"cottage-east","enabled":false,"millis":349548023,"tempC":-127.0,"tempF":51.66576}
+            {"sensor":0,"location":"cottage-south","enabled":true,"tempC":10.88542,"tempF":51.59375},
+            {"sensor":1,"location":"cottage-east","enabled":false,"tempC":-127.0,"tempF":51.66576}
         ]
     })";
 
