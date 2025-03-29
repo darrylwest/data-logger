@@ -33,9 +33,10 @@ namespace app::client {
         int errors = 0;
 
         friend std::ostream& operator<<(std::ostream& os, const ClientStatus v) {
-            os << "version: " << v.version << ", ts: " << v.timestamp << ", location" << v.location
-               << ", started: " << v.started << ", uptime: " << v.uptime
-               << ", accessed: " << v.access_count << ", errors: " << v.errors;
+            os << "version: " << v.version << ", ts: " << v.timestamp
+               << ", location: " << v.location << ", started: " << v.started
+               << ", uptime: " << v.uptime << ", accessed: " << v.access_count
+               << ", errors: " << v.errors;
 
             return os;
         }

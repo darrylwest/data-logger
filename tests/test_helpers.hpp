@@ -157,7 +157,7 @@ namespace helpers {
         },
         "clients": [
             {
-                "location": "cottage",
+                "location": "front-porch",
                 "ip": "10.0.1.197",
                 "port": 2030,
                 "active": true,
@@ -166,8 +166,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "cottage-south", "enabled": true },
-                            { "sensor": 1, "location": "cottage-east", "enabled": false}
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false}
                         ]
                     }
                 ]
@@ -182,8 +182,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "deck-west", "enabled": true },
-                            { "sensor": 1, "location": "deck-east", "enabled": false }
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false }
                         ]
                     }
                 ]
@@ -198,8 +198,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "shed-inside", "enabled": true },
-                            { "sensor": 1, "location": "shed-west", "enabled": false }
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false }
                         ]
                     }
                 ]

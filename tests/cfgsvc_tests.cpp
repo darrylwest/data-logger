@@ -26,7 +26,7 @@ TEST_CASE("Config Service Tests", "[cfgsrv][client]") {
     spdlog::info("Config Service Tests: client");
 
     using namespace app;
-    auto const client_cfg = cfgsvc::client("cottage");
+    auto const client_cfg = cfgsvc::client("front-porch");
 
     spdlog::debug("{}", client_cfg.dump(4));
 
