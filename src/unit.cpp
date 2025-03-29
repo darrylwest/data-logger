@@ -253,7 +253,7 @@ Results test_database() {
 Results test_clients() {
     using namespace app;
 
-    Results r = {.name = "Clients Tests"};
+    Results r = {.name = "Client Tests"};
     auto nodes = client::create_nodes();
 
     r.equals(nodes.size() == 3, "should be 3 client nodes from config");
@@ -269,9 +269,12 @@ Results test_clients() {
             // const auto t0 = std::chrono::high_resolution_clock::now();
             auto status = client::fetch_status(client);
             // const auto t1 = std::chrono::high_resolution_clock::now();
+            r.equals(status.version.starts_with("0.6."), "should be version 0.6.x");
             r.equals(status.access_count > 0, "should have access counts");
             r.equals(status.errors == 0, "should have zero errors");
             const auto ts = status.timestamp;
+
+            r.equals(status.location.size() > 1, "location should be set");
 
             auto temps = client::fetch_temps(client);
             r.equals(temps.probes.size() >= 2, "should have probes");

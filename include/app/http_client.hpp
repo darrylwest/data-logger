@@ -55,6 +55,7 @@ namespace soxlib {
         // get with specified path using base_url
         HttpResponse Delete(const Str& path);
 
+        // use this method to switch between real and mock handlers
         void set_handler(const HttpResponse& response_handler);
 
       private:

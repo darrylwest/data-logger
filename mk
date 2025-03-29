@@ -91,7 +91,7 @@ do
             shift
         ;;
         watch)
-            watchexec -c -w src/ -w include/ -w tests/ -e h,hpp,cpp ./mk build unit
+            watchexec -c -w src/ -w include/ -w tests/ -e h,hpp,cpp ./mk build unit string
 
             exit 0
         ;;

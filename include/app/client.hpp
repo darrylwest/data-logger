@@ -26,15 +26,16 @@ namespace app::client {
     struct ClientStatus {
         Str version;
         int timestamp = 0;
+        Str location;
         int started = 0;
         Str uptime;
         int access_count = 0;
         int errors = 0;
 
         friend std::ostream& operator<<(std::ostream& os, const ClientStatus v) {
-            os << "version: " << v.version << ", ts: " << v.timestamp << ", started: " << v.started
-               << ", uptime: " << v.uptime << ", accessed: " << v.access_count
-               << ", errors: " << v.errors;
+            os << "version: " << v.version << ", ts: " << v.timestamp << ", location" << v.location
+               << ", started: " << v.started << ", uptime: " << v.uptime
+               << ", accessed: " << v.access_count << ", errors: " << v.errors;
 
             return os;
         }
