@@ -1,5 +1,5 @@
 {
-    "config-version": "0.6.1-107",
+    "config-version": "0.6.2-108",
     "home": "{{HOME}}/.data-logger",
     "logging": {
         "level": "info",
@@ -8,8 +8,8 @@
     },
     "data": {
         "folder": "data",
-        "temperature": "/temperature",
-        "status": "/status"
+        "temperature": "/current.temps.db",
+        "status": "/current.status.db"
     },
     "webservice": {
         "scheme": "http",
@@ -38,7 +38,7 @@
             ]
         },
         {
-            "location": "deck",
+            "location": "back-deck",
             "ip": "10.0.1.177",
             "port": 2030,
             "active": true,
@@ -54,7 +54,7 @@
             ]
         },
         {
-            "location": "shed",
+            "location": "cottage",
             "ip": "10.0.1.115",
             "port": 2030,
             "active": false,

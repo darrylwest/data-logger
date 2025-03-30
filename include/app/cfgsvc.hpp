@@ -32,6 +32,7 @@ namespace app::cfgsvc {
 
         json get_node(const StrView& node_name);
 
+        json data_node();
         json webservice();
         json clients();
         json client(const std::string& client_name);
@@ -65,6 +66,7 @@ namespace app::cfgsvc {
 
     json get_node(const StrView& node_name);
 
+    json data_node();
     json webservice();
     json clients();
     json client(const Str& client_name);

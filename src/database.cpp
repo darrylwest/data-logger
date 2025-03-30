@@ -2,6 +2,7 @@
 // 2025-02-04 17:01:53 dpw
 //
 
+#include <app/cfgsvc.hpp>
 #include <app/database.hpp>
 #include <app/exceptions.hpp>
 #include <app/types.hpp>
@@ -36,9 +37,8 @@ namespace app {
         }
 
         bool read_current_data(Database& db) {
-            // TODO read from configuration, all database files
-            Str location = "cottage";
-            const FilePath path = "data/temperature/current." + location + ".db";
+            // TODO get temps file location from cfgsvc,
+            const FilePath path = "data/current.temps.db";
 
             spdlog::info("read current data from {}", path.string());
             db.read(path, false);

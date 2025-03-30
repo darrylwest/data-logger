@@ -8,6 +8,7 @@
 #include <spdlog/spdlog.h>
 #include "test_helpers.hpp"
 #include <nlohmann/json.hpp>
+#include <app/jsonkeys.hpp>
 
 TEST_CASE("Config Service Tests", "[cfgsrv][main]") {
     spdlog::info("Config Service Tests: version");
@@ -26,14 +27,15 @@ TEST_CASE("Config Service Tests", "[cfgsrv][client]") {
     spdlog::info("Config Service Tests: client");
 
     using namespace app;
+    using namespace jsonkeys;
     auto const client_cfg = cfgsvc::client("front-porch");
 
     spdlog::debug("{}", client_cfg.dump(4));
 
-    REQUIRE(client_cfg.contains("active"));
-    REQUIRE(client_cfg.contains("ip"));
-    REQUIRE(client_cfg.contains("port"));
-    REQUIRE(client_cfg.contains("sensors"));
+    REQUIRE(client_cfg.contains(ACTIVE));
+    REQUIRE(client_cfg.contains(IP));
+    REQUIRE(client_cfg.contains(PORT));
+    REQUIRE(client_cfg.contains(SENSORS));
 
 }
 
@@ -41,17 +43,33 @@ TEST_CASE("Config Service Tests", "[cfgsrv][clients]") {
     spdlog::info("Config Service Tests: clients");
 
     using namespace app;
+    using namespace jsonkeys;
     auto const clients = cfgsvc::clients();
 
     spdlog::debug("{}", clients.dump(4));
 
     REQUIRE(clients.size() == 3);
     for (const auto& client : clients) {
-        REQUIRE(client.contains("active"));
-        REQUIRE(client.contains("ip"));
-        REQUIRE(client.contains("port"));
-        REQUIRE(client.contains("sensors"));
+        REQUIRE(client.contains(ACTIVE));
+        REQUIRE(client.contains(IP));
+        REQUIRE(client.contains(PORT));
+        REQUIRE(client.contains(SENSORS));
 
         REQUIRE(client[jsonkeys::PORT] == 2030);
     }
+}
+
+TEST_CASE("Config Service Tests", "[cfgsvs][data-node]") {
+    spdlog::set_level(spdlog::level::debug);
+    spdlog::info("Config Service Tests: data");
+
+    using namespace app;
+    using namespace jsonkeys;
+
+    auto const jdata = cfgsvc::data_node();
+
+    REQUIRE(jdata.contains(TEMPERATURE));
+    REQUIRE(jdata.contains( CLIENT_STATUS));
+
+    spdlog::set_level(spdlog::level::critical);
 }

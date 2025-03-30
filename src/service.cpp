@@ -170,6 +170,7 @@ namespace app::service {
             res.status = 204;  // No Content
         });
 
+        // TODO modify for multiple databases: tempsdb, statusdb, lightdb, etc.
         auto db = database::Database();
         database::read_current_data(db);
 
