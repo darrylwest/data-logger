@@ -36,17 +36,6 @@ namespace app {
             file.close();
         }
 
-        bool read_current_data(Database& db) {
-            // TODO get temps file location from cfgsvc,
-            const FilePath path = "data/current.temps.db";
-
-            spdlog::info("read current data from {}", path.string());
-            db.read(path, false);
-            spdlog::info("db size: {}", db.size());
-
-            return true;
-        }
-
         bool Database::set(const Str& key, const Str& value) {
             std::lock_guard<std::mutex> lock(mtx);
             if (data.contains(key)) {
@@ -114,6 +103,7 @@ namespace app {
             std::lock_guard<std::mutex> lock(mtx);
             std::ifstream infile(path);
             if (!infile.is_open()) {
+                spdlog::error("Error in database::read(); can't open file: {}", path.string());
                 return false;
             }
 
@@ -130,11 +120,14 @@ namespace app {
                     data[key] = value;
                 }
             }
+
+            spdlog::info("database read from {}, {} entries", path.string(), size());
+
             return true;
         }
 
         // Thread-safe dump/save to file
-        bool Database::save(const FilePath& path) const {
+        bool Database::write(const FilePath& path) const {
             std::lock_guard<std::mutex> lock(mtx);
             std::ofstream outfile(path);
             if (!outfile.is_open()) {

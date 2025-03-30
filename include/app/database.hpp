@@ -108,11 +108,8 @@ namespace app::database {
         bool read(const FilePath& path, bool clear = false);
 
         // save the current database to file
-        bool save(const FilePath& path) const;
+        bool write(const FilePath& path) const;
 
     };  // struct database
-
-    // open and readin database files (reference config)
-    bool read_current_data(Database& db);
 
 }  // namespace app::database

@@ -60,7 +60,7 @@ TEST_CASE("Config Service Tests", "[cfgsrv][clients]") {
 }
 
 TEST_CASE("Config Service Tests", "[cfgsvs][data-node]") {
-    spdlog::set_level(spdlog::level::debug);
+    spdlog::set_level(spdlog::level::info);
     spdlog::info("Config Service Tests: data");
 
     using namespace app;
@@ -68,8 +68,12 @@ TEST_CASE("Config Service Tests", "[cfgsvs][data-node]") {
 
     auto const jdata = cfgsvc::data_node();
 
+    REQUIRE(jdata.contains(FOLDER));
     REQUIRE(jdata.contains(TEMPERATURE));
     REQUIRE(jdata.contains( CLIENT_STATUS));
+    REQUIRE(jdata[FOLDER] == "data");
+    REQUIRE(jdata[TEMPERATURE] == "/current.temps.db");
+    REQUIRE(jdata[CLIENT_STATUS] == "/current.status.db");
 
     spdlog::set_level(spdlog::level::critical);
 }
