@@ -61,7 +61,7 @@ Results test_taskrunner() {
         r.pass();
     }
 
-    spdlog::set_level(spdlog::level::off);
+    spdlog::set_level(spdlog::level::critical);
 
     return r;
 }
@@ -252,6 +252,7 @@ Results test_database() {
 }
 
 Results test_clients() {
+    spdlog::set_level(spdlog::level::critical);
     using namespace app;
 
     Results r = {.name = "Client Tests"};
@@ -266,14 +267,19 @@ Results test_clients() {
         }
 
         try {
-            // spdlog::set_level(spdlog::level::info);
-            // const auto t0 = std::chrono::high_resolution_clock::now();
+            perftimer::PerfTimer timer("read-status");
+            timer.start();
             auto status = client::fetch_status(client);
-            // const auto t1 = std::chrono::high_resolution_clock::now();
+            timer.stop();
+
+            spdlog::info("client status: {} ", timer.get_duration_string(": "));
             r.equals(status.version.starts_with("0.6."), "should be version 0.6.x");
             r.equals(status.access_count > 0, "should have access counts");
             r.equals(status.errors == 0, "should have zero errors");
             const auto ts = status.timestamp;
+
+            auto sstatus = status.to_json().dump();
+            spdlog::info("json status: {}", sstatus);
 
             r.equals(status.location.size() > 1, "location should be set");
 

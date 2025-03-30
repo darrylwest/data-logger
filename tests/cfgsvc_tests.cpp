@@ -60,7 +60,7 @@ TEST_CASE("Config Service Tests", "[cfgsrv][clients]") {
 }
 
 TEST_CASE("Config Service Tests", "[cfgsvs][data-node]") {
-    spdlog::set_level(spdlog::level::info);
+    spdlog::set_level(spdlog::level::critical);
     spdlog::info("Config Service Tests: data");
 
     using namespace app;

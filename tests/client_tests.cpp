@@ -5,6 +5,7 @@
 #include <app/types.hpp>
 #include <catch2/catch_all.hpp>  // For Catch2 v3
 #include <app/http_client.hpp>
+#include <nlohmann/json.hpp>
 
 #include "test_helpers.hpp"
 
@@ -37,6 +38,11 @@ TEST_CASE("Client Tests", "[client][fetch_status]") {
     REQUIRE(status.timestamp == 1738453678);
     REQUIRE(status.location == "front-porch");
     REQUIRE(status.access_count == 8247);
+
+    const auto jstatus = status.to_json();
+    const auto sstaus = jstatus.dump();
+
+    // std::println("json: {}", sstatus);
 
     cleanup();
 }

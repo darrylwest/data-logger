@@ -47,6 +47,19 @@ namespace app::client {
 
             return oss.str();
         }
+        // to_json function
+        json to_json() const {
+            json j;
+            j["version"] = version;
+            j["timestamp"] = timestamp;
+            j["location"] = location;
+            j["started"] = started;
+            j["uptime"] = uptime;
+            j["access_count"] = access_count;
+            j["errors"] = errors;
+
+            return j;
+        }
     };
 
     struct ClientNode {
