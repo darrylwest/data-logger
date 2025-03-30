@@ -7,6 +7,7 @@
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
@@ -170,11 +171,17 @@ namespace app::service {
             res.status = 204;  // No Content
         });
 
-        auto db = database::Database();
-        database::read_current_data(db);
+        // TODO modify for multiple databases: tempsdb, statusdb, lightdb, etc.
+
+        // read the temps db data
+        auto jdata = cfgsvc::data_node();
+        auto folder = jdata[jsonkeys::FOLDER].get<Str>();
+        auto filename = jdata[jsonkeys::TEMPERATURE].get<Str>();
+        auto tempsdb = database::Database();
+        tempsdb.read(folder + filename);
 
         // Set up the server
-        if (!setup_service(svr, config, db)) {
+        if (!setup_service(svr, config, tempsdb)) {
             return false;
         }
 

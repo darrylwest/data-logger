@@ -18,6 +18,7 @@ namespace app::service {
     constexpr auto ACCESS_METHODS = "GET, POST, PUT, PATCH, DELETE, OPTIONS";
 
     // Function to set up the server and apply configurations
+    // TODO multiple databases; tempsdb, statusdb, lightdb, etc
     bool setup_service(httplib::Server &svr, const config::WebConfig &config,
                        database::Database &db);
 

@@ -143,8 +143,8 @@ namespace helpers {
         },
         "data": {
             "folder": "data",
-            "temperature": "/temperature",
-            "status": "/status"
+            "temperature": "/current.temps.db",
+            "status": "/current.status.db"
         },
         "webservice": {
             "scheme": "http",

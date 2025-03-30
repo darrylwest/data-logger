@@ -10,6 +10,7 @@
 #include <app/taskrunner.hpp>
 #include <app/version.hpp>
 #include <app/webhandlers.hpp>
+#include <vendor/perftimer.hpp>
 #include <vendor/testlib.hpp>
 
 #include "precompiled.hpp"
@@ -67,10 +68,11 @@ Results test_taskrunner() {
 
 // TODO move some of this to integration tests
 void test_read_current(Results& r) {
-    spdlog::set_level(spdlog::level::err);
+    spdlog::set_level(spdlog::level::critical);
+    perftimer::PerfTimer timer("test_read_current");
 
     using namespace app::database;
-    const auto filename = "data/temperature/current.cottage.test";
+    const auto filename = "data/current.temps.test";
     Database db;
 
     // read the current file
@@ -81,43 +83,41 @@ void test_read_current(Results& r) {
     r.equals(keys.size() == db.size(), "size matters");
 
     // time the sort...
-    if (false) {
+    if (true) {
         auto kylist = keys;
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
         std::ranges::sort(kylist);
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("sort of {} keys took {} µs", keys.size(), duration);
+        timer.stop();
+        spdlog::info("sort of {} {} ", keys.size(), timer.get_duration_string(": sort: "));
     }
 
-    if (false) {                          // select to get a range of keys (slow)
+    if (true) {                           // select to get a range of keys (slow)
         const auto start = "1740307200";  // .cottage.0";
         Vec<Str> kylist;
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
         for (const auto& key : keys) {
             if (key > start) {
                 spdlog::debug("{}", key);
                 kylist.push_back(key);
             }
         }
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("selection of {} keys from {} took {} µs", kylist.size(), keys.size(),
-                     duration);
+        timer.stop();
+        auto dur = timer.get_duration_string(": select: ");
+        spdlog::info("selection of {} keys from {} {}", kylist.size(), keys.size(), dur);
 
         spdlog::info("kylist size: {}", kylist.size());
         r.equals(kylist.size() > 20, "kylist should be at least 20 element long");
     }
 
     {  // range drop
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
 
         // Ensure we don't drop more elements than exist
         const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
 
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), dur);
+        timer.stop();
+        auto dur = timer.get_duration_string(": kylist: ");
+        spdlog::info("range drop of {} keys from {} {} ", kylist.size(), keys.size(), dur);
 
         for (const auto& key : kylist) {
             const auto ret = db.get(key);
@@ -137,11 +137,11 @@ void test_read_current(Results& r) {
         // map (transform) temperature strings to Vec<float> and keys to Vec<isodate>
         const auto all_keys = [](const Str&) { return true; };
 
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
         const auto data = db.search(all_keys);
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+        timer.stop();
+        auto dur = timer.get_duration_string(": map: ");
+        spdlog::info("return data {} k/v's {} ", data.size(), dur);
 
         r.equals(data.size() == db.size(), "data map element count should equal db.size");
     }
@@ -153,11 +153,11 @@ void test_read_current(Results& r) {
         const auto start = *kylist.begin();
         const auto key_filter = [&](const Str& key) { return key >= start; };
 
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
         const auto data = db.search(key_filter);
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+        timer.stop();
+        auto dur = timer.get_duration_string(": last: ");
+        spdlog::info("return data {} k/v's {} ", data.size(), dur);
 
         for (const auto& [k, v] : data) {
             spdlog::debug("{} {}", k, v);
@@ -170,22 +170,23 @@ void test_read_current(Results& r) {
         const auto last = db.last();
         r.equals(last.size() == 1, "the default for last size should be a single element");
 
-        const auto t0 = std::chrono::high_resolution_clock::now();
+        timer.start();
         const auto last25 = db.last(25);
-        const auto t1 = std::chrono::high_resolution_clock::now();
-        auto dur = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0).count();
-        spdlog::info("return last 25 of {} k/v's from took {} µs", db.size(), dur);
+        timer.stop();
+        auto dur = timer.get_duration_string(": last 25: ");
+        spdlog::info("return last 25 of {} {}", db.size(), dur);
 
         r.equals(last25.size() == 25, "last 25 size should be 25 elements");
     }
-    spdlog::set_level(spdlog::level::off);
+
+    spdlog::set_level(spdlog::level::critical);
 }
 
 void test_api_temps(Results& r) {
     spdlog::set_level(spdlog::level::err);
 
     using namespace app::database;
-    const auto filename = "data/temperature/current.cottage.test";
+    const auto filename = "data/current.temps.test";
     Database db;
 
     // read the current file
@@ -205,7 +206,7 @@ void test_create_chart_data(Results& r) {
     using namespace app::database;
     using namespace app::webhandlers;
 
-    const auto filename = "data/temperature/current.cottage.test";
+    const auto filename = "data/current.temps.test";
     Database db;
     db.read(filename, true);
 
