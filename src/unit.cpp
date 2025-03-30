@@ -88,7 +88,7 @@ void test_read_current(Results& r) {
         timer.start();
         std::ranges::sort(kylist);
         timer.stop();
-        spdlog::info("sort of {} keys took {} µs", keys.size(), timer.get_duration().count());
+        spdlog::info("sort of {} {} ", keys.size(), timer.get_duration_string(": sort: "));
     }
 
     if (true) {                           // select to get a range of keys (slow)
@@ -102,9 +102,8 @@ void test_read_current(Results& r) {
             }
         }
         timer.stop();
-        auto duration = timer.get_duration().count();
-        spdlog::info("selection of {} keys from {} took {} µs", kylist.size(), keys.size(),
-                     duration);
+        auto dur = timer.get_duration_string(": select: ");
+        spdlog::info("selection of {} keys from {} {}", kylist.size(), keys.size(), dur);
 
         spdlog::info("kylist size: {}", kylist.size());
         r.equals(kylist.size() > 20, "kylist should be at least 20 element long");
@@ -117,8 +116,8 @@ void test_read_current(Results& r) {
         const auto kylist = keys | std::views::drop(keys.size() > 25 ? keys.size() - 25 : 0);
 
         timer.stop();
-        auto dur = timer.get_duration().count();
-        spdlog::info("range drop of {} keys from {} took {} µs", kylist.size(), keys.size(), dur);
+        auto dur = timer.get_duration_string(": kylist: ");
+        spdlog::info("range drop of {} keys from {} {} ", kylist.size(), keys.size(), dur);
 
         for (const auto& key : kylist) {
             const auto ret = db.get(key);
@@ -141,8 +140,8 @@ void test_read_current(Results& r) {
         timer.start();
         const auto data = db.search(all_keys);
         timer.stop();
-        auto dur = timer.get_duration().count();
-        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+        auto dur = timer.get_duration_string(": map: ");
+        spdlog::info("return data {} k/v's {} ", data.size(), dur);
 
         r.equals(data.size() == db.size(), "data map element count should equal db.size");
     }
@@ -157,8 +156,8 @@ void test_read_current(Results& r) {
         timer.start();
         const auto data = db.search(key_filter);
         timer.stop();
-        auto dur = timer.get_duration().count();
-        spdlog::info("return data {} k/v's from took {} µs", data.size(), dur);
+        auto dur = timer.get_duration_string(": last: ");
+        spdlog::info("return data {} k/v's {} ", data.size(), dur);
 
         for (const auto& [k, v] : data) {
             spdlog::debug("{} {}", k, v);
@@ -174,8 +173,8 @@ void test_read_current(Results& r) {
         timer.start();
         const auto last25 = db.last(25);
         timer.stop();
-        auto dur = timer.get_duration().count();
-        spdlog::info("return last 25 of {} k/v's from took {} µs", db.size(), dur);
+        auto dur = timer.get_duration_string(": last 25: ");
+        spdlog::info("return last 25 of {} {}", db.size(), dur);
 
         r.equals(last25.size() == 25, "last 25 size should be 25 elements");
     }
