@@ -33,6 +33,17 @@ namespace app::nodes {
         return false;
     }
 
+    // read the temps db filename from config
+    FilePath get_tempsdb_path() {
+        // const FilePath path = "data/current.temps.db";
+        const auto jdata = cfgsvc::data_node();
+        const auto folder = jdata[jsonkeys::FOLDER].get<Str>();
+        const auto filename = jdata[jsonkeys::TEMPERATURE].get<Str>();
+        const FilePath path = folder + filename;
+
+        return path;
+    }
+
     // create the temps worker task
     Task create_temps_task(ClientNode& node, int period) {
         auto worker = [&]() mutable {
@@ -49,8 +60,7 @@ namespace app::nodes {
                 const Str host = (cfg.host == "0.0.0.0") ? "localhost" : cfg.host;
                 const auto url = fmt::format("{}://{}:{}", cfg.scheme, host, cfg.port);
 
-                // TODO get file path from config; use the client location, not the probe
-                const FilePath path = "data/temperature/current." + node.location + ".db";
+                const FilePath path = get_tempsdb_path();
 
                 for (const auto& probe : data.probes) {
                     // can be disabled by the remote client

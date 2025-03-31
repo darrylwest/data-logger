@@ -178,9 +178,9 @@ namespace app::service {
         // TODO modify for multiple databases: tempsdb, lightdb, etc.
 
         // read the temps db data
-        auto jdata = cfgsvc::data_node();
-        auto folder = jdata[jsonkeys::FOLDER].get<Str>();
-        auto filename = jdata[jsonkeys::TEMPERATURE].get<Str>();
+        const auto jdata = cfgsvc::data_node();
+        const auto folder = jdata[jsonkeys::FOLDER].get<Str>();
+        const auto filename = jdata[jsonkeys::TEMPERATURE].get<Str>();
         auto tempsdb = database::Database();
         tempsdb.read(folder + filename);
 
