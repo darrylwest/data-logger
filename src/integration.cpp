@@ -122,7 +122,7 @@ void test_shutdown_endpoint(Results& r, httplib::Client& cli) {
 }
 
 void test_database(Results& r, app::database::Database& db) {
-    app::database::read_current_data(db);
+    db.read("data/current.temps.test", true);
 
     r.equals(db.size() > 0, "database size");
     fmt::print("\t{}Test passed: database size: {}{}\n", green, db.size(), reset);

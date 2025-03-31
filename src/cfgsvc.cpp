@@ -40,6 +40,14 @@ namespace app {
             }
         }
 
+        json ConfigService::data_node() {
+            std::lock_guard<std::mutex> lock(mtx);
+            json j = instance().app_config[DATA];
+            spdlog::info("return the data node: {}", j.dump());
+
+            return j;
+        }
+
         json ConfigService::webservice() {
             std::lock_guard<std::mutex> lock(mtx);
 
@@ -185,6 +193,8 @@ namespace app {
         json get_node(const StrView& node_name) {
             return ConfigService::instance().get_node(node_name);
         }
+
+        json data_node() { return ConfigService::instance().data_node(); }
 
         json webservice() { return ConfigService::instance().webservice(); }
 

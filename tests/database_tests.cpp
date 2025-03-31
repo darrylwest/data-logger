@@ -151,7 +151,7 @@ TEST_CASE("Database Tests", "[database][write_database]") {
     REQUIRE(db.size() == size);
 
     const auto path = helpers::create_temp_path("db-write-test_");
-    bool ok = db.save(path);
+    bool ok = db.write(path);
     REQUIRE(ok);
 
     database::Database rdb;

@@ -35,4 +35,7 @@ namespace app::webhandlers {
     // create and return the json chart data
     Str create_temps_response(const ChartData& chart);
 
+    // fetch the status of each active node
+    Str fetch_active_client_status();
+
 }  // namespace app::webhandlers

@@ -168,4 +168,27 @@ namespace app::webhandlers {
 
         return j.dump();
     };
+
+    //
+    Str fetch_active_client_status() {
+        Vec<json> active_status;
+        auto nodes = app::client::create_nodes();
+        for (const auto& node : nodes) {
+            auto client = app::client::parse_client_node(cfgsvc::client(node.location));
+            if (!client.active) {
+                continue;
+            }
+
+            try {
+                const auto status = app::client::fetch_status(client);
+                active_status.push_back(status.to_json());
+            } catch (const std::exception& e) {
+                spdlog::error("error fetching status: {}", e.what());
+            }
+        }
+
+        json j;
+        j["client_status"] = active_status;
+        return j.dump();  // ['active_status': [json, json, json], 'end_date': '2025-02-24 23:40:03
+    }
 }  // namespace app::webhandlers

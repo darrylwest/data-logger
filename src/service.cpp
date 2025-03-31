@@ -7,6 +7,7 @@
 
 #include <app/cli.hpp>
 #include <app/database.hpp>
+#include <app/jsonkeys.hpp>
 #include <app/service.hpp>
 #include <app/types.hpp>
 #include <app/version.hpp>
@@ -95,9 +96,12 @@ namespace app::service {
             res.set_content(json_text, "application/json");
         });
 
-        // TODO add a status GET endpoint to report on the client nodes, probes, etc...
+        // TODO implement calls to active clients
+        svr.Get("/api/status", [&](const Request &, Response &res) {
+            const auto json_text = app::webhandlers::fetch_active_client_status();
+            res.set_content(json_text, "application/json");
+        });
 
-        // TODO add a PUT endpoint /api/temp to insert new temp reading
         svr.Put("/api/temperature", [&](const Request &req, Response &res) mutable {
             // TODO move to webhandlers
             try {
@@ -141,6 +145,7 @@ namespace app::service {
             svr.stop();
         });
 
+        // return the application's version
         svr.Get("/api/version", [](const Request &, Response &res) {
             auto vers = Version().to_string();
             res.set_content(vers, "text/plain");
@@ -170,11 +175,17 @@ namespace app::service {
             res.status = 204;  // No Content
         });
 
-        auto db = database::Database();
-        database::read_current_data(db);
+        // TODO modify for multiple databases: tempsdb, lightdb, etc.
+
+        // read the temps db data
+        auto jdata = cfgsvc::data_node();
+        auto folder = jdata[jsonkeys::FOLDER].get<Str>();
+        auto filename = jdata[jsonkeys::TEMPERATURE].get<Str>();
+        auto tempsdb = database::Database();
+        tempsdb.read(folder + filename);
 
         // Set up the server
-        if (!setup_service(svr, config, db)) {
+        if (!setup_service(svr, config, tempsdb)) {
             return false;
         }
 

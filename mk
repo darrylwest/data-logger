@@ -46,7 +46,6 @@ do
             shift
         ;;
         unit)
-            # (cd build && time make $FLAGS)
             $root/build/unit_tests
 
             shift
@@ -56,13 +55,11 @@ do
             shift
         ;;
         test)
-            (cd build && make $FLAGS)
             $root/build/datalogger-integration
 
             shift
         ;;
         run)
-            (cd build && make $FLAGS)
             $root/build/$project
 
             shift

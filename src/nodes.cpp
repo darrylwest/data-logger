@@ -108,7 +108,7 @@ namespace app::nodes {
                              status.uptime, status.access_count, status.errors);
 
                 auto key = app::database::create_key(status.timestamp, node.location);
-                const FilePath path = "data/status/current." + node.location + ".db";
+                const FilePath path = "data/current.status.db";
                 spdlog::info("file: {}, k/v: {}={}", path.string(), key.to_string(),
                              status.to_string());
 

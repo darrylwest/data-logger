@@ -23,12 +23,12 @@ Eventually it will gather and store other readings including light intensity, mo
 
 Starter uses...
 
-* basic cmake 3.4 + CPM
+* basic cmake 3.30.5 + CPM
 * ansi_colors.hpp
 * cxxopts.hpp
 * spdlog for logging
-* spdlog/fmt/fmt for formatting
-* testlib.hpp unit and integration tests
+* catch2 for unit tests
+* testlib.hpp for string and integration tests
 * nlohmann/json for communications and config
 * httplib for client and server communications
 
@@ -53,5 +53,5 @@ _copy here with tests_
 
 ![Home Page](webapp/docs/datalogger-home.png)
 
-###### 2025.03.18 | dpw
+###### 2025.03.30 | dpw
 

@@ -38,4 +38,6 @@ namespace app::jsonkeys {
     constexpr StrView ENABLED = "enabled";
     constexpr StrView TEMP_C = "tempC";
     constexpr StrView TEMP_F = "tempF";
+    constexpr StrView DATA = "data";
+    constexpr StrView FOLDER = "folder";
 }  // namespace app::jsonkeys

@@ -19,9 +19,10 @@ TEST_CASE("Version test", "[version]") {
     INFO("Checking Application Version: " << vers.to_string());
 
     REQUIRE(vers.major == 0);
-    REQUIRE(vers.minor == 6);
-    REQUIRE(vers.patch == 5);
-    REQUIRE(vers.build >= 250);
+    REQUIRE(vers.minor == 7);
+    REQUIRE(vers.patch == 1);
+    REQUIRE(vers.build >= 275);
 
-    REQUIRE(ss.starts_with("0.6.5-"));
+    REQUIRE(ss.starts_with("0.7.1-"));
+    REQUIRE(ss >= ("0.7.1-275"));
 }

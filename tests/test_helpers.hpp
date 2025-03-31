@@ -83,8 +83,8 @@ namespace helpers {
     const Str mock_reading = R"(
         {"reading_at": 1738362466,
         "probes":[
-            {"sensor":0,"location":"cottage-south","enabled":true,"millis":349548023,"tempC":10.88542,"tempF":51.59375},
-            {"sensor":1,"location":"cottage-east","enabled":false,"millis":349548023,"tempC":-127.0,"tempF":51.66576}
+            {"sensor":0,"location":"cottage-south","enabled":true,"tempC":10.88542,"tempF":51.59375},
+            {"sensor":1,"location":"cottage-east","enabled":false,"tempC":-127.0,"tempF":51.66576}
         ]
     })";
 
@@ -143,8 +143,8 @@ namespace helpers {
         },
         "data": {
             "folder": "data",
-            "temperature": "/temperature",
-            "status": "/status"
+            "temperature": "/current.temps.db",
+            "status": "/current.status.db"
         },
         "webservice": {
             "scheme": "http",
@@ -157,7 +157,7 @@ namespace helpers {
         },
         "clients": [
             {
-                "location": "cottage",
+                "location": "front-porch",
                 "ip": "10.0.1.197",
                 "port": 2030,
                 "active": true,
@@ -166,8 +166,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "cottage-south", "enabled": true },
-                            { "sensor": 1, "location": "cottage-east", "enabled": false}
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false}
                         ]
                     }
                 ]
@@ -182,8 +182,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "deck-west", "enabled": true },
-                            { "sensor": 1, "location": "deck-east", "enabled": false }
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false }
                         ]
                     }
                 ]
@@ -198,8 +198,8 @@ namespace helpers {
                         "type": "temperature",
                         "path": "/temps",
                         "probes": [
-                            { "sensor": 0, "location": "shed-inside", "enabled": true },
-                            { "sensor": 1, "location": "shed-west", "enabled": false }
+                            { "sensor": 0, "location": "probe.0", "enabled": true },
+                            { "sensor": 1, "location": "probe.1", "enabled": false }
                         ]
                     }
                 ]
