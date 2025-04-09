@@ -38,7 +38,7 @@ Client parse_client(json cfg, std::string location) {
     for (const auto& jclient : cfg["clients"]) {
         if (jclient["location"] == location) {
             cli.location = location;
-            cli.ip = jclient["ip"];
+            cli.ip = jclient["ip"].get<std::string>();
             cli.port = jclient["port"].template get<int>();
             cli.active = jclient["active"].template get<bool>();
 
@@ -53,7 +53,7 @@ Client parse_client(json cfg, std::string location) {
 
                 for (const auto& probe : sensor["probes"]) {
                     int sensor = probe["sensor"].template get<int>();
-                    cli.probes[sensor] = probe["location"];
+                    cli.probes[sensor] = probe["location"].get<std::string>();
                 }
             }
 
