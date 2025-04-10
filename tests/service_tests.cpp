@@ -5,7 +5,8 @@
 #include <app/types.hpp>
 #include <app/service.hpp>
 
-TEST_CASE("Service Tests", "[service]") {
+TEST_CASE("Service Tests", "[service][setup_service]") {
+    // TODO setup service
     const Str ss = "test string";
     REQUIRE(ss == "test string");
 }
