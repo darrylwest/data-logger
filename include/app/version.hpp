@@ -15,7 +15,7 @@ namespace app {
     struct Version {
         int major = 0;
         int minor = 7;
-        int patch = 1;
+        int patch = 2;
         int build = 277;
 
         friend std::ostream& operator<<(std::ostream& os, const Version v) {

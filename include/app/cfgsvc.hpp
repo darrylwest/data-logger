@@ -30,7 +30,7 @@ namespace app::cfgsvc {
         // return true if the service is running, else false
         bool is_running();
 
-        json get_node(const StrView& node_name);
+        json get_node(const auto& node_name);
 
         json data_node();
         json webservice();
@@ -64,7 +64,7 @@ namespace app::cfgsvc {
 
     // Public interface functions
 
-    json get_node(const StrView& node_name);
+    json get_node(const auto& node_name);
 
     json data_node();
     json webservice();

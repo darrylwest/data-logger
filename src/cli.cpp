@@ -21,12 +21,12 @@ namespace app::config {
 
         spdlog::debug("ws_cfg: {}", ws_cfg.dump());
         return WebConfig{
-            .scheme = ws_cfg[SCHEME],
-            .host = ws_cfg[HOST],
-            .port = ws_cfg[PORT],
-            .www = ws_cfg[WWW],
-            .cert_file = ws_cfg[TLS_CERT_FILE],
-            .key_file = ws_cfg[TLS_KEY_FILE],
+            .scheme = ws_cfg[SCHEME].get<std::string>(),
+            .host = ws_cfg[HOST].get<std::string>(),
+            .port = ws_cfg[PORT].get<int>(),
+            .www = ws_cfg[WWW].get<std::string>(),
+            .cert_file = ws_cfg[TLS_CERT_FILE].get<std::string>(),
+            .key_file = ws_cfg[TLS_KEY_FILE].get<std::string>(),
         };
     }
 

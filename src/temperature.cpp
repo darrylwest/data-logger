@@ -25,7 +25,7 @@ namespace app::temperature {
             for (const auto& probe : probes) {
                 Probe p;
                 p.sensor = probe[SENSOR];
-                p.location = probe[LOCATION];
+                p.location = probe[LOCATION].get<std::string>();
                 p.tempC = probe[TEMP_C];
                 p.tempF = probe[TEMP_F];
 
@@ -61,7 +61,7 @@ namespace app::temperature {
                     if (jprobe.is_object() && jprobe[LOCATION] == location) {
                         Probe probe;
                         probe.sensor = jprobe.value(SENSOR, -1);
-                        probe.location = jprobe[LOCATION];
+                        probe.location = jprobe[LOCATION].get<std::string>();
                         probe.enabled = jprobe.value(ENABLED, false);
 
                         return probe;
