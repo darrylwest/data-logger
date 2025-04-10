@@ -33,7 +33,7 @@ namespace app::client {
         // TODO remove this once all clients are on version 0.6.30-144
         Str location = "unknown";
         if (j.contains(LOCATION)) {
-            location = j[LOCATION];
+            location = j[LOCATION].get<std::string>();
         }
 
         ClientStatus status = {
@@ -146,8 +146,8 @@ namespace app::client {
 
         using namespace app::jsonkeys;
 
-        client.location = jclient[LOCATION];
-        client.ip = jclient[IP];
+        client.location = jclient[LOCATION].get<std::string>();
+        client.ip = jclient[IP].get<std::string>();
         client.port = jclient[PORT].template get<int>();
         client.active = jclient[ACTIVE].template get<bool>();
         if (jclient.contains("last_access")) {
@@ -161,7 +161,7 @@ namespace app::client {
 
             for (const auto& probe : sensor[PROBES]) {
                 int snr = probe[SENSOR].template get<int>();
-                client.probes[snr] = probe[LOCATION];
+                client.probes[snr] = probe[LOCATION].get<std::string>();
             }
         }
 
