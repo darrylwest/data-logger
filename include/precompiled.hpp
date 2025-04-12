@@ -5,7 +5,6 @@
 #pragma once
 
 #include <algorithm>
-#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
