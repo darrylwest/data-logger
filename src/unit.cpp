@@ -91,8 +91,8 @@ void test_read_current(Results& r) {
         spdlog::info("sort of {} {} ", keys.size(), timer.get_duration_string(": sort: "));
     }
 
-    if (true) {                           // select to get a range of keys (slow)
-        const auto start = "1740307200";  // .cottage.0";
+    if (true) {
+        const auto start = "1740307200";
         Vec<Str> kylist;
         timer.start();
         for (const auto& key : keys) {
@@ -211,7 +211,7 @@ void test_create_chart_data(Results& r) {
     db.read(filename, true);
 
     const std::time_t ts = 1740427800;
-    const Vec<Str> locations = {"cottage.0"};
+    const Vec<Str> locations = {"front-porch.0"};
     const auto cfg = ChartConfig{
         .end_ts = ts,
         .locations = locations,

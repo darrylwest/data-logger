@@ -81,7 +81,7 @@ namespace app::service {
 
             // TODO read request start/end timestamps (or dates) ; default to now
 
-            const Vec<Str> locations = {"cottage.0"};
+            const Vec<Str> locations = {"front-porch.0"};
             const auto cfg = ChartConfig{
                 .end_ts = 1740496800,  // datetimelib::timestamp_seconds(),
                 .locations = locations,
